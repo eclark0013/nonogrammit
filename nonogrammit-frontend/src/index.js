@@ -1,15 +1,21 @@
-console.log("testing...")
-const BACKEND_URL = 'http://localhost:3000/';
-fetch(`${BACKEND_URL}/test`)
-  .then(response => response.json())
-  .then(parsedResponse => console.log(parsedResponse));
+// console.log("testing...")
+// const BACKEND_URL = 'http://localhost:3000/';
+// fetch(`${BACKEND_URL}/test`)
+//   .then(response => response.json())
+//   .then(parsedResponse => console.log(parsedResponse));
 
-let testButton
 document.addEventListener("DOMContentLoaded", () => {
-    console.log(document.querySelector("#test-button").innerHTML)
-    let testButton = document.querySelector("#test-button")
-    testButton.addEventListener("click", () => {
-        testButton.innerHTML = "Oh, no I've been clicked!"
+    let newPuzzleButton = document.querySelector("#new-puzzle-button")
+    newPuzzleButton.addEventListener("click", () => {
+      newPuzzleButton.innerHTML = "i've been clicked. well done."
     })
+    fetch("http://localhost:3000/puzzleInfo")
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+    });
+
 })
 
