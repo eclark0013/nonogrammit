@@ -1,6 +1,10 @@
 
 button {
-    color: blue;
+    background-color: #b9284c;
+    padding: 7px 12px;
     margin:0 auto;
-    display:block;
+    color:white;
+    display: block;
+    font-size: 12px;
+    border-radius: 4px;
 }
