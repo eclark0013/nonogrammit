@@ -8,14 +8,16 @@ document.addEventListener("DOMContentLoaded", () => {
     let newPuzzleButton = document.querySelector("#new-puzzle-button")
     newPuzzleButton.addEventListener("click", () => {
       newPuzzleButton.innerHTML = "i've been clicked. well done."
+      fetch("http://localhost:3000/puzzleInfo")
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        let singlePuzzle = data["rawPuzzleDatabase"][0]
+        console.log(singlePuzzle);
+      });
     })
-    fetch("http://localhost:3000/puzzleInfo")
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-    });
+    
 
 })
 
