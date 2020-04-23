@@ -1,9 +1,10 @@
 class UsersController < ApplicationController
     # before_action :require_login, only: [:show, :home]
 
-    # def index
-    #     @users = User.all
-    # end
+    def index
+        users = User.all
+        render json: users.to_json
+    end
 
     # def show
     #     @user = User.find_by(id: params[:id])
@@ -22,15 +23,14 @@ class UsersController < ApplicationController
 
     def create #make a new user
         user = User.new(username: user_params["username"])
-        user.password = user_params["password"] #fix this clunkiness
-        byebug
-        # if @user.valid?
-        #     session[:user_id] = @user.id
-        #     redirect_to user_path(@user)
-        # else
-        #     flash.now[:error_messages] = @user.errors.full_messages
-        #     render "new"
-        # end
+        user.password = params["password"] #fix this clunkiness
+        user.save
+        # byebug
+        if user.valid?
+            render UserSerializer.new(user)
+        else
+            render json: {message: "Invalid entry."}
+        end
     end
 
     private
