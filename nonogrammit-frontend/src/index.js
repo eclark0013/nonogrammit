@@ -4,6 +4,8 @@
 //   .then(response => response.json())
 //   .then(parsedResponse => console.log(parsedResponse));
 
+let currentUserId
+
 document.addEventListener("DOMContentLoaded", () => {
     let newPuzzleButton = document.querySelector("#new-puzzle-button")
     newPuzzleButton.addEventListener("click", () => {
@@ -47,7 +49,8 @@ function fetchUser(username, password){
           return response.json();
       })
       .then(function(object) {
-          console.log(object);
+        currentUserId = object.id  
+        console.log(object);
       })
       .catch(function(error) {
           console.log(error.message);
@@ -67,6 +70,6 @@ function displayPuzzleNumber(puzzleNumber){
     puzzleNumberHeader.id = "puzzle-number-header"
     puzzleNumberDiv.appendChild(puzzleNumberHeader)
     puzzleNumberHeader.innerHTML = `Puzzle #${puzzleNumber}`
-    document.querySelector("#title").after(puzzleNumberDiv)
+    document.querySelector("#new-puzzle-button").after(puzzleNumberDiv)
   }
 }

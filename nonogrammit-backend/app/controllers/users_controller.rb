@@ -3,7 +3,7 @@ class UsersController < ApplicationController
 
     def index
         users = User.all
-        render json: users.to_json
+        render json: users
     end
 
     # def show
@@ -25,9 +25,8 @@ class UsersController < ApplicationController
         user = User.new(username: user_params["username"])
         user.password = params["password"] #fix this clunkiness
         user.save
-        # byebug
         if user.valid?
-            render UserSerializer.new(user)
+            render json: user
         else
             render json: {message: "Invalid entry."}
         end
