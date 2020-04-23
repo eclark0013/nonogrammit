@@ -4,7 +4,9 @@
 //   .then(response => response.json())
 //   .then(parsedResponse => console.log(parsedResponse));
 
-let currentUserId
+let currentUser
+let puzzleNumber
+let time
 
 document.addEventListener("DOMContentLoaded", () => {
     let newPuzzleButton = document.querySelector("#new-puzzle-button")
@@ -14,9 +16,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return response.json();
       })
       .then((data) => {
-        let puzzleNumber = Math.floor(Math.random()*20)
+        puzzleNumber = Math.floor(Math.random()*20)
         let singlePuzzle = data["rawPuzzleDatabase"][puzzleNumber]
         displayPuzzleNumber(puzzleNumber)
+        if (currentUser){
+          currentUser.currentPuzzle = puzzleNumber
+        }
         console.log(singlePuzzle);
       });
     })
@@ -49,12 +54,24 @@ function fetchUser(username, password){
           return response.json();
       })
       .then(function(object) {
-        currentUserId = object.id  
-        console.log(object);
+        currentUser = new User(object.username, undefined, 0)
+        if (puzzleNumber){
+          currentUser.currentPuzzle = puzzleNumber
+          // time = time
+        }
+        console.log(currentUser);
       })
       .catch(function(error) {
           console.log(error.message);
       }); 
+}
+
+class User {
+  constructor(username, currentPuzzle, time){
+    this.username = username    
+    this.currentPuzzle = currentPuzzle
+    this.time = time
+  }
 }
 
 
