@@ -9,7 +9,33 @@ let puzzleNumber
 let time
 
 document.addEventListener("DOMContentLoaded", () => {
-    let newPuzzleButton = document.querySelector("#new-puzzle-button")
+    newPuzzle() // create button is in html - should be moved to here, click functionality is here
+    addUserInfoSubmitButtonFunctionality()
+    makePuzzleDiv()
+})
+
+function addUserInfoSubmitButtonFunctionality(){
+  let userInfoSubmitButton = document.querySelector("#submit")
+    userInfoSubmitButton.addEventListener("click", function(event) {
+      event.preventDefault();
+      let username = document.querySelector("#username")
+      let password = document.querySelector("#password")
+      fetchUser(username.value, password.value)
+      username.value = ""
+      password.value = ""
+    })
+}
+
+
+function makePuzzleDiv(){
+  let body = document.body
+  let puzzleDiv = document.createElement("div")
+  puzzleDiv.id = "puzzle"
+  body.appendChild(puzzleDiv)
+}
+
+function newPuzzle(){
+  let newPuzzleButton = document.querySelector("#new-puzzle-button")
     newPuzzleButton.addEventListener("click", () => {
       fetch("http://localhost:3000/puzzleInfo")
       .then((response) => {
@@ -25,18 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log(singlePuzzle);
       });
     })
-
-    let submitButton = document.querySelector("#submit")
-    submitButton.addEventListener("click", function(event) {
-      event.preventDefault();
-      let username = document.querySelector("#username")
-      let password = document.querySelector("#password")
-      fetchUser(username.value, password.value)
-      username.value = ""
-      password.value = ""
-    })
-})
-
+}
+// create a new user
 function fetchUser(username, password){
   let configObj = {
       method: "POST",
@@ -66,6 +82,7 @@ function fetchUser(username, password){
       }); 
 }
 
+// user class
 class User {
   constructor(username, currentPuzzle, time){
     this.username = username    
@@ -75,7 +92,7 @@ class User {
 }
 
 
-
+// display puzzle number
 function displayPuzzleNumber(puzzleNumber){
   if (document.querySelector("#puzzle-number-display")){
     document.querySelector("#puzzle-number-header").innerHTML = `Puzzle #${puzzleNumber}`
