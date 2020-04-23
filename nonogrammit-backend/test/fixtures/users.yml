@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  time: MyString
+  current_puzzle: MyString
+  username: MyString
+  password_digest: MyString
+
+two:
+  time: MyString
+  current_puzzle: MyString
+  username: MyString
+  password_digest: MyString

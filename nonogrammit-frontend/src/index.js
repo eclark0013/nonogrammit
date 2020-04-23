@@ -18,7 +18,43 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log(singlePuzzle);
       });
     })
+
+    let submitButton = document.querySelector("#submit")
+    submitButton.addEventListener("click", function(event) {
+      event.preventDefault();
+      let username = document.querySelector("#username")
+      let password = document.querySelector("#password")
+      fetchUser(username.value, password.value)
+      username.value = ""
+      password.value = ""
+    })
 })
+
+function fetchUser(username, password){
+  let configObj = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+          "username": username,
+          "password": password
+      })
+    };
+  fetch("http://localhost:3000/users", configObj)
+      .then(function(response) {
+          return response.json();
+      })
+      .then(function(object) {
+          console.log(object);
+      })
+      .catch(function(error) {
+          console.log(error.message);
+      }); 
+}
+
+
 
 function displayPuzzleNumber(puzzleNumber){
   if (document.querySelector("#puzzle-number-display")){
