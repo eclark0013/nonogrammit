@@ -7,6 +7,7 @@
 let currentUser
 let puzzleNumber
 let time
+let test
 
 document.addEventListener("DOMContentLoaded", () => {
     newPuzzle() // create button is in html - should be moved to here, click functionality is here
@@ -50,6 +51,7 @@ function addSquaresToPuzzleDiv(puzzleParameters){
   }
 }
 
+// all actions taken on newPuzzle click
 function newPuzzle(){
   let newPuzzleButton = document.querySelector("#new-puzzle-button")
     newPuzzleButton.addEventListener("click", () => {
@@ -63,22 +65,38 @@ function newPuzzle(){
         if (currentUser){
           currentUser.currentPuzzle = puzzleNumber
         }
-        createPuzzleDataObject(data["rawPuzzleDatabase"][puzzleNumber])
+        let puzzleDataObject = createPuzzleDataObject(data["rawPuzzleDatabase"][puzzleNumber])
+        test = puzzleDataObject
         console.log(puzzleDataObject);
       });
     })
 }
 
 // create puzzle data object
-function puzzleDataObject(puzzleData){
+function createPuzzleDataObject(puzzleData){
   puzzleData = puzzleData.split("/")
+  puzzleData = puzzleData.map(set => set.split("."))
   let columnData = puzzleData.slice(0,25)
   let rowData = puzzleData.slice(25,50)
   let puzzleDataObject = {
     columns: columnData,
-    rows: rowData
+    rows: rowData,
+    columnMax: findMaxArraySize(columnData),
+    rowMax: findMaxArraySize(rowData)
   }
+  return puzzleDataObject
 }
+
+function findMaxArraySize(arrayOfArrays){
+  let maxLength = 0
+  for (i=0; i<arrayOfArrays.length; i++){
+    if(arrayOfArrays[i].length > maxLength){
+      maxLength = arrayOfArrays[i].length
+    }
+  }
+  return maxLength
+}
+
 // create a new user
 function fetchUser(username, password){
   let configObj = {
@@ -117,7 +135,6 @@ class User {
     this.time = time
   }
 }
-
 
 // display puzzle number
 function displayPuzzleNumber(puzzleNumber){
