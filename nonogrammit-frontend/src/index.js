@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     newPuzzle() // create button is in html - should be moved to here, click functionality is here
     addUserInfoSubmitButtonFunctionality()
     makePuzzleDiv()
+    addSquaresToPuzzleDiv()
 })
 
 function addUserInfoSubmitButtonFunctionality(){
@@ -32,6 +33,16 @@ function makePuzzleDiv(){
   let puzzleDiv = document.createElement("div")
   puzzleDiv.id = "puzzle"
   body.appendChild(puzzleDiv)
+}
+
+function addSquaresToPuzzleDiv(){
+  let body = document.body
+  let puzzleDiv = document.querySelector("#puzzle")
+  let squareDiv = document.createElement("div")
+  squareDiv.className = "puzzle-square"
+  squareDiv.id = "00-00"
+  squareDiv.innerHTML = "9"
+  puzzle.appendChild(squareDiv)
 }
 
 function newPuzzle(){

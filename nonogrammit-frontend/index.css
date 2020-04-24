@@ -1,3 +1,6 @@
+html, body{
+    height: 100%;
+}
 
 button {
     background-color: #b9284c;
@@ -8,3 +11,13 @@ button {
     font-size: 12px;
     border-radius: 4px;
 }
+
+.puzzle-square {
+    text-align: center;
+    border: 1px solid black;
+    display: inline-block;
+    padding-left: .5%;
+    padding-right: .5%;
+    height: 17px;
+    width: 10px;
+  }
