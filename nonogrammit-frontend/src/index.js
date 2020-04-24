@@ -35,14 +35,19 @@ function makePuzzleDiv(){
   body.appendChild(puzzleDiv)
 }
 
-function addSquaresToPuzzleDiv(){
+function addSquaresToPuzzleDiv(puzzleParameters){
   let body = document.body
   let puzzleDiv = document.querySelector("#puzzle")
-  let squareDiv = document.createElement("div")
-  squareDiv.className = "puzzle-square"
-  squareDiv.id = "00-00"
-  squareDiv.innerHTML = "9"
-  puzzle.appendChild(squareDiv)
+  let columnParametersDiv = document.createElement("div")
+  columnParametersDiv.id = "column-paramaters"
+  puzzleDiv.appendChild(columnParametersDiv)
+  for (let i = 0; i<25; i++){
+    let squareDiv = document.createElement("div")
+    squareDiv.className = "puzzle-square"
+    squareDiv.id = `${i}-00`
+    squareDiv.innerHTML = `${i}`
+    columnParametersDiv.appendChild(squareDiv)
+  }
 }
 
 function newPuzzle(){
@@ -54,14 +59,25 @@ function newPuzzle(){
       })
       .then((data) => {
         puzzleNumber = Math.floor(Math.random()*20)
-        let singlePuzzle = data["rawPuzzleDatabase"][puzzleNumber]
         displayPuzzleNumber(puzzleNumber)
         if (currentUser){
           currentUser.currentPuzzle = puzzleNumber
         }
-        console.log(singlePuzzle);
+        createPuzzleDataObject(data["rawPuzzleDatabase"][puzzleNumber])
+        console.log(puzzleDataObject);
       });
     })
+}
+
+// create puzzle data object
+function puzzleDataObject(puzzleData){
+  puzzleData = puzzleData.split("/")
+  let columnData = puzzleData.slice(0,25)
+  let rowData = puzzleData.slice(25,50)
+  let puzzleDataObject = {
+    columns: columnData,
+    rows: rowData
+  }
 }
 // create a new user
 function fetchUser(username, password){
@@ -118,3 +134,4 @@ function displayPuzzleNumber(puzzleNumber){
     document.querySelector("#new-puzzle-button").after(puzzleNumberDiv)
   }
 }
+
