@@ -33,14 +33,14 @@ puzzles.each do |puzzle|
     set_data = puzzle.split("/")
     column_data = set_data[0..24].collect{|set| set.split(".")}
     row_data = set_data[25..49].collect{|set| set.split(".")}
-    column_max = 0
-    column_data.each do |column|
-        column_max = column.size if column.size > column_max
-    end
-    row_max = 0
-    row_data.each do |row|
-        row_max = row.size if row.size > row_max
-    end
+    # column_max = 0
+    # column_data.each do |column|
+    #     column_max = column.size if column.size > column_max
+    # end
+    # row_max = 0
+    # row_data.each do |row|
+    #     row_max = row.size if row.size > row_max
+    # end
     p = Puzzle.create
     column_data.each_with_index do |column, index|
         p.columns.create(parameters: column, completion_status: 0, puzzle_location: index)
