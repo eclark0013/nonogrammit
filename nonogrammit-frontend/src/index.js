@@ -10,11 +10,17 @@ let time
 let test
 
 document.addEventListener("DOMContentLoaded", () => {
-    newPuzzle() // create button is in html - should be moved to here, click functionality is here
-    addUserInfoSubmitButtonFunctionality()
-    makePuzzleDiv()
-    addSquaresToPuzzleDiv()
+  addNewPuzzleButtonFunctionality()
+  addUserInfoSubmitButtonFunctionality()
 })
+
+function addNewPuzzleButtonFunctionality(){
+  let newPuzzleButton = document.querySelector("#new-puzzle-button")
+  newPuzzleButton.addEventListener("click", () => {
+    makePuzzleDiv()
+    fetchNewPuzzle()
+  });
+}
 
 function addUserInfoSubmitButtonFunctionality(){
   let userInfoSubmitButton = document.querySelector("#submit")
@@ -34,45 +40,54 @@ function makePuzzleDiv(){
   let puzzleDiv = document.createElement("div")
   puzzleDiv.id = "puzzle"
   body.appendChild(puzzleDiv)
+  return puzzleDiv
 }
 
-function addSquaresToPuzzleDiv(puzzleParameters){
+function addSquaresToPuzzleDiv(puzzleDataObject){
   let body = document.body
-  let puzzleDiv = document.querySelector("#puzzle")
-  let columnParametersDiv = document.createElement("div")
-  columnParametersDiv.id = "column-paramaters"
-  puzzleDiv.appendChild(columnParametersDiv)
-  for (let i = 0; i<25; i++){
-    let squareDiv = document.createElement("div")
-    squareDiv.className = "puzzle-square"
-    squareDiv.id = `${i}-00`
-    squareDiv.innerHTML = `${i}`
-    columnParametersDiv.appendChild(squareDiv)
-  }
+  // let puzzleDiv = document.querySelector("#puzzle")
+  createColumnParametersDivs(puzzleDataObject)
 }
 
-// all actions taken on newPuzzle click
-function newPuzzle(){
-  let newPuzzleButton = document.querySelector("#new-puzzle-button")
-    newPuzzleButton.addEventListener("click", () => {
-      fetch("http://localhost:3000/puzzleInfo")
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        puzzleNumber = Math.floor(Math.random()*20)
-        displayPuzzleNumber(puzzleNumber)
-        if (currentUser){
-          currentUser.currentPuzzle = puzzleNumber
-        }
-        let puzzleDataObject = createPuzzleDataObject(data["rawPuzzleDatabase"][puzzleNumber])
-        test = puzzleDataObject
-        console.log(puzzleDataObject);
-      });
+function createColumnParametersDivs(puzzleDataObject){
+  let puzzleDiv = document.querySelector("#puzzle")
+  // this = puzzleDiv
+  let columnParametersDiv
+  for (i=0; i<puzzleDataObject["columnMax"]; i++){
+    columnParametersDiv = document.createElement("div")
+    columnParametersDiv.id = "column-paramaters"
+    puzzleDiv.appendChild(columnParametersDiv)
+    let blankSquareDiv = document.createElement("div")
+    blankSquareDiv.className = "blank-square"
+    for (let i = 0; i<25; i++){
+      let squareDiv = document.createElement("div")
+      squareDiv.className = "puzzle-square"
+      squareDiv.id = `${i}-00`
+      squareDiv.innerHTML = `${i}`
+      columnParametersDiv.appendChild(squareDiv)
+    }
+  }
+  
+}
+
+function fetchNewPuzzle(url){
+  fetch("http://localhost:3000/puzzleInfo")
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      puzzleNumber = Math.floor(Math.random()*20)
+      displayPuzzleNumber(puzzleNumber)
+      if (currentUser){
+        currentUser.currentPuzzle = puzzleNumber
+      }
+      let puzzleDataObject = createPuzzleDataObject(data["rawPuzzleDatabase"][puzzleNumber])
+      addSquaresToPuzzleDiv(puzzleDataObject)
+      console.log(puzzleDataObject);
     })
 }
 
-// create puzzle data object
+// create puzzle data object with column and row max lengths
 function createPuzzleDataObject(puzzleData){
   puzzleData = puzzleData.split("/")
   puzzleData = puzzleData.map(set => set.split("."))
