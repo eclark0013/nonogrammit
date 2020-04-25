@@ -52,10 +52,35 @@ function addSquaresToPuzzleDiv(puzzle){
 
 function createColumnParametersDivs(puzzle){
   let puzzleDiv = document.querySelector("#puzzle")
-  let columnParametersDiv
-  let column_max = puzzle.column_max
+  setUpColumnParams(puzzleDiv, puzzle.column_max)
+  enterColumnParamsData(puzzle)
+  // setUpRows(puzzleDiv, puzzle)
+  addRows(puzzleDiv, puzzle)
+}
+
+function addRows(puzzleDiv, puzzle){
+  for (let i=0; i<puzzle.row_parameters.length; i++){
+    let rowDiv = document.createElement("div")
+    rowDiv.className = "row"
+    rowDiv.id = `row-${i+1}`
+    puzzleDiv.appendChild(rowDiv)
+    let rowParamsDiv = document.createElement("div")
+    rowParamsDiv.className = "row-params"
+    rowParamsDiv.id = `row-${i+1}-params`
+    rowParamsDiv.innerHTML = puzzle.row_parameters[i].join("...")
+    rowDiv.appendChild(rowParamsDiv)
+    for (let k=0; k<25; k++){
+      let squareDiv = document.createElement("div")
+      squareDiv.className = "puzzle-square"
+      squareDiv.id = `${k+1}-${i+1}`
+      rowDiv.appendChild(squareDiv)
+    }
+  }
+}
+
+function setUpColumnParams(puzzleDiv, column_max){
   for (let i=0; i<column_max; i++){
-    columnParametersDiv = document.createElement("div")
+    let columnParametersDiv = document.createElement("div")
     columnParametersDiv.id = `column-parameters-row-${i+1}`
     columnParametersDiv.className = "column-parameters"
     puzzleDiv.appendChild(columnParametersDiv)
@@ -63,16 +88,19 @@ function createColumnParametersDivs(puzzle){
     blankSquareDiv.className = "blank-square"
     columnParametersDiv.appendChild(blankSquareDiv)
     for (let j=0; j<25; j++){
-      let squareDiv = document.createElement("div")
-      squareDiv.className = "puzzle-square"
-      squareDiv.id = `${j+1}-${i+1}`
-      columnParametersDiv.appendChild(squareDiv)
+      let columnParamDiv = document.createElement("div")
+      columnParamDiv.className = "column-params-square"
+      columnParamDiv.id = `column-param-${j+1}-${i+1}`
+      columnParametersDiv.appendChild(columnParamDiv)
     }
   }
+}
+
+function enterColumnParamsData(puzzle){
   for (let k=0; k<25; k++){
     let parameter = puzzle.column_parameters[k]
     for (let e=0; e<parameter.length; e++){
-      let targetSquare = document.getElementById(`${k+1}-${column_max-e}`)
+      let targetSquare = document.getElementById(`column-param-${k+1}-${puzzle.column_max-e}`)
       targetSquare.innerHTML= parameter[e]
     }
   }

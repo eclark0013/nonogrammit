@@ -29,20 +29,47 @@ button {
     border-right: 1px solid black;
     border-left: 2px solid black;
     vertical-align: top;
-    padding-left: .5%;
-    padding-right: .5%;
+    padding-left: 1px;
+    padding-right: 1px;
     height: 22px;
-    min-width: 60px;
-    max-width: 200px;
+    /* min-width: 60px;
+    max-width: 200px; */
+    width: 150px;
     line-height: 22px;
 }
-.puzzle-square {
+
+.column-params-square {
     display: inline-flex;
     text-align: center;
     margin: 0 auto;
     border: 1px solid black;
     border-top: 0px;
     border-bottom: 0px;
+    padding-left: 1px;
+    padding-right: 1px;
+    height: 22px;
+    width: 20px;
+    line-height: 22px;
+    vertical-align: top;
+  }
+
+  .row-params {
+    display: inline-block;
+    margin: 0 auto;
+    border: 1px solid black;
+    border-left: 2px solid black;
+    padding-left: 1px;
+    padding-right: 1px;
+    height: 22px;
+    width: 150px;
+    line-height: 22px;
+    text-align: right;
+  }
+
+  .puzzle-square {
+    text-align: center;
+    border: 1px solid black;
+    display: inline-block;
     padding-left: 1px;
     padding-right: 1px;
     height: 22px;
