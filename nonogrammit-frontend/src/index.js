@@ -16,10 +16,10 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 function addNewPuzzleButtonFunctionality(){
+  makePuzzleDiv()
   let newPuzzleButton = document.querySelector("#new-puzzle-button")
   newPuzzleButton.addEventListener("click", () => {
-    makePuzzleDiv()
-    fetchPuzzle(Math.floor(Math.random()*20))
+    fetchPuzzle(Math.ceil(Math.random()*20))
     // addSquaresToPuzzleDiv(testPuzzle)
   });
 }
@@ -46,26 +46,25 @@ function makePuzzleDiv(){
 }
 
 function addSquaresToPuzzleDiv(puzzle){
-  // let body = document.body
+  document.querySelector("#puzzle").innerHTML = ""
   createColumnParametersDivs(puzzle)
 }
 
 function createColumnParametersDivs(puzzle){
   let puzzleDiv = document.querySelector("#puzzle")
   let columnParametersDiv
-  // console.log(currentPuzzle["columnMax"])
   for (let i=0; i<puzzle.column_max; i++){
     columnParametersDiv = document.createElement("div")
     columnParametersDiv.id = "column-paramaters"
     puzzleDiv.appendChild(columnParametersDiv)
     let blankSquareDiv = document.createElement("div")
     blankSquareDiv.className = "blank-square"
-    puzzleDiv.appendChild(blankSquareDiv)
-    for (let i=0; i<25; i++){
+    columnParametersDiv.appendChild(blankSquareDiv)
+    for (let j=0; j<25; j++){
       let squareDiv = document.createElement("div")
       squareDiv.className = "puzzle-square"
-      squareDiv.id = `${i}-00`
-      squareDiv.innerHTML = `${i}`
+      squareDiv.id = `${i}-${j}`
+      squareDiv.innerHTML = `${j}`
       columnParametersDiv.appendChild(squareDiv)
     }
   }
@@ -87,31 +86,6 @@ function fetchPuzzle(puzzleNumber){
       addSquaresToPuzzleDiv(currentPuzzle)
     })
 }
-
-// create puzzle data object with column and row max lengths
-// function createPuzzleDataObject(puzzleData){
-//   puzzleData = puzzleData.split("/")
-//   puzzleData = puzzleData.map(set => set.split("."))
-//   let columnData = puzzleData.slice(0,25)
-//   let rowData = puzzleData.slice(25,50)
-//   let puzzleDataObject = {
-//     columns: columnData,
-//     rows: rowData,
-//     columnMax: findMaxArraySize(columnData),
-//     rowMax: findMaxArraySize(rowData)
-//   }
-//   return puzzleDataObject
-// }
-
-// function findMaxArraySize(arrayOfArrays){
-//   let maxLength = 0
-//   for (i=0; i<arrayOfArrays.length; i++){
-//     if(arrayOfArrays[i].length > maxLength){
-//       maxLength = arrayOfArrays[i].length
-//     }
-//   }
-//   return maxLength
-// }
 
 // create a new user
 function fetchUser(username, password){

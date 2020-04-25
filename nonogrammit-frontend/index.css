@@ -23,7 +23,7 @@ button {
     line-height: 19px;
   }
 
-  /* .blank-square {
+  .blank-square {
     text-align: center;
     border: 1px solid black;
     display: inline-block;
@@ -32,4 +32,5 @@ button {
     height: 19px;
     width: 24px;
     line-height: 19px;
-  } */
+    vertical-align: top;
+  }
