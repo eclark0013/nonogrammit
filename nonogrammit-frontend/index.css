@@ -12,18 +12,46 @@ button {
     border-radius: 4px;
 }
 
-.puzzle-square {
-    text-align: center;
-    border: 1px solid black;
-    display: inline-block;
+#puzzle {
+    min-width: 800px;
+}
+
+/* .table-row {
+    display: inline-block
+} */
+
+.column-parameters {
+    margin: 0px;
+}
+
+.blank-square {
+    display: inline-flex;
+    border-right: 1px solid black;
+    border-left: 2px solid black;
+    vertical-align: top;
     padding-left: .5%;
     padding-right: .5%;
-    height: 19px;
-    width: 14px;
-    line-height: 19px;
+    height: 22px;
+    min-width: 60px;
+    max-width: 200px;
+    line-height: 22px;
+}
+.puzzle-square {
+    display: inline-flex;
+    text-align: center;
+    margin: 0 auto;
+    border: 1px solid black;
+    border-top: 0px;
+    border-bottom: 0px;
+    padding-left: 1px;
+    padding-right: 1px;
+    height: 22px;
+    width: 20px;
+    line-height: 22px;
+    vertical-align: top;
   }
 
-  .blank-square {
+  /* .blank-square {
     text-align: center;
     border: 1px solid black;
     display: inline-block;
@@ -33,4 +61,4 @@ button {
     width: 24px;
     line-height: 19px;
     vertical-align: top;
-  }
+  } */

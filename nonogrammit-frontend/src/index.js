@@ -53,9 +53,11 @@ function addSquaresToPuzzleDiv(puzzle){
 function createColumnParametersDivs(puzzle){
   let puzzleDiv = document.querySelector("#puzzle")
   let columnParametersDiv
-  for (let i=0; i<puzzle.column_max; i++){
+  let column_max = puzzle.column_max
+  for (let i=0; i<column_max; i++){
     columnParametersDiv = document.createElement("div")
-    columnParametersDiv.id = "column-paramaters"
+    columnParametersDiv.id = `column-parameters-row-${i+1}`
+    columnParametersDiv.className = "column-parameters"
     puzzleDiv.appendChild(columnParametersDiv)
     let blankSquareDiv = document.createElement("div")
     blankSquareDiv.className = "blank-square"
@@ -63,12 +65,17 @@ function createColumnParametersDivs(puzzle){
     for (let j=0; j<25; j++){
       let squareDiv = document.createElement("div")
       squareDiv.className = "puzzle-square"
-      squareDiv.id = `${i}-${j}`
-      squareDiv.innerHTML = `${j}`
+      squareDiv.id = `${j+1}-${i+1}`
       columnParametersDiv.appendChild(squareDiv)
     }
   }
-  
+  for (let k=0; k<25; k++){
+    let parameter = puzzle.column_parameters[k]
+    for (let e=0; e<parameter.length; e++){
+      let targetSquare = document.getElementById(`${k+1}-${column_max-e}`)
+      targetSquare.innerHTML= parameter[e]
+    }
+  }
 }
 
 function fetchPuzzle(puzzleNumber){
@@ -84,6 +91,7 @@ function fetchPuzzle(puzzleNumber){
       let attributes = object["data"]["attributes"]
       currentPuzzle = new Puzzle(attributes["column_parameters"], attributes["row_parameters"], attributes["column_max"], attributes["row_max"])
       addSquaresToPuzzleDiv(currentPuzzle)
+      console.log(attributes)
     })
 }
 
