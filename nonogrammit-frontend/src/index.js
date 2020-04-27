@@ -20,7 +20,6 @@ function addNewPuzzleButtonFunctionality(){
   let newPuzzleButton = document.querySelector("#new-puzzle-button")
   newPuzzleButton.addEventListener("click", () => {
     fetchPuzzle(Math.ceil(Math.random()*20))
-    // addSquaresToPuzzleDiv(testPuzzle)
   });
 }
 
@@ -45,12 +44,13 @@ function makePuzzleDiv(){
   return puzzleDiv
 }
 
-function addSquaresToPuzzleDiv(puzzle){
+function displayNewPuzzle(puzzle){
   let puzzleDiv = document.querySelector("#puzzle")
   puzzleDiv.innerHTML = ""
   puzzleDiv.className = "puzzle"
   createColumnParametersDivs(puzzleDiv, puzzle)
-  addRows(puzzleDiv, puzzle)
+  createRowParametersDivs(puzzleDiv, puzzle)
+  addPuzzleSquares(puzzle)
 }
 
 function createColumnParametersDivs(puzzleDiv, puzzle){
@@ -58,7 +58,7 @@ function createColumnParametersDivs(puzzleDiv, puzzle){
   enterColumnParamsData(puzzle)
 }
 
-function addRows(puzzleDiv, puzzle){
+function createRowParametersDivs(puzzleDiv, puzzle){
   for (let i=0; i<puzzle.row_parameters.length; i++){
     let rowDiv = document.createElement("div")
     rowDiv.className = "row"
@@ -69,6 +69,12 @@ function addRows(puzzleDiv, puzzle){
     rowParamsDiv.id = `row-${i+1}-params`
     rowParamsDiv.innerHTML = puzzle.row_parameters[i].join("...")
     rowDiv.appendChild(rowParamsDiv)
+  }
+}
+
+function addPuzzleSquares(puzzle){
+  for (let i=0; i<puzzle.row_parameters.length; i++){
+    let rowDiv = document.getElementById(`row-${i+1}`)
     for (let k=0; k<25; k++){
       let squareDiv = document.createElement("div")
       squareDiv.className = "puzzle-square"
@@ -100,7 +106,7 @@ function enterColumnParamsData(puzzle){
   for (let k=0; k<25; k++){
     let parameter = puzzle.column_parameters[k]
     for (let e=0; e<parameter.length; e++){
-      let targetSquare = document.getElementById(`column-param-${k+1}-${puzzle.column_max-e}`)
+      let targetSquare = document.getElementById(`column-param-${k+1}-${puzzle.column_max-parameter.length+e+1}`)
       targetSquare.innerHTML= parameter[e]
     }
   }
@@ -117,8 +123,8 @@ function fetchPuzzle(puzzleNumber){
         currentUser.currentPuzzle = puzzleNumber
       }
       let attributes = object["data"]["attributes"]
-      currentPuzzle = new Puzzle(attributes["column_parameters"], attributes["row_parameters"], attributes["column_max"], attributes["row_max"])
-      addSquaresToPuzzleDiv(currentPuzzle)
+      currentPuzzle = new Puzzle(object.data.id, attributes["column_parameters"], attributes["row_parameters"], attributes["column_max"], attributes["row_max"])
+      displayNewPuzzle(currentPuzzle)
       console.log(attributes)
     })
 }
@@ -163,11 +169,36 @@ class User {
 }
 
 class Puzzle{
-  constructor(column_parameters, row_parameters, column_max, row_max){
+  constructor(id, column_parameters, row_parameters, column_max, row_max){
+    this.id = id
     this.column_parameters = column_parameters
     this.row_parameters = row_parameters
     this.column_max = column_max
     this.row_max = row_max
+    // for (let i=0; i<column_parameters.length; i++){
+    //   console.log(column)
+    // }
+    // for (let j=0; j<row_parameters.length; j++){
+    //   new Row(row_parameters[j], 0, j+1, id)
+    // }
+  }
+}
+
+class Column{
+  constructor(parameters, completion_status, puzzle_location, puzzle_id){
+    this.parameters = parameters
+    this.completion_status = completion_status
+    this.puzzle_location = puzzle_location
+    this.puzzle_id = puzzle_id
+  }
+}
+
+class Row{
+  constructor(parameters, completion_status, puzzle_location, puzzle_id){
+    this.parameters = parameters
+    this.completion_status = completion_status
+    this.puzzle_location = puzzle_location
+    this.puzzle_id = puzzle_id
   }
 }
 
