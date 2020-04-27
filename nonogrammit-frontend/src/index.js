@@ -46,16 +46,16 @@ function makePuzzleDiv(){
 }
 
 function addSquaresToPuzzleDiv(puzzle){
-  document.querySelector("#puzzle").innerHTML = ""
-  createColumnParametersDivs(puzzle)
+  let puzzleDiv = document.querySelector("#puzzle")
+  puzzleDiv.innerHTML = ""
+  puzzleDiv.className = "puzzle"
+  createColumnParametersDivs(puzzleDiv, puzzle)
+  addRows(puzzleDiv, puzzle)
 }
 
-function createColumnParametersDivs(puzzle){
-  let puzzleDiv = document.querySelector("#puzzle")
+function createColumnParametersDivs(puzzleDiv, puzzle){
   setUpColumnParams(puzzleDiv, puzzle.column_max)
   enterColumnParamsData(puzzle)
-  // setUpRows(puzzleDiv, puzzle)
-  addRows(puzzleDiv, puzzle)
 }
 
 function addRows(puzzleDiv, puzzle){

@@ -12,8 +12,10 @@ button {
     border-radius: 4px;
 }
 
-#puzzle {
-    min-width: 800px;
+.puzzle {
+    min-width: 750px;
+    border: 3px black solid;
+    display: inline-block
 }
 
 /* .table-row {
