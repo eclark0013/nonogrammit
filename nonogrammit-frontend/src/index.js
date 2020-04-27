@@ -19,7 +19,22 @@ function addNewPuzzleButtonFunctionality(){
   let newPuzzleButton = document.querySelector("#new-puzzle-button")
   newPuzzleButton.addEventListener("click", () => {
     fetchPuzzle(Math.ceil(Math.random()*20))
+    addRestartPuzzleButton()
   });
+}
+
+function addRestartPuzzleButton(puzzleDiv){
+  let restartPuzzleButton = document.createElement("button")
+  restartPuzzleButton.id = "restart-puzzle-button"
+  restartPuzzleButton.innerHTML = "Restart"
+  restartPuzzleButton.addEventListener("click", () => {
+    let shadedSquares = document.querySelectorAll('div[status="1"]')
+    for (let i=0; i<shadedSquares.length; i++){
+      shadedSquares[i].setAttribute("status", "0")
+    }
+  })
+  let body = puzzleDiv.parentNode
+  body.appendChild(restartPuzzleButton)
 }
 
 function addUserInfoSubmitButtonFunctionality(){
@@ -126,7 +141,8 @@ function fetchPuzzle(puzzleNumber){
       return response.json();
     })
     .then((object) => {
-      makePuzzleDiv()
+      let puzzleDiv = makePuzzleDiv()
+      addRestartPuzzleButton(puzzleDiv)
       displayPuzzleNumber(puzzleNumber)
       if (currentUser){
         currentUser.currentPuzzle = puzzleNumber
