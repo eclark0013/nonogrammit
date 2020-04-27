@@ -6,7 +6,7 @@
 
 let currentUser
 let puzzleNumber
-let currentPuzzle = 7
+let currentPuzzle
 let time
 let test
 
@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 function addNewPuzzleButtonFunctionality(){
-  makePuzzleDiv()
   let newPuzzleButton = document.querySelector("#new-puzzle-button")
   newPuzzleButton.addEventListener("click", () => {
     fetchPuzzle(Math.ceil(Math.random()*20))
@@ -79,6 +78,15 @@ function addPuzzleSquares(puzzle){
       let squareDiv = document.createElement("div")
       squareDiv.className = "puzzle-square"
       squareDiv.id = `${k+1}-${i+1}`
+      squareDiv.setAttribute("status", 0)
+      squareDiv.addEventListener("click", () => {
+        if (squareDiv.getAttribute("status") === "0"){
+          squareDiv.setAttribute("status", 1)
+        }
+        else if (squareDiv.getAttribute("status") === "1"){
+          squareDiv.setAttribute("status", 0)
+        }
+      })
       rowDiv.appendChild(squareDiv)
     }
   }
@@ -118,6 +126,7 @@ function fetchPuzzle(puzzleNumber){
       return response.json();
     })
     .then((object) => {
+      makePuzzleDiv()
       displayPuzzleNumber(puzzleNumber)
       if (currentUser){
         currentUser.currentPuzzle = puzzleNumber
@@ -125,7 +134,7 @@ function fetchPuzzle(puzzleNumber){
       let attributes = object["data"]["attributes"]
       currentPuzzle = new Puzzle(object.data.id, attributes["column_parameters"], attributes["row_parameters"], attributes["column_max"], attributes["row_max"])
       displayNewPuzzle(currentPuzzle)
-      console.log(attributes)
+      console.log(currentPuzzle)
     })
 }
 
@@ -159,7 +168,23 @@ function fetchUser(username, password){
       }); 
 }
 
-// user class
+// display puzzle number
+function displayPuzzleNumber(puzzleNumber){
+  if (document.querySelector("#puzzle-number-display")){
+    document.querySelector("#puzzle-number-header").innerHTML = `Puzzle #${puzzleNumber}`
+  }
+  else{
+    let puzzleNumberDiv = document.createElement("div")
+    puzzleNumberDiv.id = "puzzle-number-display"
+    let puzzleNumberHeader = document.createElement("h2")
+    puzzleNumberHeader.id = "puzzle-number-header"
+    puzzleNumberDiv.appendChild(puzzleNumberHeader)
+    puzzleNumberHeader.innerHTML = `Puzzle #${puzzleNumber}`
+    document.querySelector("#new-puzzle-button").after(puzzleNumberDiv)
+  }
+}
+
+// classes
 class User {
   constructor(username, currentPuzzle, time){
     this.username = username    
@@ -201,20 +226,3 @@ class Row{
     this.puzzle_id = puzzle_id
   }
 }
-
-// display puzzle number
-function displayPuzzleNumber(puzzleNumber){
-  if (document.querySelector("#puzzle-number-display")){
-    document.querySelector("#puzzle-number-header").innerHTML = `Puzzle #${puzzleNumber}`
-  }
-  else{
-    let puzzleNumberDiv = document.createElement("div")
-    puzzleNumberDiv.id = "puzzle-number-display"
-    let puzzleNumberHeader = document.createElement("h2")
-    puzzleNumberHeader.id = "puzzle-number-header"
-    puzzleNumberDiv.appendChild(puzzleNumberHeader)
-    puzzleNumberHeader.innerHTML = `Puzzle #${puzzleNumber}`
-    document.querySelector("#new-puzzle-button").after(puzzleNumberDiv)
-  }
-}
-

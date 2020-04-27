@@ -53,9 +53,9 @@ button {
     width: 20px;
     line-height: 22px;
     vertical-align: top;
-  }
+}
 
-  .row-params {
+.row-params {
     display: inline-block;
     margin: 0 auto;
     border: 1px solid black;
@@ -66,9 +66,9 @@ button {
     width: 150px;
     line-height: 22px;
     text-align: right;
-  }
+}
 
-  .puzzle-square {
+.puzzle-square {
     text-align: center;
     border: 1px solid black;
     display: inline-block;
@@ -78,9 +78,17 @@ button {
     width: 20px;
     line-height: 22px;
     vertical-align: top;
-  }
+}
 
-  /* .blank-square {
+[status = "0"] {
+    background-color: lightgray;
+}
+
+[status = "1"] {
+    background-color: black;
+}
+
+/* .blank-square {
     text-align: center;
     border: 1px solid black;
     display: inline-block;
@@ -90,4 +98,4 @@ button {
     width: 24px;
     line-height: 19px;
     vertical-align: top;
-  } */
+} */
