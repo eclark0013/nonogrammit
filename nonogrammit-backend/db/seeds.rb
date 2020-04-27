@@ -46,34 +46,67 @@ puzzles = ["8.4.2/13/3.10.3/3.1.2.7/2.8/1.1.8/1.2.3.1.2/4.8/1.4.8/16/3.3.8.1/3.5
 #     end
 # end 
 
+def randomize(array)
+    array.each_with_index do |number, i|
+        j = rand(0..array.size)
+        array[i],array[j]=array[j],array[i]
+    end
+    array
+end
+
 def randomPuzzleGenerator()
     all_nums = (0...625).to_a
-    def randomize(array)
-        array.each_with_index do |number, i|
-            j = rand(0..array.size)
-            array[i],array[j]=array[j],array[i]
-        end
-    end
-    randomize(all_nums)
+    all_nums = randomize(all_nums)
     all_nums = all_nums[0..312]
 end
 
 def twentyfiver(arry)
-    arry.collect do |number|
-        "#{number/25 + 1}-#{number%25}"
-    end
+  arry.collect do |number|
+    number = number.to_i
+    "#{number/25 + 1}-#{number%25+1}"
+  end
 end
 
+solutions = twentyfiver(randomPuzzleGenerator)
+
 def solutions_to_coordinates_array(solutions)
-    solutions.collect do |coordinates|
-        coordinates.split("-")
-    end
+  solutions.collect do |coordinates|
+    coordinates.split("-")
+  end
 end
-  
+
 def collectColumn(i, array_of_solution_coordinates)
-    array_of_solution_coordinates.select do |coordinates|
-        coordinates[1]==i.to_s
-    end
+  array_of_solution_coordinates.select do |coordinates|
+    coordinates[1]==i.to_s
+  end
 end
+
+
+def createColumnParams(array)
+  sorted = array.sort_by{|coord| coord[0].to_i}
+  parameters = []
+  p=1
+  for i in 0...sorted.length-1
+    if sorted[i][0].to_i+1 == sorted[i+1][0].to_i
+      p+=1
+    else
+      parameters << p
+      p = 1
+    end
+  end
+  parameters
+end
+
+# solutions = solutions_to_coordinates_array(twentyfiver(randomPuzzleGenerator))
+
+def createAllColumnParams(solutions)
+  allParams = []
+  for i in 1..25
+    allParams << createColumnParams(collectColumn(i, solutions))
+  end
+  allParams
+end
+
+# createColumnParams(collectColumn(1, solutions_to_coordinates_array(twentyfiver(randomPuzzleGenerator))))
 
 
