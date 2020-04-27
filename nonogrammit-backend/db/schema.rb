@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 2020_04_24_183444) do
   end
 
   create_table "puzzles", force: :cascade do |t|
+    t.string "solution", default: [], array: true
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

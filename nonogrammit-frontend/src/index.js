@@ -1,8 +1,4 @@
-// console.log("testing...")
-// const BACKEND_URL = 'http://localhost:3000/';
-// fetch(`${BACKEND_URL}/test`)
-//   .then(response => response.json())
-//   .then(parsedResponse => console.log(parsedResponse));
+// Start to make the clicks change the databse and not just the DOM
 
 let currentUser
 let puzzleNumber
@@ -24,17 +20,19 @@ function addNewPuzzleButtonFunctionality(){
 }
 
 function addRestartPuzzleButton(puzzleDiv){
-  let restartPuzzleButton = document.createElement("button")
-  restartPuzzleButton.id = "restart-puzzle-button"
-  restartPuzzleButton.innerHTML = "Restart"
-  restartPuzzleButton.addEventListener("click", () => {
-    let shadedSquares = document.querySelectorAll('div[status="1"]')
-    for (let i=0; i<shadedSquares.length; i++){
-      shadedSquares[i].setAttribute("status", "0")
-    }
-  })
-  let body = puzzleDiv.parentNode
-  body.appendChild(restartPuzzleButton)
+  if (!document.getElementById("restart-puzzle-button")){
+    let restartPuzzleButton = document.createElement("button")
+    restartPuzzleButton.id = "restart-puzzle-button"
+    restartPuzzleButton.innerHTML = "Restart"
+    restartPuzzleButton.addEventListener("click", () => {
+      let shadedSquares = document.querySelectorAll('div[status="1"]')
+      for (let i=0; i<shadedSquares.length; i++){
+        shadedSquares[i].setAttribute("status", "0")
+      }
+    })
+    let body = puzzleDiv.parentNode
+    body.appendChild(restartPuzzleButton)
+  }
 }
 
 function addUserInfoSubmitButtonFunctionality(){
@@ -51,11 +49,13 @@ function addUserInfoSubmitButtonFunctionality(){
 
 
 function makePuzzleDiv(){
-  let body = document.body
-  let puzzleDiv = document.createElement("div")
-  puzzleDiv.id = "puzzle"
-  body.appendChild(puzzleDiv)
-  return puzzleDiv
+  if (!document.getElementById("puzzle")){
+    let body = document.body
+    let puzzleDiv = document.createElement("div")
+    puzzleDiv.id = "puzzle"
+    body.appendChild(puzzleDiv)
+    return puzzleDiv
+  }
 }
 
 function displayNewPuzzle(puzzle){
@@ -216,6 +216,7 @@ class Puzzle{
     this.row_parameters = row_parameters
     this.column_max = column_max
     this.row_max = row_max
+    this.column_status
     // for (let i=0; i<column_parameters.length; i++){
     //   console.log(column)
     // }

@@ -5,6 +5,10 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+require 'database_cleaner'
+
+DatabaseCleaner.strategy = :truncation
+DatabaseCleaner.clean
 
 u1 = User.create(username: "eric", password: "clark")
 
@@ -29,23 +33,47 @@ puzzles = ["8.4.2/13/3.10.3/3.1.2.7/2.8/1.1.8/1.2.3.1.2/4.8/1.4.8/16/3.3.8.1/3.5
 "3.5.1.5.1.3/8.7.1.1/21/3.12/3.12/6.1.6.2/1.6.4.2/9.4.2/2.1.4.4.1.4/1.1.1.4.1/2.2.1.4.3/2.1.2.3.1/3.1.7.2/1.2.6.1/3.1.1.5/2.1.3.6/2.3.1.1.7/1.3.3.6/2.5/7.4.2.1/2.1.2.6/2.1.1.3.4/1.4/2.4.2/3.3.2.2/1.3.3.3/1.1.3.8/1.3.1.1.2/1.1.1/1.3.6.1.2/2.3.1.2.2/9.1/8/9.3.1/3.5.1.3/4.2.5.1/3.2/4.2.1.1.1/4.2.1.1.1.2/5.3.3.2.6/14.2.2/9.4/7.1.4/6.8/5.10.1.1/6.4.7.1/3.2.8/3.1.1.1.3.3/1.1.7.1.3.5/3.5.4.9",
 "1.1.9.2/13.3/3.7.2/4.3.2.3/7.3/3.1.5.1/2.4.4/2.2.5.2/2.10/3.1.3/2.3.2.3/5.2.2.1/5.6.1/5.1.1/5.1.3/6.3.4/4.3.5/2.2.3.4/1.2.11/1.3.8.2/6.3.3/21/15.6/5.9.6/3.6.5/5.18/17.5/6.1.6.5/1.3.6.5/2.1.5.6/6.1.6/5.1.1.3/4.3/3.4/3.2.4/7.3.4/8.4.4/2.4.1.1.4/1.1.6/2.6/1.3.7/5.5.3/3.6.4/4.7/2.3.3.7/4.2.1.1.7/3.3.5.3/1.2.6/3.6/2.5"]
 
-puzzles.each do |puzzle|
-    set_data = puzzle.split("/")
-    column_data = set_data[0..24].collect{|set| set.split(".")}
-    row_data = set_data[25..49].collect{|set| set.split(".")}
-    # column_max = 0
-    # column_data.each do |column|
-    #     column_max = column.size if column.size > column_max
-    # end
-    # row_max = 0
-    # row_data.each do |row|
-    #     row_max = row.size if row.size > row_max
-    # end
-    p = Puzzle.create
-    column_data.each_with_index do |column, index|
-        p.columns.create(parameters: column, completion_status: 0, puzzle_location: index)
+# puzzles.each do |puzzle|
+#     set_data = puzzle.split("/")
+#     column_data = set_data[0..24].collect{|set| set.split(".")}
+#     row_data = set_data[25..49].collect{|set| set.split(".")}
+#     p = Puzzle.create
+#     column_data.each_with_index do |column, index|
+#         p.columns.create(parameters: column, completion_status: 0, puzzle_location: index)
+#     end
+#     row_data.each_with_index do |row, index|
+#         p.rows.create(parameters: row, completion_status: 0, puzzle_location: index)
+#     end
+# end 
+
+def randomPuzzleGenerator()
+    all_nums = (0...625).to_a
+    def randomize(array)
+        array.each_with_index do |number, i|
+            j = rand(0..array.size)
+            array[i],array[j]=array[j],array[i]
+        end
     end
-    row_data.each_with_index do |row, index|
-        p.rows.create(parameters: row, completion_status: 0, puzzle_location: index)
+    randomize(all_nums)
+    all_nums = all_nums[0..312]
+end
+
+def twentyfiver(arry)
+    arry.collect do |number|
+        "#{number/25 + 1}-#{number%25}"
     end
-end 
+end
+
+def solutions_to_coordinates_array(solutions)
+    solutions.collect do |coordinates|
+        coordinates.split("-")
+    end
+end
+  
+def collectColumn(i, array_of_solution_coordinates)
+    array_of_solution_coordinates.select do |coordinates|
+        coordinates[1]==i.to_s
+    end
+end
+
+
