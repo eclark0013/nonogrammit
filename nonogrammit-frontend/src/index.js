@@ -15,7 +15,6 @@ function addNewPuzzleButtonFunctionality(){
   let newPuzzleButton = document.querySelector("#new-puzzle-button")
   newPuzzleButton.addEventListener("click", () => {
     fetchPuzzle(Math.ceil(Math.random()*10))
-    addRestartPuzzleButton()
   });
 }
 
@@ -32,6 +31,22 @@ function addRestartPuzzleButton(puzzleDiv){
     })
     let body = puzzleDiv.parentNode
     body.appendChild(restartPuzzleButton)
+  }
+}
+
+function addRevealSolutionButton(puzzleDiv){
+  if (!document.getElementById("reveal-solution-button")){
+    let revealSolutionButton = document.createElement("button")
+    revealSolutionButton.id = "reveal-solution-button"
+    revealSolutionButton.innerHTML = "Reveal Solution"
+    revealSolutionButton.addEventListener("click", () => {
+      // go fetch the puzzle solution from the db?
+      for (i=0; i<currentPuzzle.solution.length; i++){
+        document.getElementById(currentPuzzle.solution[i]).setAttribute("status", "1")
+      }
+    })
+    let body = puzzleDiv.parentNode
+    body.appendChild(revealSolutionButton)
   }
 }
 
@@ -147,8 +162,10 @@ function fetchPuzzle(puzzleNumber){
       if (currentUser){
         currentUser.currentPuzzle = puzzleNumber
       }
+      console.log(object)
       let attributes = object["data"]["attributes"]
-      currentPuzzle = new Puzzle(object.data.id, attributes["column_parameters"], attributes["row_parameters"], attributes["column_max"], attributes["row_max"])
+      currentPuzzle = new Puzzle(object.data.id, attributes["column_parameters"], attributes["row_parameters"], attributes["column_max"], attributes["row_max"], attributes["solution"])
+      addRevealSolutionButton(puzzleDiv)
       displayNewPuzzle(currentPuzzle)
       console.log(currentPuzzle)
     })
@@ -210,13 +227,14 @@ class User {
 }
 
 class Puzzle{
-  constructor(id, column_parameters, row_parameters, column_max, row_max){
+  constructor(id, column_parameters, row_parameters, column_max, row_max, solution){
     this.id = id
     this.column_parameters = column_parameters
     this.row_parameters = row_parameters
     this.column_max = column_max
     this.row_max = row_max
     this.column_status
+    this.solution = solution
     // for (let i=0; i<column_parameters.length; i++){
     //   console.log(column)
     // }

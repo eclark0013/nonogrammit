@@ -94,6 +94,7 @@ def createColumnParams(particular_column_params)
       p = 1
     end
   end
+  parameters << p
   parameters
 end
 
@@ -127,6 +128,7 @@ def collectRow(i, solution_coordinates)
         p = 1
       end
     end
+    parameters << p
     parameters
   end
 
@@ -145,8 +147,8 @@ def collectRow(i, solution_coordinates)
     solution_coordinates = solution_html_ids_to_coordinates(solution_html_ids)
     solutions_hash = {
       "solution_html_ids": solution_html_ids,
-      "column_params": createAllColumnParams(solution_coordinates),
-      "row_params": createAllRowParams(solution_coordinates)
+      "row_params": createAllColumnParams(solution_coordinates), #simple fix?
+      "column_params": createAllRowParams(solution_coordinates)
     }
   end
   
