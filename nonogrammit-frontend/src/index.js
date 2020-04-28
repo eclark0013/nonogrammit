@@ -95,6 +95,9 @@ function createRowParametersDivs(puzzleDiv, puzzle){
     puzzleDiv.appendChild(rowDiv)
     let rowParamsDiv = document.createElement("div")
     rowParamsDiv.className = "row-params"
+    if (i%5 === 0){
+      rowParamsDiv.className = "bold-top-row-params"
+    }
     rowParamsDiv.id = `row-${i+1}-params`
     rowParamsDiv.innerHTML = puzzle.row_parameters[i].join("...")
     rowDiv.appendChild(rowParamsDiv)
@@ -107,6 +110,15 @@ function addPuzzleSquares(puzzle){
     for (let k=0; k<25; k++){
       let squareDiv = document.createElement("div")
       squareDiv.className = "puzzle-square"
+      if (i%5 === 0 && k%5 === 0){
+        squareDiv.className = "bold-top-and-left-puzzle-square"
+      }
+      else if (i%5 === 0){
+        squareDiv.className = "bold-top-puzzle-square"
+      }
+      else if (k%5 === 0){
+        squareDiv.className = "bold-left-puzzle-square"
+      }
       squareDiv.id = `${k+1}-${i+1}`
       squareDiv.setAttribute("status", 0)
       squareDiv.addEventListener("click", () => {
@@ -134,6 +146,9 @@ function setUpColumnParams(puzzleDiv, column_max){
     for (let j=0; j<25; j++){
       let columnParamDiv = document.createElement("div")
       columnParamDiv.className = "column-params-square"
+      if (j%5 === 0){
+        columnParamDiv.className = "bold-left-column-params-square"
+      }
       columnParamDiv.id = `column-param-${j+1}-${i+1}`
       columnParametersDiv.appendChild(columnParamDiv)
     }
