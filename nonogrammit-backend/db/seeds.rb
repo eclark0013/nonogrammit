@@ -54,36 +54,36 @@ def randomize(array)
     array
 end
 
-def randomPuzzleGenerator()
-    all_nums = (0...625).to_a
+def solution_div_indices_generator
+    all_nums = (0..624).to_a
     all_nums = randomize(all_nums)
-    all_nums = all_nums[0..312]
+    all_nums = all_nums[0..350]
 end
 
-def twentyfiver(arry)
+def solution_div_indices_to_html_ids(arry)
   arry.collect do |number|
     number = number.to_i
     "#{number/25 + 1}-#{number%25+1}"
   end
 end
 
-solutions = twentyfiver(randomPuzzleGenerator)
+solutions = solution_div_indices_to_html_ids(solution_div_indices_generator)
 
-def solutions_to_coordinates_array(solutions)
+def solution_html_ids_to_coordinates(solutions)
   solutions.collect do |coordinates|
     coordinates.split("-")
   end
 end
 
-def collectColumn(i, array_of_solution_coordinates)
-  array_of_solution_coordinates.select do |coordinates|
+def collectColumn(i, solution_coordinates)
+  solution_coordinates.select do |coordinates|
     coordinates[1]==i.to_s
   end
 end
 
 
-def createColumnParams(array)
-  sorted = array.sort_by{|coord| coord[0].to_i}
+def createColumnParams(particular_column_params)
+  sorted = particular_column_params.sort_by{|coord| coord[0].to_i}
   parameters = []
   p=1
   for i in 0...sorted.length-1
@@ -97,16 +97,73 @@ def createColumnParams(array)
   parameters
 end
 
-# solutions = solutions_to_coordinates_array(twentyfiver(randomPuzzleGenerator))
-
-def createAllColumnParams(solutions)
+def createAllColumnParams(solution_coordinates)
   allParams = []
   for i in 1..25
-    allParams << createColumnParams(collectColumn(i, solutions))
+    allParams << createColumnParams(collectColumn(i, solution_coordinates))
   end
   allParams
 end
 
-# createColumnParams(collectColumn(1, solutions_to_coordinates_array(twentyfiver(randomPuzzleGenerator))))
+# createColumnParams(collectColumn(1, solution_html_ids_to_coordinates(solution_div_indices_to_html_ids(solution_div_indices_generator))))
 
+
+def collectRow(i, solution_coordinates)
+    solution_coordinates.select do |coordinates|
+      coordinates[0]==i.to_s
+    end
+  end
+  
+  
+  def createRowParams(particular_row_params)
+    sorted = particular_row_params.sort_by{|coord| coord[1].to_i}
+    parameters = []
+    p=1
+    for i in 0...sorted.length-1
+      if sorted[i][1].to_i+1 == sorted[i+1][1].to_i
+        p+=1
+      else
+        parameters << p
+        p = 1
+      end
+    end
+    parameters
+  end
+
+  def createAllRowParams(solution_coordinates)
+    allParams = []
+    for i in 1..25
+      allParams << createRowParams(collectRow(i, solution_coordinates))
+    end
+    allParams
+  end
+
+  # solutions = solution_html_ids_to_coordinates(solution_div_indices_to_html_ids(solution_div_indices_generator))
+
+  def solution_hasher()
+    solution_html_ids = solution_div_indices_to_html_ids(solution_div_indices_generator)
+    solution_coordinates = solution_html_ids_to_coordinates(solution_html_ids)
+    solutions_hash = {
+      "solution_html_ids": solution_html_ids,
+      "column_params": createAllColumnParams(solution_coordinates),
+      "row_params": createAllRowParams(solution_coordinates)
+    }
+  end
+  
+
+  #test
+10.times do
+    solution_hash = solution_hasher
+    column_params = solution_hash[:column_params]
+    row_params = solution_hash[:row_params]
+    p = Puzzle.create
+    p.solution = solution_hash[:solution_html_ids]
+    column_params.each_with_index do |column, index|
+        p.columns.create(parameters: column, completion_status: 0, puzzle_location: index)
+    end
+    row_params.each_with_index do |row, index|
+        p.rows.create(parameters: row, completion_status: 0, puzzle_location: index)
+    end
+    p.save
+end
 

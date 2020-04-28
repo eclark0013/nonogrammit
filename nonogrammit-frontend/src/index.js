@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function addNewPuzzleButtonFunctionality(){
   let newPuzzleButton = document.querySelector("#new-puzzle-button")
   newPuzzleButton.addEventListener("click", () => {
-    fetchPuzzle(Math.ceil(Math.random()*20))
+    fetchPuzzle(Math.ceil(Math.random()*10))
     addRestartPuzzleButton()
   });
 }
