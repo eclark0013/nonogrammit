@@ -1,4 +1,5 @@
 // Start to make the clicks change the databse and not just the DOM
+// Fetch a POST to user for "current puzzle progress" which will be used to revert after reveal solution or to check how many incorrect answers are present
 
 let currentUser
 let puzzleNumber
