@@ -6,20 +6,21 @@ class UsersController < ApplicationController
         render json: users
     end
 
-    # def show
-    #     @user = User.find_by(id: params[:id])
-    #     if @user == nil
-    #         redirect_to root_path
-    #     end
-    # end
+    def show
+        user = User.find(params[:id])
+        render json: UserSerializer.new(user)
+    end
 
-    # def home #root path
-    #     redirect_to user_path(current_user)
-    # end
+    def edit
+        raise "edit".inspect
+    end
 
-    # def new #sign up page
-    #     @user = User.new
-    # end
+    def update
+        user = User.find(params[:id])
+        user.current_puzzle = params[:current_puzzle]
+        user.save
+        render json: UserSerializer.new(user)
+    end
 
     def create #make a new user
         user = User.new(username: user_params["username"])
@@ -34,6 +35,6 @@ class UsersController < ApplicationController
 
     private
     def user_params
-        params.require(:user).permit(:username, :password)
+        params.require(:user).permit(:username, :password, current_puzzle: [:id, :shaded])
     end
 end

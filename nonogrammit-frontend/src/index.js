@@ -12,10 +12,58 @@ document.addEventListener("DOMContentLoaded", () => {
   addUserInfoSubmitButtonFunctionality()
 })
 
+function postCurrentPuzzleStatus(user_id, puzzle_id){
+  let currentPuzzleStatus = {}
+  currentPuzzleStatus.id = puzzle_id
+  let shaded = document.querySelectorAll("[status='1']")
+  let shadedArray = Array.from(shaded)
+  let shadedSquaresCoordinates
+  for (let i=0; i<shadedArray.length; i++){
+    shadedSquaresCoordinates = shadedArray.map(e => e.id)
+  }    
+  currentPuzzleStatus.shaded = shadedSquaresCoordinates
+  let configObj = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+          "current_puzzle": currentPuzzleStatus
+        }
+      )
+    };
+  fetch(`http://localhost:3000/users/${user_id}`, configObj)
+      .then(function(response) {
+          return response.json();
+      })
+      .then(function(object) {
+        currentUser.currentPuzzle = object["data"]["attributes"]["current_puzzle"]
+        console.log(object)
+      })
+      .catch(function(error) {
+          console.log(error.message);
+      }
+  );
+  return currentUser.currentPuzzle
+}
+
+function checkSolutionAfterPost(currentUsercurrentPuzzle){
+  let currentPuzzleShaded = currentUsercurrentPuzzle.shaded.slice(2,-2).split('", "')
+  let correctShadedSquares = currentPuzzle.solution.filter(e => currentPuzzleShaded.includes(e))
+  console.log(`You submitted ${currentPuzzleShaded.length} shaded squares. ${correctShadedSquares.length} of those are correct.`)
+}
+
+function checkSolution(user_id, puzzle_id){
+  let currentUsercurrentPuzzle = postCurrentPuzzleStatus(user_id, puzzle_id)
+  checkSolutionAfterPost(currentUsercurrentPuzzle)
+}
+
+
 function addNewPuzzleButtonFunctionality(){
   let newPuzzleButton = document.querySelector("#new-puzzle-button")
   newPuzzleButton.addEventListener("click", () => {
-    fetchPuzzle(Math.ceil(Math.random()*10))
+    fetchPuzzle(Math.ceil(Math.random()*5))
   });
 }
 
@@ -205,12 +253,12 @@ function fetchUser(username, password){
           return response.json();
       })
       .then(function(object) {
+        console.log(object);
         currentUser = new User(object.username, undefined, 0)
         if (puzzleNumber){
           currentUser.currentPuzzle = puzzleNumber
           // time = time
         }
-        console.log(currentUser);
       })
       .catch(function(error) {
           console.log(error.message);

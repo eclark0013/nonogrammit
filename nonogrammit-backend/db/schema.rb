@@ -13,6 +13,7 @@
 ActiveRecord::Schema.define(version: 2020_04_24_183444) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "hstore"
   enable_extension "plpgsql"
 
   create_table "columns", force: :cascade do |t|
@@ -43,7 +44,7 @@ ActiveRecord::Schema.define(version: 2020_04_24_183444) do
 
   create_table "users", force: :cascade do |t|
     t.string "time"
-    t.string "current_puzzle"
+    t.hstore "current_puzzle", default: {}, null: false
     t.string "username"
     t.string "password_digest"
     t.datetime "created_at", precision: 6, null: false
