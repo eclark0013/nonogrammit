@@ -1,5 +1,4 @@
 class UsersController < ApplicationController
-    # before_action :require_login, only: [:show, :home]
 
     def index
         users = User.all
@@ -12,7 +11,7 @@ class UsersController < ApplicationController
     end
 
     def edit
-        raise "edit".inspect
+        # raise "edit".inspect
     end
 
     def update
@@ -22,14 +21,22 @@ class UsersController < ApplicationController
         render json: UserSerializer.new(user)
     end
 
-    def create #make a new user
-        user = User.new(username: user_params["username"])
-        user.password = params["password"] #fix this clunkiness
-        user.save
-        if user.valid?
-            render json: user
+    def create #find or create a new user
+        if User.find_by(username: user_params["username"])
+            user = User.find_by(username: user_params["username"]).authenticate(params["password"])
         else
-            render json: {message: "Invalid entry."}
+            user = User.new(username: user_params["username"])
+            user.password = params["password"]
+            user.save
+        end
+        if user
+            if user.valid?
+                render json: user
+            else # you set a user, but that user is not valid
+                render json: {message: "Invalid entry for new user."}
+            end
+        else # you found a true username but have the wrong password for it
+            render json: {message: "Invalid password for returning user (username already taken)."}
         end
     end
 

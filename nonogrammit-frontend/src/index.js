@@ -8,9 +8,18 @@ let time
 let test
 
 document.addEventListener("DOMContentLoaded", () => {
+  currentUser = new User("Guest", undefined, 0)
   addNewPuzzleButtonFunctionality()
   addUserInfoSubmitButtonFunctionality()
+  displayUsernameDiv(currentUser.username)
 })
+
+function displayUsernameDiv(username){
+  let usernameDisplayDiv = document.createElement("div")
+  usernameDisplayDiv.id = "username-display"
+  usernameDisplayDiv.innerHTML = `User: ${username}`
+  document.querySelector("body").insertBefore(usernameDisplayDiv, document.querySelector("#new-puzzle-button-container"));
+}
 
 function postCurrentPuzzleStatus(user_id, puzzle_id){
   let currentPuzzleStatus = {}
@@ -54,6 +63,7 @@ function checkSolutionAfterPost(currentUsercurrentPuzzle){
   console.log(`You submitted ${currentPuzzleShaded.length} shaded squares. ${correctShadedSquares.length} of those are correct.`)
 }
 
+// has to run twice to work, check scope for why currentPuzzle only updates after both methods have run
 function checkSolution(user_id, puzzle_id){
   let currentUsercurrentPuzzle = postCurrentPuzzleStatus(user_id, puzzle_id)
   checkSolutionAfterPost(currentUsercurrentPuzzle)
@@ -255,8 +265,11 @@ function fetchUser(username, password){
       .then(function(object) {
         console.log(object);
         currentUser = new User(object.username, undefined, 0)
+        if (currentUser.username){
+          document.getElementById("username-display").innerHTML = `User: ${currentUser.username}`
+        }
         if (puzzleNumber){
-          currentUser.currentPuzzle = puzzleNumber
+          currentUser.currentPuzzle = {id: puzzleNumber}
           // time = time
         }
       })
