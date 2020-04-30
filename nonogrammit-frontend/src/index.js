@@ -20,56 +20,6 @@ function displayUsernameDiv(username){
   document.querySelector("body").insertBefore(usernameDisplayDiv, document.querySelector("#new-puzzle-button-container"));
 }
 
-function postCurrentPuzzleStatus(user_id, puzzle_id){
-  let currentPuzzleStatus = {}
-  currentPuzzleStatus.id = puzzle_id
-  let shaded = document.querySelectorAll("[status='1']")
-  let shadedArray = Array.from(shaded)
-  let shadedSquaresCoordinates
-  for (let i=0; i<shadedArray.length; i++){
-    shadedSquaresCoordinates = shadedArray.map(e => e.id)
-  }    
-  currentPuzzleStatus.shaded = shadedSquaresCoordinates
-  let configObj = {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({
-          "current_puzzle": currentPuzzleStatus
-        }
-      )
-    };
-  fetch(`http://localhost:3000/users/${user_id}`, configObj)
-      .then(function(response) {
-          return response.json();
-      })
-      .then(function(object) {
-        currentUser.currentPuzzle = object["data"]["attributes"]["current_puzzle"]
-        console.log(object)
-      })
-      .catch(function(error) {
-          console.log(error.message);
-      }
-  );
-  return currentUser.currentPuzzle
-}
-
-function checkSolutionAfterPost(){
-  console.log(currentUser.currentPuzzle.shaded.slice(2,-2).split('", "'))
-  let currentPuzzleShaded = currentUser.currentPuzzle.shaded.slice(2,-2).split('", "')
-  let correctShadedSquares = currentPuzzle.solution.filter(e => currentPuzzleShaded.includes(e))
-  // console.log(`You submitted ${currentPuzzleShaded.length} shaded squares. ${correctShadedSquares.length} of those are correct.`)
-}
-
-// has to run twice to work, check scope for why currentPuzzle only updates after both methods have run
-function checkSolution(user_id, puzzle_id){
-  postCurrentPuzzleStatus(user_id, puzzle_id)
-  checkSolutionAfterPost()
-}
-
-
 function addNewPuzzleButtonFunctionality(){
   let newPuzzleButton = document.querySelector("#new-puzzle-button")
   newPuzzleButton.addEventListener("click", () => {
@@ -339,13 +289,13 @@ class User {
             console.log(error.message);
         }
     );
+    return currentUser
   }
   
   checkSolution(){
-    currentUser.postCurrentPuzzleStatus()
-    console.log(currentUser.currentPuzzle.shaded.slice(2,-2).split('", "'))
-    let currentPuzzleShaded = currentUser.currentPuzzle.shaded.slice(2,-2).split('", "')
-    let correctShadedSquares = currentUser.currentPuzzle.solution.filter(e => currentPuzzleShaded.includes(e))
+    let user = this.postCurrentPuzzleStatus()
+    let currentPuzzleShaded = user.currentPuzzle.shaded
+    let correctShadedSquares = currentPuzzle.solution.filter(e => currentPuzzleShaded.includes(e))
     console.log(`You submitted ${currentPuzzleShaded.length} shaded squares. ${correctShadedSquares.length} of those are correct.`)
   }
 }
