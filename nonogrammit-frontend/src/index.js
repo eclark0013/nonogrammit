@@ -1,14 +1,13 @@
 // Start to make the clicks change the databse and not just the DOM
-// Fetch a POST to user for "current puzzle progress" which will be used to revert after reveal solution or to check how many incorrect answers are present
-
-let currentUser
-let puzzleNumber
-let currentPuzzle
-let time
-let test
+// Learn more about scope to figure out why I need to call that checkSolution function twice to maek it work
 
 document.addEventListener("DOMContentLoaded", () => {
-  currentUser = new User("Guest", undefined, 0)
+  let currentUser
+  let puzzleNumber
+  let currentPuzzle
+  let time
+  let test
+  currentUser = new User(0,"Guest", undefined, 0)
   addNewPuzzleButtonFunctionality()
   addUserInfoSubmitButtonFunctionality()
   displayUsernameDiv(currentUser.username)
@@ -57,16 +56,17 @@ function postCurrentPuzzleStatus(user_id, puzzle_id){
   return currentUser.currentPuzzle
 }
 
-function checkSolutionAfterPost(currentUsercurrentPuzzle){
-  let currentPuzzleShaded = currentUsercurrentPuzzle.shaded.slice(2,-2).split('", "')
+function checkSolutionAfterPost(){
+  console.log(currentUser.currentPuzzle.shaded.slice(2,-2).split('", "'))
+  let currentPuzzleShaded = currentUser.currentPuzzle.shaded.slice(2,-2).split('", "')
   let correctShadedSquares = currentPuzzle.solution.filter(e => currentPuzzleShaded.includes(e))
-  console.log(`You submitted ${currentPuzzleShaded.length} shaded squares. ${correctShadedSquares.length} of those are correct.`)
+  // console.log(`You submitted ${currentPuzzleShaded.length} shaded squares. ${correctShadedSquares.length} of those are correct.`)
 }
 
 // has to run twice to work, check scope for why currentPuzzle only updates after both methods have run
 function checkSolution(user_id, puzzle_id){
-  let currentUsercurrentPuzzle = postCurrentPuzzleStatus(user_id, puzzle_id)
-  checkSolutionAfterPost(currentUsercurrentPuzzle)
+  postCurrentPuzzleStatus(user_id, puzzle_id)
+  checkSolutionAfterPost()
 }
 
 
@@ -234,7 +234,7 @@ function fetchPuzzle(puzzleNumber){
       addRestartPuzzleButton(puzzleDiv)
       displayPuzzleNumber(puzzleNumber)
       if (currentUser){
-        currentUser.currentPuzzle = puzzleNumber
+        currentUser.currentPuzzle = {id: puzzleNumber}
       }
       console.log(object)
       let attributes = object["data"]["attributes"]
@@ -264,7 +264,7 @@ function fetchUser(username, password){
       })
       .then(function(object) {
         console.log(object);
-        currentUser = new User(object.username, undefined, 0)
+        currentUser = new User(object.id, object.username, undefined, 0)
         if (currentUser.username){
           document.getElementById("username-display").innerHTML = `User: ${currentUser.username}`
         }
@@ -296,10 +296,57 @@ function displayPuzzleNumber(puzzleNumber){
 
 // classes
 class User {
-  constructor(username, currentPuzzle, time){
+  constructor(id, username, currentPuzzle, time){
+    this.id = id
     this.username = username    
     this.currentPuzzle = currentPuzzle
     this.time = time
+  }
+  sayHello() {
+    console.log(`Hi, i'm ${this.username} with id of ${this.id}`)
+  }
+  
+  postCurrentPuzzleStatus(){
+    let currentPuzzleStatus = {}
+    currentPuzzleStatus.id = currentUser.currentPuzzle.id
+    let shaded = document.querySelectorAll("[status='1']")
+    let shadedArray = Array.from(shaded)
+    let shadedSquaresCoordinates
+    for (let i=0; i<shadedArray.length; i++){
+      shadedSquaresCoordinates = shadedArray.map(e => e.id)
+    }    
+    currentPuzzleStatus.shaded = shadedSquaresCoordinates
+    this.currentPuzzle = currentPuzzleStatus
+    let configObj = {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+            "current_puzzle": currentPuzzleStatus
+          }
+        )
+      };
+    fetch(`http://localhost:3000/users/${this.id}`, configObj)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(object) {
+          // console.log("success")
+        })
+        .catch(function(error) {
+            console.log(error.message);
+        }
+    );
+  }
+  
+  checkSolution(){
+    currentUser.postCurrentPuzzleStatus()
+    console.log(currentUser.currentPuzzle.shaded.slice(2,-2).split('", "'))
+    let currentPuzzleShaded = currentUser.currentPuzzle.shaded.slice(2,-2).split('", "')
+    let correctShadedSquares = currentUser.currentPuzzle.solution.filter(e => currentPuzzleShaded.includes(e))
+    console.log(`You submitted ${currentPuzzleShaded.length} shaded squares. ${correctShadedSquares.length} of those are correct.`)
   }
 }
 
