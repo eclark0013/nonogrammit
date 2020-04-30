@@ -1,5 +1,5 @@
-// Start to make the clicks change the databse and not just the DOM
-// Learn more about scope to figure out why I need to call that checkSolution function twice to maek it work
+// finish work on making containers starting with the page title one on line 16 <h1 id="title">Nonogrammit</h1>
+
 let currentUser
 let puzzleNumber
 let currentPuzzle
@@ -7,11 +7,36 @@ let time
 let test
 
 document.addEventListener("DOMContentLoaded", () => {
+  createContainers()
   fetchUser("guest", "password")
   addNewPuzzleButtonFunctionality()
   addUserInfoSubmitButtonFunctionality()
   displayUsernameDiv("guest")
 })
+function addPageTitle(){
+  let pageTitleDiv = document.createElement("div")
+}
+function createContainers(){
+  let body = document.querySelector("body")
+  let pageTitleContainer = document.createElement("div")
+  pageTitleContainer.id = "page-title-container"
+  body.appendChild(pageTitleContainer)
+  let logInFormContainer = document.createElement("div")
+  logInFormContainer.id = "log-in-form-container"
+  body.appendChild(logInFormContainer)
+  let newPuzzleButtonContainer = document.createElement("div")
+  newPuzzleButtonContainer.id = "new-puzzle-button-container"
+  body.appendChild(newPuzzleButtonContainer)
+  let puzzleNumberHeaderContatiner = document.createElement("div")
+  puzzleNumberHeaderContatiner.id = "puzzle-number-header-contatiner"
+  body.appendChild(puzzleNumberHeaderContatiner)
+  let puzzleWrapper = document.createElement("div")
+  puzzleWrapper.id = "puzzle-wrapper"
+  body.appendChild(puzzleWrapper)
+  let pageBottomButtonsContainer = document.createElement("div")
+  pageBottomButtonsContainer.id = "page-bottom-buttons-container"
+  body.appendChild(pageBottomButtonsContainer)
+}
 
 function displayUsernameDiv(username){
   let usernameDisplayDiv = document.createElement("div")
