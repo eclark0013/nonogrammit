@@ -18,9 +18,9 @@ button {
     display: inline-block
 }
 
-/* .table-row {
-    display: inline-block
-} */
+#puzzle-wrapper {
+    text-align: center;
+}
 
 .column-parameters {
     margin: 0px;

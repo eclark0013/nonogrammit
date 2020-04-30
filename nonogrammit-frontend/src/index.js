@@ -27,7 +27,7 @@ function addNewPuzzleButtonFunctionality(){
   });
 }
 
-function addRestartPuzzleButton(puzzleDiv){
+function addRestartPuzzleButton(puzzleWrapper){
   if (!document.getElementById("restart-puzzle-button")){
     let restartPuzzleButton = document.createElement("button")
     restartPuzzleButton.id = "restart-puzzle-button"
@@ -38,12 +38,25 @@ function addRestartPuzzleButton(puzzleDiv){
         shadedSquares[i].setAttribute("status", "0")
       }
     })
-    let body = puzzleDiv.parentNode
+    let body = puzzleWrapper.parentNode
     body.appendChild(restartPuzzleButton)
   }
 }
 
-function addRevealSolutionButton(puzzleDiv){
+function addCheckSolutionPuzzleButton(puzzleWrapper){
+  if (!document.getElementById("check-solution-puzzle-button")){
+    let checkSolutionButton = document.createElement("button")
+    checkSolutionButton.id = "checkSolution-puzzle-button"
+    checkSolutionButton.innerHTML = "Check Solution"
+    checkSolutionButton.addEventListener("click", () => {
+      currentUser.checkSolution()
+    })
+    let body = puzzleWrapper.parentNode
+    body.appendChild(checkSolutionButton)
+  }
+}
+
+function addRevealSolutionButton(puzzleWrapper){
   if (!document.getElementById("reveal-solution-button")){
     let revealSolutionButton = document.createElement("button")
     revealSolutionButton.id = "reveal-solution-button"
@@ -54,7 +67,7 @@ function addRevealSolutionButton(puzzleDiv){
         document.getElementById(currentPuzzle.solution[i]).setAttribute("status", "1")
       }
     })
-    let body = puzzleDiv.parentNode
+    let body = puzzleWrapper.parentNode
     body.appendChild(revealSolutionButton)
   }
 }
@@ -77,8 +90,11 @@ function makePuzzleDiv(){
     let body = document.body
     let puzzleDiv = document.createElement("div")
     puzzleDiv.id = "puzzle"
-    body.appendChild(puzzleDiv)
-    return puzzleDiv
+    puzzleWrapper = document.createElement("div")
+    puzzleWrapper.id = "puzzle-wrapper"
+    body.appendChild(puzzleWrapper)
+    puzzleWrapper.appendChild(puzzleDiv)
+    return puzzleWrapper
   }
 }
 
@@ -180,8 +196,9 @@ function fetchPuzzle(puzzleNumber){
       return response.json();
     })
     .then((object) => {
-      let puzzleDiv = makePuzzleDiv()
-      addRestartPuzzleButton(puzzleDiv)
+      let puzzleWrapper = makePuzzleDiv()
+      addCheckSolutionPuzzleButton(puzzleWrapper)
+      addRestartPuzzleButton(puzzleWrapper)
       displayPuzzleNumber(puzzleNumber)
       if (currentUser){
         currentUser.currentPuzzle = {id: puzzleNumber}
@@ -189,7 +206,7 @@ function fetchPuzzle(puzzleNumber){
       console.log(object)
       let attributes = object["data"]["attributes"]
       currentPuzzle = new Puzzle(object.data.id, attributes["column_parameters"], attributes["row_parameters"], attributes["column_max"], attributes["row_max"], attributes["solution"])
-      addRevealSolutionButton(puzzleDiv)
+      addRevealSolutionButton(puzzleWrapper)
       displayNewPuzzle(currentPuzzle)
       console.log(currentPuzzle)
     })
@@ -283,7 +300,6 @@ class User {
             return response.json();
         })
         .then(function(object) {
-          // console.log("success")
         })
         .catch(function(error) {
             console.log(error.message);
@@ -309,12 +325,6 @@ class Puzzle{
     this.row_max = row_max
     this.column_status
     this.solution = solution
-    // for (let i=0; i<column_parameters.length; i++){
-    //   console.log(column)
-    // }
-    // for (let j=0; j<row_parameters.length; j++){
-    //   new Row(row_parameters[j], 0, j+1, id)
-    // }
   }
 }
 
