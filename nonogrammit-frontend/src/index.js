@@ -1,16 +1,16 @@
 // Start to make the clicks change the databse and not just the DOM
 // Learn more about scope to figure out why I need to call that checkSolution function twice to maek it work
+let currentUser
+let puzzleNumber
+let currentPuzzle
+let time
+let test
 
 document.addEventListener("DOMContentLoaded", () => {
-  let currentUser
-  let puzzleNumber
-  let currentPuzzle
-  let time
-  let test
-  currentUser = new User(0,"Guest", undefined, 0)
+  fetchUser("guest", "password")
   addNewPuzzleButtonFunctionality()
   addUserInfoSubmitButtonFunctionality()
-  displayUsernameDiv(currentUser.username)
+  displayUsernameDiv("guest")
 })
 
 function displayUsernameDiv(username){
@@ -242,7 +242,7 @@ function fetchUser(username, password){
       })
       .catch(function(error) {
           console.log(error.message);
-      }); 
+      });
 }
 
 // display puzzle number
@@ -310,9 +310,11 @@ class User {
   
   checkSolution(){
     let user = this.postCurrentPuzzleStatus()
-    let currentPuzzleShaded = user.currentPuzzle.shaded
-    let correctShadedSquares = currentPuzzle.solution.filter(e => currentPuzzleShaded.includes(e))
-    console.log(`You submitted ${currentPuzzleShaded.length} shaded squares. ${correctShadedSquares.length} of those are correct.`)
+    if (user.currentPuzzle.shaded){
+      let currentPuzzleShaded = user.currentPuzzle.shaded
+      let correctShadedSquares = currentPuzzle.solution.filter(e => currentPuzzleShaded.includes(e))
+      console.log(`You submitted ${currentPuzzleShaded.length} shaded squares. ${correctShadedSquares.length} of those are correct.`)
+    }
   }
 }
 
