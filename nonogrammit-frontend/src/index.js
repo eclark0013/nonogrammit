@@ -99,7 +99,7 @@ function addTimer(){
     timerDiv = document.createElement("div")
     timerDiv.id = "time"
     document.getElementById("puzzle-timer-container").appendChild(timerDiv)
-    setInterval(() =>{
+    timerStarter = setInterval(() =>{
       let newTime = parseInt(timerDiv.innerHTML)+1
       timerDiv.innerHTML = newTime
     }, 1000)
@@ -148,7 +148,6 @@ function addRevealSolutionButton(){
     document.getElementById("page-bottom-buttons-container").appendChild(revealSolutionButton)
   }
 }
-
 
 function makePuzzleDiv(){
   if (!document.getElementById("puzzle")){
@@ -253,6 +252,8 @@ function enterColumnParamsData(puzzle){
   }
 }
 
+
+
 function fetchPuzzle(puzzleNumber){
   fetch(`http://localhost:3000/puzzles/${puzzleNumber}`)
     .then((response) => {
@@ -272,6 +273,7 @@ function fetchPuzzle(puzzleNumber){
       addRevealSolutionButton()
       displayNewPuzzle(currentPuzzle)
       addTimer()
+      stopParty()
       console.log(currentPuzzle)
     })
 }
@@ -320,6 +322,34 @@ function addPuzzleNumberHeader(puzzleNumber){
     puzzleNumberHeader.innerHTML = `Puzzle #${puzzleNumber}`
     document.getElementById("puzzle-number-header-container").appendChild(puzzleNumberHeader)
   }
+}
+
+let startParty
+
+function puzzleParty(speed, quantity){
+  startParty = setInterval(partySquare, parseInt(speed)) 
+  function partySquare(){
+    let shadedSquares = document.querySelectorAll('div[status="1"]')
+    let partySquareIndices = []
+    for (let i=0; i<parseInt(quantity); i++){
+      let index = Math.ceil(Math.random()*shadedSquares.length-1)
+      if (!(partySquareIndices.includes(index))){
+        partySquareIndices.push(index)
+      }
+    }
+    for (let j=0; j<partySquareIndices.length; j++){
+      let partySquare = shadedSquares[partySquareIndices[j]]
+      partySquare.setAttribute("status", "party")
+      setTimeout(()=>{
+          partySquare.setAttribute("status", "1")
+        }, parseInt(speed)
+      )
+    }
+  }
+}
+
+function stopParty(){
+  clearInterval(startParty)
 }
 
 // classes
@@ -384,8 +414,14 @@ class User {
         puzzleMessage.id = "puzzle-message"
         document.getElementById("puzzle-message-container").appendChild(puzzleMessage)
       }
-      puzzleMessage.innerHTML = `You submitted ${currentPuzzleShaded.length} shaded squares. ${correctShadedSquares.length} of those are correct.`
-      console.log(`You submitted ${currentPuzzleShaded.length} shaded squares. ${correctShadedSquares.length} of those are correct.`)
+      if (currentPuzzleShaded.length === correctShadedSquares.length){
+        puzzleMessage.innerHTML = "PARTY LIKE ITS YOUR BIRTHDAY. YOU DID IT!"
+        puzzleParty(150, 40)
+      }
+      else{
+        puzzleMessage.innerHTML = `You submitted ${currentPuzzleShaded.length} shaded squares. ${correctShadedSquares.length} of those are correct.`
+        console.log(`You submitted ${currentPuzzleShaded.length} shaded squares. ${correctShadedSquares.length} of those are correct.`)
+      }
     }
   }
 }
