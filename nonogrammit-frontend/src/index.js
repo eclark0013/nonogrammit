@@ -29,7 +29,7 @@ function createContainers(){
   newPuzzleButtonContainer.id = "new-puzzle-button-container"
   body.appendChild(newPuzzleButtonContainer)
   let puzzleNumberHeaderContatiner = document.createElement("div")
-  puzzleNumberHeaderContatiner.id = "puzzle-number-header-contatiner"
+  puzzleNumberHeaderContatiner.id = "puzzle-number-header-container"
   body.appendChild(puzzleNumberHeaderContatiner)
   let puzzleWrapper = document.createElement("div")
   puzzleWrapper.id = "puzzle-wrapper"
@@ -104,14 +104,14 @@ function addRestartPuzzleButton(puzzleWrapper){
 }
 
 function addCheckSolutionPuzzleButton(puzzleWrapper){
-  if (!document.getElementById("check-solution-puzzle-button")){
+  if (!document.getElementById("check-solution-button")){
     let checkSolutionButton = document.createElement("button")
-    checkSolutionButton.id = "checkSolution-puzzle-button"
+    checkSolutionButton.id = "check-solution-button"
     checkSolutionButton.innerHTML = "Check Solution"
     checkSolutionButton.addEventListener("click", () => {
       currentUser.checkSolution()
     })
-    let body = puzzleWrapper.parentNode
+    let body = document.querySelector("body")
     body.appendChild(checkSolutionButton)
   }
 }
@@ -247,7 +247,7 @@ function fetchPuzzle(puzzleNumber){
       let puzzleWrapper = makePuzzleDiv()
       addCheckSolutionPuzzleButton(puzzleWrapper)
       addRestartPuzzleButton(puzzleWrapper)
-      displayPuzzleNumber(puzzleNumber)
+      addPuzzleNumberHeader(puzzleNumber)
       if (currentUser){
         currentUser.currentPuzzle = {id: puzzleNumber}
       }
@@ -294,18 +294,15 @@ function fetchUser(username, password){
 }
 
 // display puzzle number
-function displayPuzzleNumber(puzzleNumber){
-  if (document.querySelector("#puzzle-number-display")){
+function addPuzzleNumberHeader(puzzleNumber){
+  if (document.querySelector("#puzzle-number-header")){
     document.querySelector("#puzzle-number-header").innerHTML = `Puzzle #${puzzleNumber}`
   }
   else{
-    let puzzleNumberDiv = document.createElement("div")
-    puzzleNumberDiv.id = "puzzle-number-display"
     let puzzleNumberHeader = document.createElement("h2")
     puzzleNumberHeader.id = "puzzle-number-header"
-    puzzleNumberDiv.appendChild(puzzleNumberHeader)
     puzzleNumberHeader.innerHTML = `Puzzle #${puzzleNumber}`
-    document.querySelector("#new-puzzle-button").after(puzzleNumberDiv)
+    document.getElementById("puzzle-number-header-container").appendChild(puzzleNumberHeader)
   }
 }
 

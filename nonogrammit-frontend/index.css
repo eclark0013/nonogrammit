@@ -12,9 +12,14 @@ button {
     border-radius: 4px;
 }
 
+#new-puzzle-button-container{
+    display: inline-block;
+    width: 100%;
+}
+
 .puzzle {
     min-width: 750px;
-    border: 3px black solid;
+    border: 4px black solid;
     display: inline-block
 }
 
@@ -151,7 +156,7 @@ button {
 }
 
 [status = "0"] {
-    background-color: rgb(223, 223, 223);
+    background-color: rgb(233, 233, 233);
 }
 
 [status = "1"] {
