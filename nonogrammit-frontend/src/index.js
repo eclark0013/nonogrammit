@@ -31,6 +31,9 @@ function createContainers(){
   let puzzleNumberHeaderContatiner = document.createElement("div")
   puzzleNumberHeaderContatiner.id = "puzzle-number-header-container"
   body.appendChild(puzzleNumberHeaderContatiner)
+  let puzzleTimerContainer = document.createElement("div")
+  puzzleTimerContainer.id = "puzzle-timer-container"
+  body.appendChild(puzzleTimerContainer)
   let puzzleMessageContainter = document.createElement("div")
   puzzleMessageContainter.id = "puzzle-message-container"
   body.appendChild(puzzleMessageContainter)
@@ -87,8 +90,22 @@ function addNewPuzzleButton(){
   document.getElementById("new-puzzle-button-container").appendChild(newPuzzleButton)
 }
 
-
-
+function addTimer(){
+  let timerDiv
+  if (document.getElementById("time")){
+    timerDiv = document.getElementById("time")
+  }
+  else{
+    timerDiv = document.createElement("div")
+    timerDiv.id = "time"
+    document.getElementById("puzzle-timer-container").appendChild(timerDiv)
+    setInterval(() =>{
+      let newTime = parseInt(timerDiv.innerHTML)+1
+      timerDiv.innerHTML = newTime
+    }, 1000)
+  }
+  timerDiv.innerHTML = 0
+}
 
 function addRestartPuzzleButton(puzzleContainer){
   if (!document.getElementById("restart-puzzle-button")){
@@ -254,6 +271,7 @@ function fetchPuzzle(puzzleNumber){
       currentPuzzle = new Puzzle(object.data.id, attributes["column_parameters"], attributes["row_parameters"], attributes["column_max"], attributes["row_max"], attributes["solution"])
       addRevealSolutionButton()
       displayNewPuzzle(currentPuzzle)
+      addTimer()
       console.log(currentPuzzle)
     })
 }
