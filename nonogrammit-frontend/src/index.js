@@ -111,6 +111,7 @@ function addRestartPuzzleButton(puzzleContainer){
   if (!document.getElementById("restart-puzzle-button")){
     let restartPuzzleButton = document.createElement("button")
     restartPuzzleButton.id = "restart-puzzle-button"
+    restartPuzzleButton.className = "page-bottom-button"
     restartPuzzleButton.innerHTML = "Restart"
     restartPuzzleButton.addEventListener("click", () => {
       let shadedSquares = document.querySelectorAll('div[status="1"]')
@@ -126,6 +127,7 @@ function addCheckSolutionPuzzleButton(){
   if (!document.getElementById("check-solution-button")){
     let checkSolutionButton = document.createElement("button")
     checkSolutionButton.id = "check-solution-button"
+    checkSolutionButton.className = "page-bottom-button"
     checkSolutionButton.innerHTML = "Check Solution"
     checkSolutionButton.addEventListener("click", () => {
       currentUser.checkSolution()
@@ -138,6 +140,7 @@ function addRevealSolutionButton(){
   if (!document.getElementById("reveal-solution-button")){
     let revealSolutionButton = document.createElement("button")
     revealSolutionButton.id = "reveal-solution-button"
+    revealSolutionButton.className = "page-bottom-button"
     revealSolutionButton.innerHTML = "Reveal Solution"
     revealSolutionButton.addEventListener("click", () => {
       // go fetch the puzzle solution from the db?
@@ -213,6 +216,9 @@ function addPuzzleSquares(puzzle){
           squareDiv.setAttribute("status", 1)
         }
         else if (squareDiv.getAttribute("status") === "1"){
+          squareDiv.setAttribute("status", 0)
+        }
+        else {
           squareDiv.setAttribute("status", 0)
         }
       })

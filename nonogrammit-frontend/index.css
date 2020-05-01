@@ -12,6 +12,17 @@ button {
     border-radius: 4px;
 }
 
+.page-bottom-button{
+    display: inline-block;
+    margin: 0px 50px auto;
+}
+
+#page-bottom-buttons-container{
+    width: 100%;
+    text-align: center;
+    padding-top: 8px;
+}
+
 #new-puzzle-button-container{
     display: inline-block;
     width: 100%;
@@ -23,7 +34,7 @@ button {
     display: inline-block
 }
 
-#puzzle-wrapper {
+#puzzle-container {
     text-align: center;
 }
 
