@@ -31,9 +31,12 @@ function createContainers(){
   let puzzleNumberHeaderContatiner = document.createElement("div")
   puzzleNumberHeaderContatiner.id = "puzzle-number-header-container"
   body.appendChild(puzzleNumberHeaderContatiner)
-  let puzzleWrapper = document.createElement("div")
-  puzzleWrapper.id = "puzzle-wrapper"
-  body.appendChild(puzzleWrapper)
+  let puzzleMessageContainter = document.createElement("div")
+  puzzleMessageContainter.id = "puzzle-message-container"
+  body.appendChild(puzzleMessageContainter)
+  let puzzleContainer = document.createElement("div")
+  puzzleContainer.id = "puzzle-container"
+  body.appendChild(puzzleContainer)
   let pageBottomButtonsContainer = document.createElement("div")
   pageBottomButtonsContainer.id = "page-bottom-buttons-container"
   body.appendChild(pageBottomButtonsContainer)
@@ -87,7 +90,7 @@ function addNewPuzzleButton(){
 
 
 
-function addRestartPuzzleButton(puzzleWrapper){
+function addRestartPuzzleButton(puzzleContainer){
   if (!document.getElementById("restart-puzzle-button")){
     let restartPuzzleButton = document.createElement("button")
     restartPuzzleButton.id = "restart-puzzle-button"
@@ -98,12 +101,11 @@ function addRestartPuzzleButton(puzzleWrapper){
         shadedSquares[i].setAttribute("status", "0")
       }
     })
-    let body = puzzleWrapper.parentNode
-    body.appendChild(restartPuzzleButton)
+    document.getElementById("page-bottom-buttons-container").appendChild(restartPuzzleButton)
   }
 }
 
-function addCheckSolutionPuzzleButton(puzzleWrapper){
+function addCheckSolutionPuzzleButton(){
   if (!document.getElementById("check-solution-button")){
     let checkSolutionButton = document.createElement("button")
     checkSolutionButton.id = "check-solution-button"
@@ -111,12 +113,11 @@ function addCheckSolutionPuzzleButton(puzzleWrapper){
     checkSolutionButton.addEventListener("click", () => {
       currentUser.checkSolution()
     })
-    let body = document.querySelector("body")
-    body.appendChild(checkSolutionButton)
+    document.getElementById("page-bottom-buttons-container").appendChild(checkSolutionButton)
   }
 }
 
-function addRevealSolutionButton(puzzleWrapper){
+function addRevealSolutionButton(){
   if (!document.getElementById("reveal-solution-button")){
     let revealSolutionButton = document.createElement("button")
     revealSolutionButton.id = "reveal-solution-button"
@@ -127,8 +128,7 @@ function addRevealSolutionButton(puzzleWrapper){
         document.getElementById(currentPuzzle.solution[i]).setAttribute("status", "1")
       }
     })
-    let body = puzzleWrapper.parentNode
-    body.appendChild(revealSolutionButton)
+    document.getElementById("page-bottom-buttons-container").appendChild(revealSolutionButton)
   }
 }
 
@@ -138,11 +138,9 @@ function makePuzzleDiv(){
     let body = document.body
     let puzzleDiv = document.createElement("div")
     puzzleDiv.id = "puzzle"
-    puzzleWrapper = document.createElement("div")
-    puzzleWrapper.id = "puzzle-wrapper"
-    body.appendChild(puzzleWrapper)
-    puzzleWrapper.appendChild(puzzleDiv)
-    return puzzleWrapper
+    let puzzleContainer = document.getElementById("puzzle-container")
+    puzzleContainer.appendChild(puzzleDiv)
+    return puzzleContainer
   }
 }
 
@@ -244,9 +242,9 @@ function fetchPuzzle(puzzleNumber){
       return response.json();
     })
     .then((object) => {
-      let puzzleWrapper = makePuzzleDiv()
-      addCheckSolutionPuzzleButton(puzzleWrapper)
-      addRestartPuzzleButton(puzzleWrapper)
+      let puzzleContainer = makePuzzleDiv()
+      addCheckSolutionPuzzleButton()
+      addRestartPuzzleButton()
       addPuzzleNumberHeader(puzzleNumber)
       if (currentUser){
         currentUser.currentPuzzle = {id: puzzleNumber}
@@ -254,7 +252,7 @@ function fetchPuzzle(puzzleNumber){
       console.log(object)
       let attributes = object["data"]["attributes"]
       currentPuzzle = new Puzzle(object.data.id, attributes["column_parameters"], attributes["row_parameters"], attributes["column_max"], attributes["row_max"], attributes["solution"])
-      addRevealSolutionButton(puzzleWrapper)
+      addRevealSolutionButton()
       displayNewPuzzle(currentPuzzle)
       console.log(currentPuzzle)
     })
@@ -358,6 +356,17 @@ class User {
     if (user.currentPuzzle.shaded){
       let currentPuzzleShaded = user.currentPuzzle.shaded
       let correctShadedSquares = currentPuzzle.solution.filter(e => currentPuzzleShaded.includes(e))
+      let puzzleMessage
+      
+      if (document.getElementById("puzzle-message")){
+        puzzleMessage = document.getElementById("puzzle-message")
+      }
+      else {
+        puzzleMessage = document.createElement("div")
+        puzzleMessage.id = "puzzle-message"
+        document.getElementById("puzzle-message-container").appendChild(puzzleMessage)
+      }
+      puzzleMessage.innerHTML = `You submitted ${currentPuzzleShaded.length} shaded squares. ${correctShadedSquares.length} of those are correct.`
       console.log(`You submitted ${currentPuzzleShaded.length} shaded squares. ${correctShadedSquares.length} of those are correct.`)
     }
   }
