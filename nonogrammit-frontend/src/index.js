@@ -252,7 +252,9 @@ function enterColumnParamsData(puzzle){
   }
 }
 
-
+function clearMessage(){
+  document.getElementById("puzzle-message-container").innerHTML = ""
+}
 
 function fetchPuzzle(puzzleNumber){
   fetch(`http://localhost:3000/puzzles/${puzzleNumber}`)
@@ -274,6 +276,7 @@ function fetchPuzzle(puzzleNumber){
       displayNewPuzzle(currentPuzzle)
       addTimer()
       stopParty()
+      clearMessage()
       console.log(currentPuzzle)
     })
 }
