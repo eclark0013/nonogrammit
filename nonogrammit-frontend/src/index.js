@@ -8,14 +8,12 @@ let test
 
 document.addEventListener("DOMContentLoaded", () => {
   createContainers()
+  addPageTitleHeader()
+  addUserInfoFormAndSubmitButton()
+  addNewPuzzleButton()
   fetchUser("guest", "password")
-  addNewPuzzleButtonFunctionality()
-  addUserInfoSubmitButtonFunctionality()
-  displayUsernameDiv("guest")
 })
-function addPageTitle(){
-  let pageTitleDiv = document.createElement("div")
-}
+
 function createContainers(){
   let body = document.querySelector("body")
   let pageTitleContainer = document.createElement("div")
@@ -24,6 +22,9 @@ function createContainers(){
   let logInFormContainer = document.createElement("div")
   logInFormContainer.id = "log-in-form-container"
   body.appendChild(logInFormContainer)
+  let userInfoContainer = document.createElement("div")
+  userInfoContainer.id = "user-info-container"
+  body.appendChild(userInfoContainer)
   let newPuzzleButtonContainer = document.createElement("div")
   newPuzzleButtonContainer.id = "new-puzzle-button-container"
   body.appendChild(newPuzzleButtonContainer)
@@ -38,19 +39,53 @@ function createContainers(){
   body.appendChild(pageBottomButtonsContainer)
 }
 
-function displayUsernameDiv(username){
-  let usernameDisplayDiv = document.createElement("div")
-  usernameDisplayDiv.id = "username-display"
-  usernameDisplayDiv.innerHTML = `User: ${username}`
-  document.querySelector("body").insertBefore(usernameDisplayDiv, document.querySelector("#new-puzzle-button-container"));
+function addPageTitleHeader(){
+  let pageTitleHeader = document.createElement("h1")
+  pageTitleHeader.id = "page-title"
+  pageTitleHeader.innerHTML = "Nonogrammit"
+  document.getElementById("page-title-container").appendChild(pageTitleHeader)
 }
 
-function addNewPuzzleButtonFunctionality(){
-  let newPuzzleButton = document.querySelector("#new-puzzle-button")
+function addUserInfoFormAndSubmitButton(){
+  let userInfoForm = document.createElement("form")
+  userInfoForm.innerHTML = "<label>Username: </label><input type='text' name='username' id='username'> <label>Password: </label><input type='text' name='password' id='password'> <input type='submit' id='submit' value='Submit'>"
+  document.getElementById("log-in-form-container").appendChild(userInfoForm)
+  let userInfoSubmitButton = document.querySelector("#submit")
+    userInfoSubmitButton.addEventListener("click", function(event) {
+      event.preventDefault();
+      let username = document.querySelector("#username")
+      let password = document.querySelector("#password")
+      fetchUser(username.value, password.value)
+      username.value = ""
+      password.value = ""
+    })
+}
+
+function addUsernameDiv(username){
+  let usernameDisplayDiv
+  if (document.getElementById("username-display")){
+    usernameDisplayDiv = document.getElementById("username-display")
+  }
+  else{
+    usernameDisplayDiv = document.createElement("div")
+    usernameDisplayDiv.id = "username-display"
+    document.getElementById("user-info-container").appendChild(usernameDisplayDiv)
+  }
+  usernameDisplayDiv.innerHTML = `User: ${username}`
+}
+
+function addNewPuzzleButton(){
+  let newPuzzleButton = document.createElement("button")
+  newPuzzleButton.id = "new-puzzle-button"
+  newPuzzleButton.innerHTML = "New Puzzle!"
   newPuzzleButton.addEventListener("click", () => {
     fetchPuzzle(Math.ceil(Math.random()*5))
   });
+  document.getElementById("new-puzzle-button-container").appendChild(newPuzzleButton)
 }
+
+
+
 
 function addRestartPuzzleButton(puzzleWrapper){
   if (!document.getElementById("restart-puzzle-button")){
@@ -95,18 +130,6 @@ function addRevealSolutionButton(puzzleWrapper){
     let body = puzzleWrapper.parentNode
     body.appendChild(revealSolutionButton)
   }
-}
-
-function addUserInfoSubmitButtonFunctionality(){
-  let userInfoSubmitButton = document.querySelector("#submit")
-    userInfoSubmitButton.addEventListener("click", function(event) {
-      event.preventDefault();
-      let username = document.querySelector("#username")
-      let password = document.querySelector("#password")
-      fetchUser(username.value, password.value)
-      username.value = ""
-      password.value = ""
-    })
 }
 
 
@@ -258,7 +281,7 @@ function fetchUser(username, password){
         console.log(object);
         currentUser = new User(object.id, object.username, undefined, 0)
         if (currentUser.username){
-          document.getElementById("username-display").innerHTML = `User: ${currentUser.username}`
+          addUsernameDiv(currentUser.username)
         }
         if (puzzleNumber){
           currentUser.currentPuzzle = {id: puzzleNumber}
