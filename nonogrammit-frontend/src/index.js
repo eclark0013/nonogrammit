@@ -7,42 +7,60 @@ let time
 let test
 
 document.addEventListener("DOMContentLoaded", () => {
+  addLeftMenu()
+  addRightMenu()
   createContainers()
   addPageTitleHeader()
-  addUserInfoFormAndSubmitButton()
+  addLogInFormAndSubmitButton()
   addNewPuzzleButton()
   fetchUser("guest", "password")
+  fetchPuzzle(Math.ceil(Math.random()*5))
 })
+
+function addLeftMenu(){
+  let leftMenu = document.createElement("div")
+  leftMenu.id = "left-menu"
+  document.querySelector("body").appendChild(leftMenu)
+}
+
+function addRightMenu(){
+  let rightMenu = document.createElement("div")
+  rightMenu.id = "right-menu"
+  document.querySelector("body").appendChild(rightMenu)
+}
 
 function createContainers(){
   let body = document.querySelector("body")
+  let mainPage = document.createElement("div")
+  mainPage.id = "main-page"
+  body.appendChild(mainPage)
   let pageTitleContainer = document.createElement("div")
   pageTitleContainer.id = "page-title-container"
-  body.appendChild(pageTitleContainer)
+  mainPage.appendChild(pageTitleContainer)
   let logInFormContainer = document.createElement("div")
   logInFormContainer.id = "log-in-form-container"
-  body.appendChild(logInFormContainer)
+  mainPage.appendChild(logInFormContainer)
   let userInfoContainer = document.createElement("div")
   userInfoContainer.id = "user-info-container"
-  body.appendChild(userInfoContainer)
+  mainPage.appendChild(userInfoContainer)
   let newPuzzleButtonContainer = document.createElement("div")
   newPuzzleButtonContainer.id = "new-puzzle-button-container"
-  body.appendChild(newPuzzleButtonContainer)
+  mainPage.appendChild(newPuzzleButtonContainer)
   let puzzleNumberHeaderContatiner = document.createElement("div")
   puzzleNumberHeaderContatiner.id = "puzzle-number-header-container"
-  body.appendChild(puzzleNumberHeaderContatiner)
+  mainPage.appendChild(puzzleNumberHeaderContatiner)
   let puzzleTimerContainer = document.createElement("div")
   puzzleTimerContainer.id = "puzzle-timer-container"
-  body.appendChild(puzzleTimerContainer)
+  mainPage.appendChild(puzzleTimerContainer)
   let puzzleMessageContainter = document.createElement("div")
   puzzleMessageContainter.id = "puzzle-message-container"
-  body.appendChild(puzzleMessageContainter)
+  mainPage.appendChild(puzzleMessageContainter)
   let puzzleContainer = document.createElement("div")
   puzzleContainer.id = "puzzle-container"
-  body.appendChild(puzzleContainer)
+  mainPage.appendChild(puzzleContainer)
   let pageBottomButtonsContainer = document.createElement("div")
   pageBottomButtonsContainer.id = "page-bottom-buttons-container"
-  body.appendChild(pageBottomButtonsContainer)
+  mainPage.appendChild(pageBottomButtonsContainer)
 }
 
 function addPageTitleHeader(){
@@ -52,9 +70,9 @@ function addPageTitleHeader(){
   document.getElementById("page-title-container").appendChild(pageTitleHeader)
 }
 
-function addUserInfoFormAndSubmitButton(){
+function addLogInFormAndSubmitButton(){
   let userInfoForm = document.createElement("form")
-  userInfoForm.innerHTML = "<label>Username: </label><input type='text' name='username' id='username'> <label>Password: </label><input type='text' name='password' id='password'> <input type='submit' id='submit' value='Submit'>"
+  userInfoForm.innerHTML = "<div>Sign in or Sign up below:</div><label>Username: </label><input type='text' name='username' id='username'> <label>Password: </label><input type='text' name='password' id='password'> <input type='submit' id='submit' value='Submit'><br><br>"
   document.getElementById("log-in-form-container").appendChild(userInfoForm)
   let userInfoSubmitButton = document.querySelector("#submit")
     userInfoSubmitButton.addEventListener("click", function(event) {
@@ -84,6 +102,9 @@ function addNewPuzzleButton(){
   let newPuzzleButton = document.createElement("button")
   newPuzzleButton.id = "new-puzzle-button"
   newPuzzleButton.innerHTML = "New Puzzle!"
+  // newPuzzleButton.addEventListener("mouseover", () => {
+  //   newPuzzleButton.className = "hover-button"
+  // });
   newPuzzleButton.addEventListener("click", () => {
     fetchPuzzle(Math.ceil(Math.random()*5))
   });
@@ -100,11 +121,11 @@ function addTimer(){
     timerDiv.id = "time"
     document.getElementById("puzzle-timer-container").appendChild(timerDiv)
     timerStarter = setInterval(() =>{
-      let newTime = parseInt(timerDiv.innerHTML)+1
-      timerDiv.innerHTML = newTime
+      let newTime = parseInt(timerDiv.innerHTML.slice(6))+1
+      timerDiv.innerHTML = `Time: ${newTime}`
     }, 1000)
   }
-  timerDiv.innerHTML = 0
+  timerDiv.innerHTML = "Time: 0"
 }
 
 function addRestartPuzzleButton(puzzleContainer){
@@ -423,9 +444,10 @@ class User {
         puzzleMessage.id = "puzzle-message"
         document.getElementById("puzzle-message-container").appendChild(puzzleMessage)
       }
-      if (currentPuzzleShaded.length === correctShadedSquares.length){
-        puzzleMessage.innerHTML = "PARTY LIKE ITS YOUR BIRTHDAY. YOU DID IT!"
+      if (currentPuzzle.solution.length === correctShadedSquares.length){
+        puzzleMessage.innerHTML = `PARTY LIKE ITS YOUR BIRTHDAY. YOU DID IT! All ${currentPuzzleShaded.length} squares!`
         puzzleParty(150, 40)
+        setTimeout(stopParty, 5000)
       }
       else{
         puzzleMessage.innerHTML = `You submitted ${currentPuzzleShaded.length} shaded squares. ${correctShadedSquares.length} of those are correct.`
