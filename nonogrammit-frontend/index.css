@@ -22,7 +22,22 @@ html body{
     background-color: #b9284c;
     grid-column-start: 3;
     grid-row-start: 1;
+    
 }
+
+#user-info-container{
+    text-align: center;
+    padding-bottom: 15px;
+}
+
+#username-display{
+    color: white;
+    font-size: 150%;
+}
+
+/* #log-in-form-container{
+    display: block;
+} */
 
 h1 {
     font-family: Impact, Charcoal, sans-serif;

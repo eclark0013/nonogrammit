@@ -1,4 +1,4 @@
-// finish work on making containers starting with the page title one on line 16 <h1 id="title">Nonogrammit</h1>
+//  when a user logs in then the log in optoin changes to log out and if pressed will change user to guest
 
 let currentUser
 let puzzleNumber
@@ -9,9 +9,11 @@ let test
 document.addEventListener("DOMContentLoaded", () => {
   addLeftMenu()
   addRightMenu()
-  createContainers()
+  createMainPageContainers()
+  createRightMenuContainers()
   addPageTitleHeader()
   addLogInFormAndSubmitButton()
+  addLoginLogoutButton()
   addNewPuzzleButton()
   fetchUser("guest", "password")
   fetchPuzzle(Math.ceil(Math.random()*5))
@@ -29,7 +31,7 @@ function addRightMenu(){
   document.querySelector("body").appendChild(rightMenu)
 }
 
-function createContainers(){
+function createMainPageContainers(){
   let body = document.querySelector("body")
   let mainPage = document.createElement("div")
   mainPage.id = "main-page"
@@ -38,11 +40,8 @@ function createContainers(){
   pageTitleContainer.id = "page-title-container"
   mainPage.appendChild(pageTitleContainer)
   let logInFormContainer = document.createElement("div")
-  logInFormContainer.id = "log-in-form-container"
+  logInFormContainer.id = "login-form-container"
   mainPage.appendChild(logInFormContainer)
-  let userInfoContainer = document.createElement("div")
-  userInfoContainer.id = "user-info-container"
-  mainPage.appendChild(userInfoContainer)
   let newPuzzleButtonContainer = document.createElement("div")
   newPuzzleButtonContainer.id = "new-puzzle-button-container"
   mainPage.appendChild(newPuzzleButtonContainer)
@@ -63,6 +62,37 @@ function createContainers(){
   mainPage.appendChild(pageBottomButtonsContainer)
 }
 
+function createRightMenuContainers(){
+  let userInfoContainer = document.createElement("div")
+  userInfoContainer.id = "user-info-container"
+  document.getElementById("right-menu").appendChild(userInfoContainer)
+  let loginLogoutButtonContainer = document.createElement("div")
+  loginLogoutButtonContainer.id = "login-logout-button-container"
+  document.getElementById("right-menu").appendChild(loginLogoutButtonContainer)
+}
+
+function addLoginLogoutButton(){
+  let loginLogoutButton = document.createElement("button")
+  loginLogoutButton.id = "login-logout-button"
+  loginLogoutButton.classname = "menu-button"
+  loginLogoutButton.innerHTML = "Log in"
+  loginLogoutButton.addEventListener("click", () => {
+    if (loginLogoutButton.innerHTML === "Log out"){
+      fetchUser("guest", "password")
+      loginLogoutButton.innerHTML = "Log in"
+    }
+    else {
+      if (document.getElementById("login-form-container").style.display === ""){
+        document.getElementById("login-form-container").style.display = "none"
+      }
+      else if (document.getElementById("login-form-container").style.display === "none"){
+        document.getElementById("login-form-container").style.display = ""
+      }
+    }
+  })
+  document.getElementById("login-logout-button-container").appendChild(loginLogoutButton)
+}
+
 function addPageTitleHeader(){
   let pageTitleHeader = document.createElement("h1")
   pageTitleHeader.id = "page-title"
@@ -72,8 +102,9 @@ function addPageTitleHeader(){
 
 function addLogInFormAndSubmitButton(){
   let userInfoForm = document.createElement("form")
+  document.getElementById("login-form-container").style.display = "none"
   userInfoForm.innerHTML = "<div>Sign in or Sign up below:</div><label>Username: </label><input type='text' name='username' id='username'> <label>Password: </label><input type='text' name='password' id='password'> <input type='submit' id='submit' value='Submit'><br><br>"
-  document.getElementById("log-in-form-container").appendChild(userInfoForm)
+  document.getElementById("login-form-container").appendChild(userInfoForm)
   let userInfoSubmitButton = document.querySelector("#submit")
     userInfoSubmitButton.addEventListener("click", function(event) {
       event.preventDefault();
@@ -330,6 +361,10 @@ function fetchUser(username, password){
         currentUser = new User(object.id, object.username, undefined, 0)
         if (currentUser.username){
           addUsernameDiv(currentUser.username)
+          if (currentUser.username !== "guest"){
+            document.getElementById("login-logout-button").innerHTML = "Log out"
+            document.getElementById("login-form-container").style.display = "none"
+          }
         }
         if (puzzleNumber){
           currentUser.currentPuzzle = {id: puzzleNumber}
