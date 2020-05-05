@@ -1,3 +1,4 @@
+// fix inverted row and column params
 // user_puzzle join class on backend where users can keep track of their puzzle records and history, best times feature on right menu with a user's best times so far (just time and puzzle #)
 // ^this will solve the problem of needing a has many relationship
 // organize functions into classes (html handling, puzzle making, etc.)
@@ -23,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   addLoginLogoutButton()
   addNewPuzzleButton()
   fetchUser("guest", "password")
-  fetchPuzzle(Math.ceil(Math.random()*5))
+  fetchNewPuzzle()
 })
 
 function addLeftMenu(){
@@ -144,7 +145,7 @@ function addNewPuzzleButton(){
   //   newPuzzleButton.className = "hover-button"
   // });
   newPuzzleButton.addEventListener("click", () => {
-    fetchPuzzle(Math.ceil(Math.random()*5))
+    fetchNewPuzzle()
   });
   document.getElementById("new-puzzle-button-container").appendChild(newPuzzleButton)
 }
@@ -323,11 +324,6 @@ function clearMessage(){
   document.getElementById("puzzle-message-container").innerHTML = ""
 }
 
-function setCurrentPuzzle(object){
-  let attributes = object["data"]["attributes"]
-  currentPuzzle = new Puzzle(object.data.id, attributes["column_parameters"], attributes["row_parameters"], attributes["column_max"], attributes["row_max"], attributes["solution"])
-}
-
 function fetchPuzzle(puzzleNumber){
   fetch(`http://localhost:3000/puzzles/${puzzleNumber}`)
     .then((response) => {
@@ -366,15 +362,16 @@ fetch("http://localhost:3000/puzzles", configObj)
         return response.json();
     })
     .then(function(object) {
-      setUpNewPuzzle(object["data"]["id"])
+      setUpNewPuzzle(object)
     })
     .catch(function(error) {
       console.log(error.message);
     });
 }
 
-function setUpNewPuzzle(puzzleNumber){
+function setUpNewPuzzle(object){
   let puzzleContainer = makePuzzleDiv()
+  let puzzleNumber = object["data"]["id"]
   addCheckSolutionPuzzleButton()
   addRestartPuzzleButton()
   addRevealSolutionButton()
@@ -382,11 +379,16 @@ function setUpNewPuzzle(puzzleNumber){
   if (currentUser){
     currentUser.currentPuzzle = {id: puzzleNumber}
   }
-  setTimeout(setCurrentPuzzle(object), 3000)
+  setCurrentPuzzle(object)
   displayNewPuzzle(currentPuzzle)
   addTimer()
   stopParty()
   clearMessage()
+}
+
+function setCurrentPuzzle(object){
+  let attributes = object["data"]["attributes"]
+  currentPuzzle = new Puzzle(object.data.id, attributes["column_parameters"], attributes["row_parameters"], attributes["column_max"], attributes["row_max"], attributes["solution"])
 }
 
 // create a new user
