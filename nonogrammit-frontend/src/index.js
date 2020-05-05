@@ -1,4 +1,10 @@
-//  when a user logs in then the log in optoin changes to log out and if pressed will change user to guest
+// user_puzzle join class on backend where users can keep track of their puzzle records and history, best times feature on right menu with a user's best times so far (just time and puzzle #)
+// ^this will solve the problem of needing a has many relationship
+// eventually need to work on async function movement
+// organize functions into classes (html handling, puzzle making, etc.)
+// add a reveal mistakes button using code already started with reveal solution
+// new puzzle button actually creates a new puzzle and not just fetches an already existing one
+
 
 let currentUser
 let puzzleNumber
@@ -357,9 +363,24 @@ function fetchUser(username, password){
           return response.json();
       })
       .then(function(object) {
-        console.log(object);
+        console.log(object)
+        if (object.message){
+          let errorMessageDiv
+          if (document.getElementById("error-message")){
+            errorMessageDiv = document.getElementById("error-message")
+          }
+          else {
+            errorMessageDiv = document.createElement("div")
+            errorMessageDiv.id = "error-message"
+            document.getElementById("login-form-container").appendChild(errorMessageDiv)
+          }
+          errorMessageDiv.innerHTML = object.message
+        }
         currentUser = new User(object.id, object.username, undefined, 0)
         if (currentUser.username){
+          if (document.getElementById("error-message")){
+            document.getElementById("error-message").style.display = "none"
+          }
           addUsernameDiv(currentUser.username)
           if (currentUser.username !== "guest"){
             document.getElementById("login-logout-button").innerHTML = "Log out"
@@ -372,7 +393,7 @@ function fetchUser(username, password){
         }
       })
       .catch(function(error) {
-          console.log(error.message);
+        console.log(error.message);
       });
 }
 

@@ -35,9 +35,10 @@ html body{
     font-size: 150%;
 }
 
-/* #log-in-form-container{
-    display: block;
-} */
+#error-message{
+    color: red;
+    font-weight: bold;
+}
 
 h1 {
     font-family: Impact, Charcoal, sans-serif;
