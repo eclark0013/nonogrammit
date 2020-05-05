@@ -9,4 +9,10 @@ class PuzzlesController < ApplicationController
         puzzle = Puzzle.find(params[:id])
         render json: PuzzleSerializer.new(puzzle)
     end
+
+    def create
+        puzzle = Puzzle.create
+        puzzle.add_info
+        render json: PuzzleSerializer.new(puzzle)
+    end
 end

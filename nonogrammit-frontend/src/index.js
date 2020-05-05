@@ -1,9 +1,10 @@
 // user_puzzle join class on backend where users can keep track of their puzzle records and history, best times feature on right menu with a user's best times so far (just time and puzzle #)
 // ^this will solve the problem of needing a has many relationship
-// eventually need to work on async function movement
 // organize functions into classes (html handling, puzzle making, etc.)
 // add a reveal mistakes button using code already started with reveal solution
 // new puzzle button actually creates a new puzzle and not just fetches an already existing one
+// remove dots in betwen numbers in row paramters
+// center numbers in column parameters
 
 
 let currentUser
@@ -210,6 +211,7 @@ function addRevealSolutionButton(){
   }
 }
 
+// puzzle set up start
 function makePuzzleDiv(){
   if (!document.getElementById("puzzle")){
     let body = document.body
@@ -315,9 +317,15 @@ function enterColumnParamsData(puzzle){
     }
   }
 }
+// puzzle set up finish
 
 function clearMessage(){
   document.getElementById("puzzle-message-container").innerHTML = ""
+}
+
+function setCurrentPuzzle(object){
+  let attributes = object["data"]["attributes"]
+  currentPuzzle = new Puzzle(object.data.id, attributes["column_parameters"], attributes["row_parameters"], attributes["column_max"], attributes["row_max"], attributes["solution"])
 }
 
 function fetchPuzzle(puzzleNumber){
@@ -329,20 +337,56 @@ function fetchPuzzle(puzzleNumber){
       let puzzleContainer = makePuzzleDiv()
       addCheckSolutionPuzzleButton()
       addRestartPuzzleButton()
+      addRevealSolutionButton()
       addPuzzleNumberHeader(puzzleNumber)
       if (currentUser){
         currentUser.currentPuzzle = {id: puzzleNumber}
       }
-      console.log(object)
-      let attributes = object["data"]["attributes"]
-      currentPuzzle = new Puzzle(object.data.id, attributes["column_parameters"], attributes["row_parameters"], attributes["column_max"], attributes["row_max"], attributes["solution"])
-      addRevealSolutionButton()
+      setTimeout(setCurrentPuzzle(object), 3000)
       displayNewPuzzle(currentPuzzle)
       addTimer()
       stopParty()
       clearMessage()
-      console.log(currentPuzzle)
     })
+}
+
+function fetchNewPuzzle(){
+  let configObj = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({
+        // "whichpuzzle": "newone"
+    })
+  };
+fetch("http://localhost:3000/puzzles", configObj)
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(object) {
+      setUpNewPuzzle(object["data"]["id"])
+    })
+    .catch(function(error) {
+      console.log(error.message);
+    });
+}
+
+function setUpNewPuzzle(puzzleNumber){
+  let puzzleContainer = makePuzzleDiv()
+  addCheckSolutionPuzzleButton()
+  addRestartPuzzleButton()
+  addRevealSolutionButton()
+  addPuzzleNumberHeader(puzzleNumber)
+  if (currentUser){
+    currentUser.currentPuzzle = {id: puzzleNumber}
+  }
+  setTimeout(setCurrentPuzzle(object), 3000)
+  displayNewPuzzle(currentPuzzle)
+  addTimer()
+  stopParty()
+  clearMessage()
 }
 
 // create a new user
