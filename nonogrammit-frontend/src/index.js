@@ -240,24 +240,24 @@ function createColumnParametersDivs(puzzleDiv, puzzle){
 }
 
 function createRowParametersDivs(puzzleDiv, puzzle){
-  for (let i=0; i<puzzle.row_parameters.length; i++){
+  for (let i=1; i<=25; i++){
     let rowDiv = document.createElement("div")
     rowDiv.className = "row"
-    rowDiv.id = `row-${i+1}`
+    rowDiv.id = `row-${i}`
     puzzleDiv.appendChild(rowDiv)
     let rowParamsDiv = document.createElement("div")
     rowParamsDiv.className = "row-params"
-    if (i%5 === 0){
+    if (i%5 === 1){
       rowParamsDiv.className = "bold-top-row-params"
     }
-    rowParamsDiv.id = `row-${i+1}-params`
-    rowParamsDiv.innerHTML = puzzle.row_parameters[i].join("...")
+    rowParamsDiv.id = `row-${i}-params`
+    rowParamsDiv.innerHTML = puzzle.row_params[i]
     rowDiv.appendChild(rowParamsDiv)
   }
 }
 
 function addPuzzleSquares(puzzle){
-  for (let i=0; i<puzzle.row_parameters.length; i++){
+  for (let i=0; i<25; i++){
     let rowDiv = document.getElementById(`row-${i+1}`)
     for (let k=0; k<25; k++){
       let squareDiv = document.createElement("div")
@@ -311,10 +311,10 @@ function setUpColumnParams(puzzleDiv, column_max){
 }
 
 function enterColumnParamsData(puzzle){
-  for (let k=0; k<25; k++){
-    let parameter = puzzle.column_parameters[k]
+  for (let k=1; k<26; k++){
+    let parameter = puzzle.column_params[k].split(", ")
     for (let e=0; e<parameter.length; e++){
-      let targetSquare = document.getElementById(`column-param-${k+1}-${puzzle.column_max-parameter.length+e+1}`)
+      let targetSquare = document.getElementById(`column-param-${k}-${e+1+(puzzle.column_max-parameter.length)}`)
       targetSquare.innerHTML= parameter[e]
     }
   }
@@ -351,6 +351,7 @@ fetch("http://localhost:3000/puzzles", configObj)
         return response.json();
     })
     .then(function(object) {
+      console.log(object)
       setUpNewPuzzle(object)
     })
     .catch(function(error) {
@@ -378,7 +379,7 @@ function setUpNewPuzzle(object){
 
 function setCurrentPuzzle(object){
   let attributes = object["data"]["attributes"]
-  currentPuzzle = new Puzzle(object.data.id, attributes["column_parameters"], attributes["row_parameters"], attributes["column_max"], attributes["row_max"], attributes["solution"])
+  currentPuzzle = new Puzzle(object.data.id, attributes["column_params"], attributes["row_params"], attributes["column_max"], attributes["row_max"], attributes["solution"])
 }
 
 // create a new user
@@ -550,31 +551,12 @@ class User {
 }
 
 class Puzzle{
-  constructor(id, column_parameters, row_parameters, column_max, row_max, solution){
+  constructor(id, column_params, row_params, column_max, row_max, solution){
     this.id = id
-    this.column_parameters = column_parameters
-    this.row_parameters = row_parameters
+    this.column_params = column_params
+    this.row_params = row_params
     this.column_max = column_max
     this.row_max = row_max
-    this.column_status
     this.solution = solution
-  }
-}
-
-class Column{
-  constructor(parameters, completion_status, puzzle_location, puzzle_id){
-    this.parameters = parameters
-    this.completion_status = completion_status
-    this.puzzle_location = puzzle_location
-    this.puzzle_id = puzzle_id
-  }
-}
-
-class Row{
-  constructor(parameters, completion_status, puzzle_location, puzzle_id){
-    this.parameters = parameters
-    this.completion_status = completion_status
-    this.puzzle_location = puzzle_location
-    this.puzzle_id = puzzle_id
   }
 }
