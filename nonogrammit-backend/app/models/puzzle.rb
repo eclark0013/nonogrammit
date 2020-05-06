@@ -8,11 +8,12 @@ class Puzzle < ApplicationRecord
         column_params = solution_hash[:column_params]
         self.solution = solution_hash[:solution_html_ids]
         row_params.each_with_index do |row, index|
-            self.rows.create(parameters: row, completion_status: 0, puzzle_location: index)
+            self.rows.create(parameters: row, completion_status: 0, puzzle_location: index+1)
         end
         column_params.each_with_index do |column, index|
-            self.columns.create(parameters: column, completion_status: 0, puzzle_location: index)
+            self.columns.create(parameters: column, completion_status: 0, puzzle_location: index+1)
         end
+        # still right at this point!
     end
 
     def find_max_array_size(array_of_arrays)
@@ -24,7 +25,7 @@ class Puzzle < ApplicationRecord
     end
 
     def column_parameters
-        self.columns.collect do |column|
+        self.columns.sort.collect do |column|
             column.parameters
         end
     end
@@ -34,7 +35,7 @@ class Puzzle < ApplicationRecord
     end
 
     def row_parameters
-        self.rows.collect do |row|
+        self.rows.sort.collect do |row|
             row.parameters
         end
     end

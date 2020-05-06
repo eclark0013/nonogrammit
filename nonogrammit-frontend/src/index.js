@@ -6,6 +6,7 @@
 // new puzzle button actually creates a new puzzle and not just fetches an already existing one
 // remove dots in betwen numbers in row paramters
 // center numbers in column parameters
+// find a puzzle option available with old fetchPuzzle function
 
 
 let currentUser
@@ -324,25 +325,13 @@ function clearMessage(){
   document.getElementById("puzzle-message-container").innerHTML = ""
 }
 
-function fetchPuzzle(puzzleNumber){
+function fetchSpecifiedPuzzle(puzzleNumber){
   fetch(`http://localhost:3000/puzzles/${puzzleNumber}`)
     .then((response) => {
       return response.json();
     })
     .then((object) => {
-      let puzzleContainer = makePuzzleDiv()
-      addCheckSolutionPuzzleButton()
-      addRestartPuzzleButton()
-      addRevealSolutionButton()
-      addPuzzleNumberHeader(puzzleNumber)
-      if (currentUser){
-        currentUser.currentPuzzle = {id: puzzleNumber}
-      }
-      setTimeout(setCurrentPuzzle(object), 3000)
-      displayNewPuzzle(currentPuzzle)
-      addTimer()
-      stopParty()
-      clearMessage()
+      setUpNewPuzzle(object)
     })
 }
 
@@ -372,6 +361,7 @@ fetch("http://localhost:3000/puzzles", configObj)
 function setUpNewPuzzle(object){
   let puzzleContainer = makePuzzleDiv()
   let puzzleNumber = object["data"]["id"]
+  console.log(object)
   addCheckSolutionPuzzleButton()
   addRestartPuzzleButton()
   addRevealSolutionButton()
