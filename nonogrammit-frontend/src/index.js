@@ -1,12 +1,11 @@
-// fix inverted row and column params
 // user_puzzle join class on backend where users can keep track of their puzzle records and history, best times feature on right menu with a user's best times so far (just time and puzzle #)
 // ^this will solve the problem of needing a has many relationship
 // organize functions into classes (html handling, puzzle making, etc.)
 // add a reveal mistakes button using code already started with reveal solution
-// new puzzle button actually creates a new puzzle and not just fetches an already existing one
 // remove dots in betwen numbers in row paramters
 // center numbers in column parameters
 // find a puzzle option available with old fetchPuzzle function
+// move bottom buttons to left menu
 
 
 let currentUser
@@ -251,7 +250,7 @@ function createRowParametersDivs(puzzleDiv, puzzle){
       rowParamsDiv.className = "bold-top-row-params"
     }
     rowParamsDiv.id = `row-${i}-params`
-    rowParamsDiv.innerHTML = puzzle.row_params[i]
+    rowParamsDiv.innerHTML = puzzle.row_params[i].split(", ").join("...")
     rowDiv.appendChild(rowParamsDiv)
   }
 }
@@ -440,7 +439,7 @@ function addPuzzleNumberHeader(puzzleNumber){
     document.querySelector("#puzzle-number-header").innerHTML = `Puzzle #${puzzleNumber}`
   }
   else{
-    let puzzleNumberHeader = document.createElement("h2")
+    let puzzleNumberHeader = document.createElement("h3")
     puzzleNumberHeader.id = "puzzle-number-header"
     puzzleNumberHeader.innerHTML = `Puzzle #${puzzleNumber}`
     document.getElementById("puzzle-number-header-container").appendChild(puzzleNumberHeader)
@@ -489,7 +488,7 @@ class User {
   
   postCurrentPuzzleStatus(){
     let currentPuzzleStatus = {}
-    currentPuzzleStatus.id = currentUser.currentPuzzle.id
+    currentPuzzleStatus.id = currentPuzzle.id
     let shaded = document.querySelectorAll("[status='1']")
     let shadedArray = Array.from(shaded)
     let shadedSquaresCoordinates

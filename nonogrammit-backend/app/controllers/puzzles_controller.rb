@@ -13,6 +13,7 @@ class PuzzlesController < ApplicationController
     def create
         puzzle = Puzzle.create
         puzzle.add_info
+        puzzle.save
         render json: PuzzleSerializer.new(puzzle)
     end
 end

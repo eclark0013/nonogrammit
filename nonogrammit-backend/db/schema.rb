@@ -10,11 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_24_182505) do
+ActiveRecord::Schema.define(version: 2020_05_06_202343) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
   enable_extension "plpgsql"
+
+  create_table "games", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "puzzle_id"
+    t.integer "time"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "puzzles", force: :cascade do |t|
     t.string "solution", default: [], array: true

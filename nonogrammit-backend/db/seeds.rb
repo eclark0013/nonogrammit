@@ -18,6 +18,11 @@ u2 = User.create(id: 2, username: "eric", password: "clark")
 u2.current_puzzle = {id: 3}
 u2.save
 
-p = Puzzle.new
-p.add_info
-p.save
+5.times do
+    p = Puzzle.new
+    p.add_info
+    p.save
+end
+
+
+g1 = Game.create(user_id: 1, puzzle_id: 1)

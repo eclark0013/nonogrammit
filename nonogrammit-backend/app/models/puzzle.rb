@@ -1,5 +1,6 @@
 class Puzzle < ApplicationRecord
-
+    has_many :games
+    
     def add_info
         solution_hash = solution_hasher
         self.row_params = solution_hash[:row_params]
