@@ -1,12 +1,11 @@
 class Puzzle < ApplicationRecord
     has_many :games
-    
+
     def add_info
         solution_hash = solution_hasher
         self.row_params = solution_hash[:row_params]
         self.column_params = solution_hash[:column_params]
         self.solution = solution_hash[:solution_html_ids]
-        # still right at this point!
     end
 
     def find_max_array_size(hash_of_stringed_arrays)
@@ -27,7 +26,9 @@ class Puzzle < ApplicationRecord
     end
 
     private
-
+    # possible algorithm could include inserting solutions into squares selected by finding blanks where there is at least 1
+    # solution to its left or right and at least 1 solution above or below
+    # this should significantly decerease the number of 1s in parameters
     def randomize(array)
         array.each_with_index do |number, i|
             j = rand(0..array.size)
@@ -36,10 +37,8 @@ class Puzzle < ApplicationRecord
         array
     end
     
-    def solution_div_indices_generator
-        all_nums = (0..624).to_a
-        all_nums = randomize(all_nums)
-        all_nums = all_nums[0..350]
+    def sample_of_625(n)
+        (0..624).to_a.sample(n)
     end
     
     def solution_div_indices_to_html_ids(arry)
@@ -115,9 +114,7 @@ class Puzzle < ApplicationRecord
         end
         hash
     end
-    
-      # solutions = solution_html_ids_to_coordinates(solution_div_indices_to_html_ids(solution_div_indices_generator))
-    
+        
     def solution_coordinates_sanitizer(solution_coordinates)
         good_solution_coordinates = []
         solution_coordinates.each_with_index do |solution_coordinate_to_check, check_index|
@@ -138,11 +135,38 @@ class Puzzle < ApplicationRecord
         end
         good_solution_coordinates
     end
+
+    def super_sanitizer(solution_coordinates)
+        sanitized_solution_coordinates = solution_coordinates_sanitizer(solution_coordinates) # what happens if we don't sanitize
+        all_coordinates = []
+        for i in 1..25
+            for j in 1..25
+                all_coordinates << [i.to_s, j.to_s]
+            end
+        end
+        non_solutions = all_coordinates - sanitized_solution_coordinates        
+        blanks_with_near_solutions = non_solutions.select do |non_solution_coordinates|
+            to_the_right = sanitized_solution_coordinates.include?(["#{(non_solution_coordinates[0].to_i)+1}", non_solution_coordinates[1]])
+            to_the_left = sanitized_solution_coordinates.include?(["#{(non_solution_coordinates[0].to_i)-1}", non_solution_coordinates[1]])
+            to_the_top = sanitized_solution_coordinates.include?([non_solution_coordinates[0], "#{(non_solution_coordinates[1].to_i)+1}"])
+            to_the_bottom = sanitized_solution_coordinates.include?([non_solution_coordinates[0], "#{(non_solution_coordinates[1].to_i)-1}"])
+            # (to_the_left && to_the_right && to_the_bottom) || (to_the_left && to_the_right && to_the_top) || (to_the_left && to_the_top && to_the_bottom) || (to_the_right && to_the_bottom && to_the_top)
+            (to_the_left && to_the_right) || (to_the_top && to_the_bottom)
+
+        end
+        squares_to_add = 313-(sanitized_solution_coordinates.size)
+        percent_added = squares_to_add/blanks_with_near_solutions.size.to_f
+        (0...blanks_with_near_solutions.size).to_a.sample(squares_to_add).each do |index_of_blank_to_add|
+            sanitized_solution_coordinates << blanks_with_near_solutions[index_of_blank_to_add]
+        end
+        sanitized_solution_coordinates
+    end
     
     def solution_hasher
-        solution_html_ids = solution_div_indices_to_html_ids(solution_div_indices_generator)
+        solution_html_ids = solution_div_indices_to_html_ids(sample_of_625(290))
         solution_coordinates = solution_html_ids_to_coordinates(solution_html_ids)
-        solution_coordinates_sanitized = solution_coordinates_sanitizer(solution_coordinates)
+        # solution_coordinates_sanitized = solution_coordinates_sanitizer(solution_coordinates)
+        solution_coordinates_sanitized = super_sanitizer(solution_coordinates)
         sanitized_solution_html_ids = solution_coordinates_sanitized.collect do |coordinate_array| 
             coordinate_array.join("-")
         end
@@ -153,19 +177,4 @@ class Puzzle < ApplicationRecord
         }
     end
       
-    
-      #test
-    # 2.times
-    #     solution_hash = solution_hasher
-    #     row_params = solution_hash[:row_params]
-    #     column_params = solution_hash[:column_params]
-    #     p = Puzzle.create
-    #     p.solution = solution_hash[:solution_html_ids]
-    #     row_params.each_with_index do |row, index|
-    #         p.rows.create(parameters: row, completion_status: 0, puzzle_location: index)
-    #     end
-    #     column_params.each_with_index do |column, index|
-    #         p.columns.create(parameters: column, completion_status: 0, puzzle_location: index)
-    #     end
-    #     p.save
 end

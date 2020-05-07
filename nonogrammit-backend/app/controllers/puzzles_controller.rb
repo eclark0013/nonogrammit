@@ -14,6 +14,7 @@ class PuzzlesController < ApplicationController
         puzzle = Puzzle.create
         puzzle.add_info
         puzzle.save
+        puzzle = Puzzle.find(rand(1..puzzle.id-1))
         render json: PuzzleSerializer.new(puzzle)
     end
 end
