@@ -11,12 +11,13 @@ DatabaseCleaner.strategy = :truncation
 DatabaseCleaner.clean
 
 u1 = User.create(id: 1, username: "guest", password: "password")
-u1.current_puzzle = {id: 3}
 u1.save
 
 u2 = User.create(id: 2, username: "eric", password: "clark")
-u2.current_puzzle = {id: 3}
 u2.save
+
+u3 = User.create(id: 3, username: "joey", password: "clark")
+u3.save
 
 5.times do
     p = Puzzle.new
@@ -25,4 +26,14 @@ u2.save
 end
 
 
-g1 = Game.create(user_id: 1, puzzle_id: 1)
+g1 = Game.create(user_id: 2, puzzle_id: 1, time: 1235)
+g2 = Game.create(user_id: 2, puzzle_id: 2, time: 921)
+g3 = Game.create(user_id: 2, puzzle_id: 3, time: 2074)
+g4 = Game.create(user_id: 2, puzzle_id: 4, time: 3271)
+g5 = Game.create(user_id: 2, puzzle_id: 5, time: 2414)
+
+
+g6 = Game.create(user_id: 3, puzzle_id: 1, time: 1632)
+g7 = Game.create(user_id: 3, puzzle_id: 3, time: 937)
+g8 = Game.create(user_id: 3, puzzle_id: 5, time: 2194)
+

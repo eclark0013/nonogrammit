@@ -1,5 +1,4 @@
-// user_puzzle join class on backend where users can keep track of their puzzle records and history, best times feature on right menu with a user's best times so far (just time and puzzle #)
-// ^this will solve the problem of needing a has many relationship
+// games class can keep track of users puzzle records and history, best times feature on right menu with a user's best times so far (just time and puzzle #)
 // organize functions into classes (html handling, puzzle making, etc.)
 // add a reveal mistakes button using code already started with reveal solution
 // remove dots in betwen numbers in row paramters
@@ -23,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   addLogInFormAndSubmitButton()
   addLoginLogoutButton()
   addNewPuzzleButton()
+  addSelectPuzzleButton()
   fetchUser("guest", "password")
   fetchNewPuzzle()
 })
@@ -50,9 +50,9 @@ function createMainPageContainers(){
   let logInFormContainer = document.createElement("div")
   logInFormContainer.id = "login-form-container"
   mainPage.appendChild(logInFormContainer)
-  let newPuzzleButtonContainer = document.createElement("div")
-  newPuzzleButtonContainer.id = "new-puzzle-button-container"
-  mainPage.appendChild(newPuzzleButtonContainer)
+  // let newPuzzleButtonContainer = document.createElement("div")
+  // newPuzzleButtonContainer.id = "new-puzzle-button-container"
+  // mainPage.appendChild(newPuzzleButtonContainer)
   let puzzleNumberHeaderContatiner = document.createElement("div")
   puzzleNumberHeaderContatiner.id = "puzzle-number-header-container"
   mainPage.appendChild(puzzleNumberHeaderContatiner)
@@ -147,7 +147,39 @@ function addNewPuzzleButton(){
   newPuzzleButton.addEventListener("click", () => {
     fetchNewPuzzle()
   });
-  document.getElementById("new-puzzle-button-container").appendChild(newPuzzleButton)
+  document.getElementById("left-menu").appendChild(newPuzzleButton)
+}
+
+function addSelectPuzzleButton(){
+  let selectPuzzleContainer = document.createElement("div")
+  selectPuzzleContainer.id = "select-puzzle-container"
+  document.getElementById("left-menu").appendChild(selectPuzzleContainer)
+  let selectPuzzleButton = document.createElement("button")
+  selectPuzzleButton.id = "select-puzzle-button"
+  selectPuzzleButton.innerHTML = "Select Puzzle"
+  selectPuzzleContainer.appendChild(selectPuzzleButton)
+  // newPuzzleButton.addEventListener("mouseover", () => {
+  //   newPuzzleButton.className = "hover-button"
+  // });
+  selectPuzzleButton.addEventListener("click", () => {
+    let puzzleInput = document.createElement("input")
+    puzzleInput.id = "puzzle-input"
+    puzzleInput.type = "text"
+    selectPuzzleContainer.appendChild(puzzleInput)
+    let submitPuzzleNumberButton = document.createElement("input")
+    submitPuzzleNumberButton.type = "submit"
+    submitPuzzleNumberButton.id = "submit-puzzle-number-button"
+    submitPuzzleNumberButton.value = "Select"
+    selectPuzzleContainer.appendChild(submitPuzzleNumberButton)
+    
+  });
+  // queryselect the input box
+  // grab its contents
+  // fetch puzzle based on contents
+  document.querySelector("submit-puzzle-number-button").addEventListener("click", () => {
+    let submission = submit.innerHTML
+    fetchSpecifiedPuzzle(submission)
+  })
 }
 
 function addTimer(){
@@ -350,7 +382,6 @@ fetch("http://localhost:3000/puzzles", configObj)
         return response.json();
     })
     .then(function(object) {
-      console.log(object)
       setUpNewPuzzle(object)
     })
     .catch(function(error) {
@@ -361,7 +392,6 @@ fetch("http://localhost:3000/puzzles", configObj)
 function setUpNewPuzzle(object){
   let puzzleContainer = makePuzzleDiv()
   let puzzleNumber = object["data"]["id"]
-  console.log(object)
   addCheckSolutionPuzzleButton()
   addRestartPuzzleButton()
   addRevealSolutionButton()

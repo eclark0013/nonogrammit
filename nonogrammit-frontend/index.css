@@ -5,6 +5,48 @@ html body{
     grid-template-rows: auto;
 }
 
+/* #new-puzzle-button{
+    width: 100%;
+    border-radius: 0px;
+    border-bottom-color: black;
+    font-size: 20px;
+    border-top-color: black;
+} */
+
+#left-menu button {
+    width: 100%;
+    background-color: #b9284c;
+    padding: 7px 12px;
+    margin:0 auto;
+    color:white;
+    display: block;
+    font-size: 20px;
+    border-top-color: black;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+}
+
+#select-puzzle-container{
+    text-align: center;
+    border-bottom: 1px black solid;
+    border-left-color: transparent;
+    border-right-color: transparent;
+}
+
+#select-puzzle-button{
+    border-bottom-color: transparent;
+}
+
+#puzzle-input {
+    width: 50px;
+}
+
+#submit-puzzle-number-button{
+    display: block;
+    margin: auto;
+}
+
 #main-page {
     background-color: rgb(255, 246, 233);
     grid-column-start: 2;
