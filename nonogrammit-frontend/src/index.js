@@ -41,9 +41,6 @@ function createMainPageContainers(){
   let logInFormContainer = document.createElement("div")
   logInFormContainer.id = "login-form-container"
   mainPage.appendChild(logInFormContainer)
-  // let newPuzzleButtonContainer = document.createElement("div")
-  // newPuzzleButtonContainer.id = "new-puzzle-button-container"
-  // mainPage.appendChild(newPuzzleButtonContainer)
   let puzzleNumberHeaderContatiner = document.createElement("div")
   puzzleNumberHeaderContatiner.id = "puzzle-number-header-container"
   mainPage.appendChild(puzzleNumberHeaderContatiner)
@@ -146,7 +143,6 @@ function addSelectPuzzleButton(){
   let puzzleInput = document.createElement("input")
   let submitPuzzleNumberButton = document.createElement("input")
   selectPuzzleButton.addEventListener("click", () => {
-    // puzzleInput = document.createElement("input")
     if (!document.getElementById("puzzle-input")){
       puzzleInput.id = "puzzle-input"
       puzzleInput.type = "text"
@@ -187,12 +183,20 @@ function addRestartPuzzleButton(puzzleContainer){
     restartPuzzleButton.className = "page-bottom-button"
     restartPuzzleButton.innerHTML = "Restart"
     restartPuzzleButton.addEventListener("click", () => {
-      let shadedSquares = document.querySelectorAll('div[status="1"]')
-      for (let i=0; i<shadedSquares.length; i++){
-        shadedSquares[i].setAttribute("status", "0")
-      }
+      resetAllSquares()
     })
     document.getElementById("left-menu").appendChild(restartPuzzleButton)
+  }
+}
+
+function resetAllSquares(){
+  let shadedSquares = document.querySelectorAll('div[status="1"]')
+  for (let i=0; i<shadedSquares.length; i++){
+    shadedSquares[i].setAttribute("status", "0")
+  }
+  let wrongSquares = document.querySelectorAll('div[status="incorrect"]')
+  for (let i=0; i<wrongSquares.length; i++){
+    wrongSquares[i].setAttribute("status", "0")
   }
 }
 
@@ -216,12 +220,26 @@ function addRevealSolutionButton(){
     revealSolutionButton.className = "page-bottom-button"
     revealSolutionButton.innerHTML = "Reveal Solution"
     revealSolutionButton.addEventListener("click", () => {
-      // go fetch the puzzle solution from the db?
+      resetAllSquares()
       for (i=0; i<currentPuzzle.solution.length; i++){
         document.getElementById(currentPuzzle.solution[i]).setAttribute("status", "1")
       }
     })
     document.getElementById("left-menu").appendChild(revealSolutionButton)
+  }
+}
+
+function addRevealMistakesButton(){
+  if (!document.getElementById("reveal-mistakes-button")){
+    let revealMistakesButton = document.createElement("button")
+    revealMistakesButton.id = "reveal-mistakes-button"
+    revealMistakesButton.className = "page-bottom-button"
+    revealMistakesButton.innerHTML = "Reveal Mistakes"
+    revealMistakesButton.addEventListener("click", () => {
+      currentUser.revealMistakes()
+      console.log("awyeah")
+    })
+    document.getElementById("left-menu").appendChild(revealMistakesButton)
   }
 }
 
@@ -375,6 +393,7 @@ function setUpNewPuzzle(object){
   addCheckSolutionPuzzleButton()
   addRestartPuzzleButton()
   addRevealSolutionButton()
+  addRevealMistakesButton()
   addPuzzleNumberHeader(puzzleNumber)
   if (currentUser){
     currentUser.currentPuzzle = {id: puzzleNumber}
@@ -537,7 +556,6 @@ class User {
       let currentPuzzleShaded = user.currentPuzzle.shaded
       let correctShadedSquares = currentPuzzle.solution.filter(e => currentPuzzleShaded.includes(e))
       let puzzleMessage
-      
       if (document.getElementById("puzzle-message")){
         puzzleMessage = document.getElementById("puzzle-message")
       }
@@ -557,6 +575,16 @@ class User {
       }
     }
   }
+
+  revealMistakes(){
+    let user = this.postCurrentPuzzleStatus()
+    if (user.currentPuzzle.shaded){
+      let incorrectShadedSquares = currentUser.currentPuzzle.shaded.filter(e=>!(currentPuzzle.solution.includes(e)))
+      for (let i = 0; i<incorrectShadedSquares.length; i++){
+        document.getElementById(incorrectShadedSquares[i]).setAttribute("status", "incorrect")
+      }
+    }
+  }
 }
 
 class Puzzle{
@@ -572,10 +600,8 @@ class Puzzle{
 
 // games class can keep track of users puzzle records and history, best times feature on right menu with a user's best times so far (just time and puzzle #)
 // organize functions into classes (html handling, puzzle making, etc.)
-// add a reveal mistakes button using code already started with reveal solution
 // remove dots in betwen numbers in row paramters
 // center numbers in column parameters
-// find a puzzle option available with old fetchPuzzle function
-// move bottom buttons to left menu
+// make puzzzle scroll below certain px
 
 
