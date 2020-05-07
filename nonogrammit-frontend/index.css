@@ -41,6 +41,8 @@ html body{
     grid-column-start: 2;
     grid-row-start: 1;
     padding-left: 10px;
+    overflow-x: scroll;
+    text-align: center;
 }
 
 #left-menu {
@@ -115,11 +117,13 @@ button {
 .puzzle {
     min-width: 750px;
     border: 4px black solid;
-    display: inline-block
+    display: inline-block;
 }
 
 #puzzle-container {
     text-align: center;
+    display: inline-block;
+    min-width: 780px;
 }
 
 .column-parameters {

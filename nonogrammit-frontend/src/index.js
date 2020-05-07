@@ -603,5 +603,5 @@ class Puzzle{
 // remove dots in betwen numbers in row paramters
 // center numbers in column parameters
 // make puzzzle scroll below certain px
-
+// change menu bar to top if screen is too thin, or even to opening three-line menu
 
