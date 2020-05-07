@@ -1,12 +1,3 @@
-// games class can keep track of users puzzle records and history, best times feature on right menu with a user's best times so far (just time and puzzle #)
-// organize functions into classes (html handling, puzzle making, etc.)
-// add a reveal mistakes button using code already started with reveal solution
-// remove dots in betwen numbers in row paramters
-// center numbers in column parameters
-// find a puzzle option available with old fetchPuzzle function
-// move bottom buttons to left menu
-
-
 let currentUser
 let puzzleNumber
 let currentPuzzle
@@ -141,9 +132,6 @@ function addNewPuzzleButton(){
   let newPuzzleButton = document.createElement("button")
   newPuzzleButton.id = "new-puzzle-button"
   newPuzzleButton.innerHTML = "New Puzzle!"
-  // newPuzzleButton.addEventListener("mouseover", () => {
-  //   newPuzzleButton.className = "hover-button"
-  // });
   newPuzzleButton.addEventListener("click", () => {
     fetchNewPuzzle()
   });
@@ -151,34 +139,27 @@ function addNewPuzzleButton(){
 }
 
 function addSelectPuzzleButton(){
-  let selectPuzzleContainer = document.createElement("div")
-  selectPuzzleContainer.id = "select-puzzle-container"
-  document.getElementById("left-menu").appendChild(selectPuzzleContainer)
   let selectPuzzleButton = document.createElement("button")
   selectPuzzleButton.id = "select-puzzle-button"
-  selectPuzzleButton.innerHTML = "Select Puzzle"
-  selectPuzzleContainer.appendChild(selectPuzzleButton)
-  // newPuzzleButton.addEventListener("mouseover", () => {
-  //   newPuzzleButton.className = "hover-button"
-  // });
+  selectPuzzleButton.innerHTML = "Select Puzzle by Number"
+  document.getElementById("left-menu").appendChild(selectPuzzleButton)
+  let puzzleInput = document.createElement("input")
+  let submitPuzzleNumberButton = document.createElement("input")
   selectPuzzleButton.addEventListener("click", () => {
-    let puzzleInput = document.createElement("input")
-    puzzleInput.id = "puzzle-input"
-    puzzleInput.type = "text"
-    selectPuzzleContainer.appendChild(puzzleInput)
-    let submitPuzzleNumberButton = document.createElement("input")
-    submitPuzzleNumberButton.type = "submit"
-    submitPuzzleNumberButton.id = "submit-puzzle-number-button"
-    submitPuzzleNumberButton.value = "Select"
-    selectPuzzleContainer.appendChild(submitPuzzleNumberButton)
-    
+    // puzzleInput = document.createElement("input")
+    if (!document.getElementById("puzzle-input")){
+      puzzleInput.id = "puzzle-input"
+      puzzleInput.type = "text"
+      selectPuzzleButton.appendChild(puzzleInput)
+      submitPuzzleNumberButton.type = "submit"
+      submitPuzzleNumberButton.id = "submit-puzzle-number-button"
+      submitPuzzleNumberButton.value = "Select"
+      selectPuzzleButton.appendChild(submitPuzzleNumberButton)
+    }
   });
-  // queryselect the input box
-  // grab its contents
-  // fetch puzzle based on contents
-  document.querySelector("submit-puzzle-number-button").addEventListener("click", () => {
-    let submission = submit.innerHTML
-    fetchSpecifiedPuzzle(submission)
+  submitPuzzleNumberButton.addEventListener("click", () => {
+    fetchSpecifiedPuzzle(puzzleInput.value)
+    puzzleInput.value = ""
   })
 }
 
@@ -211,7 +192,7 @@ function addRestartPuzzleButton(puzzleContainer){
         shadedSquares[i].setAttribute("status", "0")
       }
     })
-    document.getElementById("page-bottom-buttons-container").appendChild(restartPuzzleButton)
+    document.getElementById("left-menu").appendChild(restartPuzzleButton)
   }
 }
 
@@ -224,7 +205,7 @@ function addCheckSolutionPuzzleButton(){
     checkSolutionButton.addEventListener("click", () => {
       currentUser.checkSolution()
     })
-    document.getElementById("page-bottom-buttons-container").appendChild(checkSolutionButton)
+    document.getElementById("left-menu").appendChild(checkSolutionButton)
   }
 }
 
@@ -240,7 +221,7 @@ function addRevealSolutionButton(){
         document.getElementById(currentPuzzle.solution[i]).setAttribute("status", "1")
       }
     })
-    document.getElementById("page-bottom-buttons-container").appendChild(revealSolutionButton)
+    document.getElementById("left-menu").appendChild(revealSolutionButton)
   }
 }
 
@@ -374,7 +355,6 @@ function fetchNewPuzzle(){
       "Accept": "application/json"
     },
     body: JSON.stringify({
-        // "whichpuzzle": "newone"
     })
   };
 fetch("http://localhost:3000/puzzles", configObj)
@@ -589,3 +569,13 @@ class Puzzle{
     this.solution = solution
   }
 }
+
+// games class can keep track of users puzzle records and history, best times feature on right menu with a user's best times so far (just time and puzzle #)
+// organize functions into classes (html handling, puzzle making, etc.)
+// add a reveal mistakes button using code already started with reveal solution
+// remove dots in betwen numbers in row paramters
+// center numbers in column parameters
+// find a puzzle option available with old fetchPuzzle function
+// move bottom buttons to left menu
+
+

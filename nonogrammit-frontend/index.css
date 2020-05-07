@@ -13,7 +13,7 @@ html body{
     border-top-color: black;
 } */
 
-#left-menu button {
+#left-menu button, #right-menu button {
     width: 100%;
     background-color: #b9284c;
     padding: 7px 12px;
@@ -22,20 +22,15 @@ html body{
     display: block;
     font-size: 20px;
     border-top-color: black;
-    border-bottom-color: transparent;
+    border-bottom-color: black;
     border-left-color: transparent;
     border-right-color: transparent;
-}
-
-#select-puzzle-container{
     text-align: center;
-    border-bottom: 1px black solid;
-    border-left-color: transparent;
-    border-right-color: transparent;
 }
 
 #select-puzzle-button{
     border-bottom-color: transparent;
+    background-color: transparent;
 }
 
 #puzzle-input {
@@ -45,6 +40,8 @@ html body{
 #submit-puzzle-number-button{
     display: block;
     margin: auto;
+    margin-top: 10px;
+    margin-bottom: 3px;
 }
 
 #main-page {
@@ -99,7 +96,11 @@ button {
     border-radius: 4px;
 }
 
-button:hover {
+#left-menu button:hover, #right-menu button:hover {
+    background-color: #8b203b 
+}
+
+#left-menu div:hover {
     background-color: #8b203b 
 }
 
