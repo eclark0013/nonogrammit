@@ -1,6 +1,7 @@
 let currentUser
 let puzzleNumber
 let currentPuzzle
+let currentGame
 let time
 let test
 
@@ -18,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchNewPuzzle()
 })
 
+// set up the page start
 function addLeftMenu(){
   let leftMenu = document.createElement("div")
   leftMenu.id = "left-menu"
@@ -243,6 +245,12 @@ function addRevealMistakesButton(){
   }
 }
 
+function clearMessage(){
+  document.getElementById("puzzle-message-container").innerHTML = ""
+}
+// set up the page end
+
+
 // puzzle set up start
 function makePuzzleDiv(){
   if (!document.getElementById("puzzle")){
@@ -349,12 +357,9 @@ function enterColumnParamsData(puzzle){
     }
   }
 }
-// puzzle set up finish
+// puzzle set up end
 
-function clearMessage(){
-  document.getElementById("puzzle-message-container").innerHTML = ""
-}
-
+// fetch start
 function fetchSpecifiedPuzzle(puzzleNumber){
   fetch(`http://localhost:3000/puzzles/${puzzleNumber}`)
     .then((response) => {
@@ -435,8 +440,26 @@ function setCurrentPuzzle(object){
   let attributes = object["data"]["attributes"]
   currentPuzzle = new Puzzle(object.data.id, attributes["column_params"], attributes["row_params"], attributes["column_max"], attributes["row_max"], attributes["solution"])
 }
+// fetch end
+function handleLoginError(objectWithErrorMessage){
+  let errorMessageDiv
+  if (document.getElementById("error-message")){
+    errorMessageDiv = document.getElementById("error-message")
+  }
+  else {
+    errorMessageDiv = document.createElement("div")
+    errorMessageDiv.id = "error-message"
+    document.getElementById("login-form-container").appendChild(errorMessageDiv)
+  }
+  errorMessageDiv.innerHTML = objectWithErrorMessage.message
+}
 
-// create a new user
+function removeErrorMessage(){
+  if (document.getElementById("error-message")){
+    document.getElementById("error-message").style.display = "none"
+  }
+}
+
 function fetchUser(username, password){
   let configObj = {
       method: "POST",
@@ -454,41 +477,32 @@ function fetchUser(username, password){
           return response.json();
       })
       .then(function(object) {
-        console.log(object)
-        if (object.message){
-          let errorMessageDiv
-          if (document.getElementById("error-message")){
-            errorMessageDiv = document.getElementById("error-message")
-          }
-          else {
-            errorMessageDiv = document.createElement("div")
-            errorMessageDiv.id = "error-message"
-            document.getElementById("login-form-container").appendChild(errorMessageDiv)
-          }
-          errorMessageDiv.innerHTML = object.message
+        if (object.error_message){
+          handleLoginError(object)
         }
         else {
           let userAttributes = object["data"]["attributes"]
           currentUser = new User(userAttributes.id, userAttributes.username)
-          if (currentUser.username){
-            if (document.getElementById("error-message")){
-              document.getElementById("error-message").style.display = "none"
-            }
-            addUsernameDiv(currentUser.username)
-            if (currentUser.username !== "guest"){
-              document.getElementById("login-logout-button").innerHTML = "Log out"
-              document.getElementById("login-form-container").style.display = "none"
-            }
+          addUsernameDiv(currentUser.username)
+          removeErrorMessage()
+          if (currentUser.username !== "guest"){
+            document.getElementById("login-logout-button").innerHTML = "Log out"
+            document.getElementById("login-form-container").style.display = "none"
           }
           if (puzzleNumber){
-            currentUser.currentPuzzle = {id: puzzleNumber}
-            // time = time
+            currentPuzzle.id = puzzleNumber
           }
+          updateGame(undefined, currentPuzzle)
         }
       })
       .catch(function(error) {
         console.log(error.message);
       });
+}
+
+function updateGame(currentUser, currentPuzzle){
+  currentGame.user = currentUser
+  currentGame.puzzle = currentPuzzle
 }
 
 // display puzzle number
@@ -576,7 +590,6 @@ class User {
             console.log(error.message);
         }
     );
-    return currentUser
   }
   
   checkSolution(){
@@ -662,4 +675,5 @@ class Puzzle{
 // change menu bar to top if screen is too thin, or even to opening three-line menu
 // when to create new puzzles...? and if I don't create on fetchNewPuzzle then I should generate random number (but how to know the bounds?) here and find puzzle
 // user on database end does not know current puzzle
+// strong params?
 
