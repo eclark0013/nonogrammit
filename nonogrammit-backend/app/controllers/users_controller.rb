@@ -31,12 +31,12 @@ class UsersController < ApplicationController
         end
         if user
             if user.valid?
-                render json: user
+                render json: UserSerializer.new(user)
             else # you set a user, but that user is not valid
                 render json: {message: "Invalid entry for new user (both username and password required)."}
             end
         else # you found a true username but have the wrong password for it
-            render json: {message: "Invalid password for returning user (username already taken/incorrect password)."}
+            render json: {message: "Invalid entry for returning user (username already taken/incorrect password)."}
         end
     end
 

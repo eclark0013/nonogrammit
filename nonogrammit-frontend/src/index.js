@@ -380,7 +380,32 @@ fetch("http://localhost:3000/puzzles", configObj)
         return response.json();
     })
     .then(function(object) {
+      console.log(object)
       setUpNewPuzzle(object)
+    })
+    .catch(function(error) {
+      console.log(error.message);
+    });
+}
+
+function fetchNewGame(user){
+  let configObj = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({
+      "user_id": user.id,
+      "puzzle_id": user.currentPuzzle.id
+    })
+  };
+fetch("http://localhost:3000/games", configObj)
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(object) {
+      console.log(object)
     })
     .catch(function(error) {
       console.log(error.message);
@@ -403,6 +428,7 @@ function setUpNewPuzzle(object){
   addTimer()
   stopParty()
   clearMessage()
+  // fetchNewGame(currentUser)
 }
 
 function setCurrentPuzzle(object){
@@ -441,20 +467,23 @@ function fetchUser(username, password){
           }
           errorMessageDiv.innerHTML = object.message
         }
-        currentUser = new User(object.id, object.username, undefined, 0)
-        if (currentUser.username){
-          if (document.getElementById("error-message")){
-            document.getElementById("error-message").style.display = "none"
+        else {
+          let userAttributes = object["data"]["attributes"]
+          currentUser = new User(userAttributes.id, userAttributes.username)
+          if (currentUser.username){
+            if (document.getElementById("error-message")){
+              document.getElementById("error-message").style.display = "none"
+            }
+            addUsernameDiv(currentUser.username)
+            if (currentUser.username !== "guest"){
+              document.getElementById("login-logout-button").innerHTML = "Log out"
+              document.getElementById("login-form-container").style.display = "none"
+            }
           }
-          addUsernameDiv(currentUser.username)
-          if (currentUser.username !== "guest"){
-            document.getElementById("login-logout-button").innerHTML = "Log out"
-            document.getElementById("login-form-container").style.display = "none"
+          if (puzzleNumber){
+            currentUser.currentPuzzle = {id: puzzleNumber}
+            // time = time
           }
-        }
-        if (puzzleNumber){
-          currentUser.currentPuzzle = {id: puzzleNumber}
-          // time = time
         }
       })
       .catch(function(error) {
@@ -505,11 +534,11 @@ function stopParty(){
 
 // classes
 class User {
-  constructor(id, username, currentPuzzle, time){
+  constructor(id, username, currentPuzzle, games){
     this.id = id
     this.username = username    
     this.currentPuzzle = currentPuzzle
-    this.time = time
+    this.games = games
   }
   sayHello() {
     console.log(`Hi, i'm ${this.username} with id of ${this.id}`)
@@ -585,6 +614,32 @@ class User {
       }
     }
   }
+
+  updateUser(){
+    let configObj = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+          "current_puzzle": this.currentPuzzle,
+          "games": this.games
+        }
+      )
+    };
+    fetch(`http://localhost:3000/users/${this.id}`, configObj)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(object) {
+          console.log(object)
+        })
+        .catch(function(error) {
+            console.log(error.message);
+        }
+    );
+  }
 }
 
 class Puzzle{
@@ -599,9 +654,12 @@ class Puzzle{
 }
 
 // games class can keep track of users puzzle records and history, best times feature on right menu with a user's best times so far (just time and puzzle #)
+// # of puzzles started, # of puzzles completed, best completion time, last completed puzzle
 // organize functions into classes (html handling, puzzle making, etc.)
 // remove dots in betwen numbers in row paramters
 // center numbers in column parameters
 // make puzzzle scroll below certain px
 // change menu bar to top if screen is too thin, or even to opening three-line menu
+// when to create new puzzles...? and if I don't create on fetchNewPuzzle then I should generate random number (but how to know the bounds?) here and find puzzle
+// user on database end does not know current puzzle
 
