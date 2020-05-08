@@ -492,7 +492,7 @@ function fetchUser(username, password){
           if (puzzleNumber){
             currentPuzzle.id = puzzleNumber
           }
-          updateGame(undefined, currentPuzzle)
+          updateGame()
         }
       })
       .catch(function(error) {
@@ -500,7 +500,10 @@ function fetchUser(username, password){
       });
 }
 
-function updateGame(currentUser, currentPuzzle){
+function updateGame(){
+  if (!currentGame || !(currentGame.user || currentGame.puzzle)){
+    currentGame = new Game()
+  }
   currentGame.user = currentUser
   currentGame.puzzle = currentPuzzle
 }
@@ -519,7 +522,6 @@ function addPuzzleNumberHeader(puzzleNumber){
 }
 
 let startParty
-
 function puzzleParty(speed, quantity){
   startParty = setInterval(partySquare, parseInt(speed)) 
   function partySquare(){
@@ -547,28 +549,26 @@ function stopParty(){
 }
 
 // classes
-class User {
-  constructor(id, username, currentPuzzle, games){
-    this.id = id
-    this.username = username    
-    this.currentPuzzle = currentPuzzle
-    this.games = games
+class Game {
+  constructor(user, puzzle){
+    this.user = user
+    this.puzzle = puzzle
   }
-  sayHello() {
-    console.log(`Hi, i'm ${this.username} with id of ${this.id}`)
+
+  showYourself(){
+    console.log(`user: ${this.user}, puzzle: ${this.puzzle}`)
   }
-  
-  postCurrentPuzzleStatus(){
-    let currentPuzzleStatus = {}
-    currentPuzzleStatus.id = currentPuzzle.id
+
+  // formerly postCurrentPuzzleStatus()
+  updateGame(){
+    this.puzzle.id = currentPuzzle.id
     let shaded = document.querySelectorAll("[status='1']")
     let shadedArray = Array.from(shaded)
     let shadedSquaresCoordinates
     for (let i=0; i<shadedArray.length; i++){
       shadedSquaresCoordinates = shadedArray.map(e => e.id)
     }    
-    currentPuzzleStatus.shaded = shadedSquaresCoordinates
-    this.currentPuzzle = currentPuzzleStatus
+    this.puzzle.shaded = shadedSquaresCoordinates
     let configObj = {
         method: "PATCH",
         headers: {
@@ -576,20 +576,30 @@ class User {
           "Accept": "application/json"
         },
         body: JSON.stringify({
-            "current_puzzle": currentPuzzleStatus
-          }
-        )
+            "puzzle": this.puzzle,
+            "user": this.user
+        })
       };
-    fetch(`http://localhost:3000/users/${this.id}`, configObj)
+    fetch(`http://localhost:3000/games/${this.id}`, configObj)
         .then(function(response) {
             return response.json();
         })
         .then(function(object) {
+          console.log(object)
         })
         .catch(function(error) {
             console.log(error.message);
         }
     );
+  }
+}
+
+class User {
+  constructor(id, username, currentPuzzle, games){
+    this.id = id
+    this.username = username    
+    this.currentPuzzle = currentPuzzle
+    this.games = games
   }
   
   checkSolution(){
