@@ -19,7 +19,7 @@ u2.save
 u3 = User.create(id: 3, username: "joey", password: "clark")
 u3.save
 
-3.times do
+15.times do
     p = Puzzle.new
     p.add_info
     p.save

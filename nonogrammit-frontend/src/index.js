@@ -209,7 +209,7 @@ function addCheckSolutionPuzzleButton(){
     checkSolutionButton.className = "page-bottom-button"
     checkSolutionButton.innerHTML = "Check Solution"
     checkSolutionButton.addEventListener("click", () => {
-      currentUser.checkSolution()
+      currentGame.checkSolution()
     })
     document.getElementById("left-menu").appendChild(checkSolutionButton)
   }
@@ -490,9 +490,9 @@ function fetchUser(username, password){
             document.getElementById("login-form-container").style.display = "none"
           }
           if (puzzleNumber){
-            currentPuzzle.id = puzzleNumber
+            // currentPuzzle.id = puzzleNumber
           }
-          updateGame()
+          updateCurrentGame()
         }
       })
       .catch(function(error) {
@@ -500,12 +500,13 @@ function fetchUser(username, password){
       });
 }
 
-function updateGame(){
+function updateCurrentGame(){
   if (!currentGame || !(currentGame.user || currentGame.puzzle)){
     currentGame = new Game()
   }
   currentGame.user = currentUser
   currentGame.puzzle = currentPuzzle
+  currentGame.updateGame()
 }
 
 // display puzzle number
@@ -592,21 +593,12 @@ class Game {
         }
     );
   }
-}
 
-class User {
-  constructor(id, username, currentPuzzle, games){
-    this.id = id
-    this.username = username    
-    this.currentPuzzle = currentPuzzle
-    this.games = games
-  }
-  
   checkSolution(){
-    let user = this.postCurrentPuzzleStatus()
-    if (user.currentPuzzle.shaded){
-      let currentPuzzleShaded = user.currentPuzzle.shaded
-      let correctShadedSquares = currentPuzzle.solution.filter(e => currentPuzzleShaded.includes(e))
+    this.updateGame()
+    if (this.puzzle.shaded){
+      let currentShaded = this.puzzle.shaded
+      let correctShadedSquares = this.puzzle.solution.filter(e => currentShaded.includes(e))
       let puzzleMessage
       if (document.getElementById("puzzle-message")){
         puzzleMessage = document.getElementById("puzzle-message")
@@ -617,25 +609,35 @@ class User {
         document.getElementById("puzzle-message-container").appendChild(puzzleMessage)
       }
       if (currentPuzzle.solution.length === correctShadedSquares.length){
-        puzzleMessage.innerHTML = `PARTY LIKE ITS YOUR BIRTHDAY. YOU DID IT! All ${currentPuzzleShaded.length} squares!`
+        puzzleMessage.innerHTML = `PARTY LIKE ITS YOUR BIRTHDAY. YOU DID IT! All ${currentShaded.length} squares!`
         puzzleParty(150, 40)
         setTimeout(stopParty, 5000)
       }
       else{
-        puzzleMessage.innerHTML = `You submitted ${currentPuzzleShaded.length} shaded squares. ${correctShadedSquares.length} of those are correct.`
-        console.log(`You submitted ${currentPuzzleShaded.length} shaded squares. ${correctShadedSquares.length} of those are correct.`)
+        let statusMessage = `You have ${currentShaded.length-correctShadedSquares.length} mistakes and ${this.puzzle.solution.length-correctShadedSquares.length} to go.`
+        puzzleMessage.innerHTML = statusMessage
+        console.log(statusMessage)
       }
     }
   }
 
   revealMistakes(){
-    let user = this.postCurrentPuzzleStatus()
-    if (user.currentPuzzle.shaded){
-      let incorrectShadedSquares = currentUser.currentPuzzle.shaded.filter(e=>!(currentPuzzle.solution.includes(e)))
+    this.updateGame()
+    if (this.puzzle.shaded){
+      let incorrectShadedSquares = this.puzzle.shaded.filter(e=>!(this.puzzle.solution.includes(e)))
       for (let i = 0; i<incorrectShadedSquares.length; i++){
         document.getElementById(incorrectShadedSquares[i]).setAttribute("status", "incorrect")
       }
     }
+  }
+}
+
+class User {
+  constructor(id, username, currentPuzzle, games){
+    this.id = id
+    this.username = username    
+    this.currentPuzzle = currentPuzzle
+    this.games = games
   }
 
   updateUser(){

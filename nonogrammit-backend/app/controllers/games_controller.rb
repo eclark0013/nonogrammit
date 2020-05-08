@@ -9,4 +9,8 @@ class GamesController < ApplicationController
         render json: GameSerializer.new(game)
     end
 
+    def update
+        byebug
+    end
+
 end
