@@ -5,6 +5,7 @@ class CreateGames < ActiveRecord::Migration[6.0]
       t.integer :puzzle_id
       t.integer :time
       t.string :shaded_squares, array: true, default: []
+      t.string :status, default: "incomplete"
 
       t.timestamps
     end

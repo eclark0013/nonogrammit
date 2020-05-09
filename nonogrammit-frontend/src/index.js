@@ -642,7 +642,7 @@ class Game {
 }
 
 class User {
-  constructor(id, username, currentPuzzle, games){
+  constructor(id, username, currentPuzzle, games, ){
     this.id = id
     this.username = username    
     this.currentPuzzle = currentPuzzle

@@ -11,8 +11,7 @@ class GamesController < ApplicationController
 
     def update
         game = Game.find_or_create_by(puzzle_id: params[:puzzle][:id], user_id: params[:user][:id])
-        game.update(time: params[:time])
-        byebug
+        game.update(time: params[:time], shaded_squares: params[:shaded_squares])
         render json: GameSerializer.new(game)
     end
 
