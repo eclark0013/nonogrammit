@@ -211,6 +211,7 @@ function addCheckSolutionPuzzleButton(){
     checkSolutionButton.className = "page-bottom-button"
     checkSolutionButton.innerHTML = "Check Solution"
     checkSolutionButton.addEventListener("click", () => {
+      fetchNewOrUpdateGame()
       currentGame.checkSolution()
     })
     document.getElementById("left-menu").appendChild(checkSolutionButton)
@@ -322,12 +323,7 @@ function addPuzzleSquares(puzzle){
         else {
           squareDiv.setAttribute("status", 0)
         }
-        if (!currentGame){
-          fetchNewGame()
-        }
-        else{
-          currentGame.updateGame()
-        }
+        fetchNewOrUpdateGame()
       })
       rowDiv.appendChild(squareDiv)
     }
@@ -373,16 +369,17 @@ function setUpNewPuzzle(object){
   addRevealSolutionButton()
   addRevealMistakesButton()
   addPuzzleNumberHeader(puzzleNumber)
-  setCurrentPuzzle(object)
+  updateCurrentPuzzle(object)
   displayNewPuzzle(currentPuzzle)
   addTimer()
   stopParty()
   clearMessage()
 }
 
-function setCurrentPuzzle(object){
+function updateCurrentPuzzle(object){
   let attributes = object["data"]["attributes"]
   currentPuzzle = new Puzzle(object.data.id, attributes["column_params"], attributes["row_params"], attributes["column_max"], attributes["row_max"], attributes["solution"])
+  fetchNewOrUpdateGame()
 }
 // puzzle set up end
 
@@ -452,7 +449,19 @@ function stopParty(){
 
 
 // Games
+function fetchNewOrUpdateGame(){
+  if (!currentGame){
+    fetchNewGame()
+  }
+  else{
+    currentGame.updateGame()
+  }
+}
+
 function fetchNewGame(){
+  if (!currentUser){
+    currentUser = new User(0)
+  }
   let configObj = {
     method: "POST",
     headers: {
@@ -469,7 +478,7 @@ fetch("http://localhost:3000/games", configObj)
         return response.json();
     })
     .then(function(object) {
-      currentGame = new Game(object["data"]["attributes"]["id"], currentUser, currentPuzzle)
+      currentGame = new Game(object["data"]["attributes"]["id"], currentUser, currentPuzzle, undefined, undefined, "incomplete")
     })
     .catch(function(error) {
       console.log(error.message);
@@ -477,20 +486,17 @@ fetch("http://localhost:3000/games", configObj)
 }
 
 class Game {
-  constructor(id, user, puzzle, time, shadedSquares){
+  constructor(id, user, puzzle, time, shadedSquares, status){
     this.id
     this.user = user
     this.puzzle = puzzle
     this.time = time
+    this.status = status
   }
 
-  updateGame(){
-    if (!this.user){
-      this.user = currentUser
-    }
-    if (!this.puzzle){
-      this.puzzle = currentPuzzle
-    }
+  updateGame(status){
+    this.user = currentUser
+    this.puzzle = currentPuzzle
     let shaded = document.querySelectorAll("[status='1']")
     let shadedArray = Array.from(shaded)
     let shadedSquaresCoordinates
@@ -499,6 +505,9 @@ class Game {
     }    
     this.shadedSquares = shadedSquaresCoordinates
     this.time = time()
+    if (status){
+      this.status = status
+    }
     let configObj = {
         method: "PATCH",
         headers: {
@@ -509,7 +518,8 @@ class Game {
             "puzzle": this.puzzle,
             "user": this.user,
             "time": this.time,
-            "shaded_squares": this.shadedSquares
+            "shaded_squares": this.shadedSquares,
+            "status": this.status
         })
       };
     fetch(`http://localhost:3000/games/${this.id}`, configObj)
@@ -541,6 +551,7 @@ class Game {
       }
       if (this.puzzle.solution.length === correctShadedSquares.length){
         puzzleMessage.innerHTML = `PARTY LIKE ITS YOUR BIRTHDAY. YOU DID IT! All ${currentShaded.length} squares!`
+        this.updateGame("complete")
         puzzleParty(150, 40)
         setTimeout(stopParty, 5000)
       }
@@ -667,7 +678,7 @@ fetch("http://localhost:3000/puzzles", configObj)
       setUpNewPuzzle(object)
     })
     .catch(function(error) {
-      console.log(error.message);
+      console.log(error);
     });
 }
 
