@@ -66,6 +66,9 @@ function createRightMenuContainers(){
   let loginLogoutButtonContainer = document.createElement("div")
   loginLogoutButtonContainer.id = "login-logout-button-container"
   document.getElementById("right-menu").appendChild(loginLogoutButtonContainer)
+  let userRecordsContainer = document.createElement("div")
+  userRecordsContainer.id = "user-records-container"
+  document.getElementById("right-menu").appendChild(userRecordsContainer)
 }
 
 function addLoginLogoutButton(){
@@ -320,6 +323,7 @@ function addPuzzleSquares(puzzle){
         else {
           squareDiv.setAttribute("status", 0)
         }
+        updateCurrentGame()
       })
       rowDiv.appendChild(squareDiv)
     }
@@ -479,6 +483,7 @@ function fetchUser(username, password){
           handleLoginError(object)
         }
         else {
+          console.log(object)
           let userAttributes = object["data"]["attributes"]
           currentUser = new User(userAttributes.id, userAttributes.username)
           addUsernameDiv(currentUser.username)
@@ -490,7 +495,7 @@ function fetchUser(username, password){
           if (puzzleNumber){
             // currentPuzzle.id = puzzleNumber
           }
-          updateCurrentGame()
+          currentUser.updateRecords()
         }
       })
       .catch(function(error) {
@@ -499,14 +504,10 @@ function fetchUser(username, password){
 }
 
 function updateCurrentGame(){
-  if (!currentGame || !(currentGame.user || currentGame.puzzle)){
+  if (!currentGame){
     currentGame = new Game()
   }
   currentGame.updateGame()
-  // currentGame.user = currentUser
-  // currentGame.puzzle = currentPuzzle
-  // currentGame.time = time()
-  // currentGame.updateGame()
 }
 
 function time(){
@@ -642,37 +643,38 @@ class Game {
 }
 
 class User {
-  constructor(id, username, currentPuzzle, games, ){
+  constructor(id, username){
     this.id = id
     this.username = username    
-    this.currentPuzzle = currentPuzzle
-    this.games = games
   }
 
-  updateUser(){
-    let configObj = {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({
-          "current_puzzle": this.currentPuzzle,
-          "games": this.games
-        }
-      )
-    };
-    fetch(`http://localhost:3000/users/${this.id}`, configObj)
+  updateRecords(){
+    fetch(`http://localhost:3000/users/${this.id}`)
         .then(function(response) {
             return response.json();
         })
         .then(function(object) {
-          console.log(object)
+          currentUser.totalGamesCount = object["data"]["attributes"]["total_games_count"]
+          currentUser.completedGamesCount = object["data"]["attributes"]["completed_games_count"]
+          currentUser.displayUpdatedRecords()
         })
         .catch(function(error) {
-            console.log(error.message);
+          console.log(error.message);
         }
     );
+  }
+
+  displayUpdatedRecords(){
+    let totalGamesRecord
+    if (!document.getElementById("total-games-record")){
+      totalGamesRecord = document.createElement("div")
+      totalGamesRecord.id = "total-games-record"
+      document.getElementById("user-records-container").appendChild(totalGamesRecord)
+    }
+    else{
+      totalGamesRecord = document.getElementById("total-games-record")
+    }
+    totalGamesRecord.innerHTML = `Total Games: ${this.totalGamesCount}`
   }
 }
 

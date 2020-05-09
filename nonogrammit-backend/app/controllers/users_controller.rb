@@ -16,8 +16,7 @@ class UsersController < ApplicationController
 
     def update
         user = User.find(params[:id])
-        byebug
-        user.current_puzzle = params[:current_puzzle]
+        # user.current_puzzle = params[:current_puzzle]
         user.save
         render json: UserSerializer.new(user)
     end
@@ -33,7 +32,7 @@ class UsersController < ApplicationController
         if user
             if user.valid?
                 render json: UserSerializer.new(user)
-            else # you set a user, but that user is not valid
+            else # you tried to create a user, but that user is not valid
                 render json: {error_message: "Invalid entry (both username and password required)."}
             end
         else # you found a true username but have the wrong password for it
