@@ -241,7 +241,6 @@ function addRevealMistakesButton(){
     revealMistakesButton.innerHTML = "Reveal Mistakes"
     revealMistakesButton.addEventListener("click", () => {
       currentGame.revealMistakes()
-      console.log("awyeah")
     })
     document.getElementById("left-menu").appendChild(revealMistakesButton)
   }
@@ -365,66 +364,6 @@ function enterColumnParamsData(puzzle){
     }
   }
 }
-// puzzle set up end
-
-// fetch start
-function fetchSpecifiedPuzzle(puzzleNumber){
-  fetch(`http://localhost:3000/puzzles/${puzzleNumber}`)
-    .then((response) => {
-      return response.json();
-    })
-    .then((object) => {
-      setUpNewPuzzle(object)
-    })
-}
-
-function fetchNewPuzzle(){
-  let configObj = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    body: JSON.stringify({
-    })
-  };
-fetch("http://localhost:3000/puzzles", configObj)
-    .then(function(response) {
-        return response.json();
-    })
-    .then(function(object) {
-      setUpNewPuzzle(object)
-    })
-    .catch(function(error) {
-      console.log(error.message);
-    });
-}
-
-function fetchNewGame(){
-  let configObj = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    body: JSON.stringify({
-      "user_id": currentUser.id,
-      "puzzle_id": currentPuzzle.id
-    })
-  };
-fetch("http://localhost:3000/games", configObj)
-    .then(function(response) {
-        return response.json();
-    })
-    .then(function(object) {
-      currentGame = new Game()
-      currentGame.user = currentUser
-      currentGame.puzzle = currentPuzzle
-    })
-    .catch(function(error) {
-      console.log(error.message);
-    });
-}
 
 function setUpNewPuzzle(object){
   let puzzleContainer = makePuzzleDiv()
@@ -445,7 +384,8 @@ function setCurrentPuzzle(object){
   let attributes = object["data"]["attributes"]
   currentPuzzle = new Puzzle(object.data.id, attributes["column_params"], attributes["row_params"], attributes["column_max"], attributes["row_max"], attributes["solution"])
 }
-// fetch end
+// puzzle set up end
+
 function handleLoginError(objectWithErrorMessage){
   let errorMessageDiv
   if (document.getElementById("error-message")){
@@ -463,51 +403,6 @@ function removeErrorMessage(){
   if (document.getElementById("error-message")){
     document.getElementById("error-message").style.display = "none"
   }
-}
-
-function fetchUser(username, password){
-  let configObj = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({
-          "username": username,
-          "password": password
-      })
-    };
-  fetch("http://localhost:3000/users", configObj)
-      .then(function(response) {
-          return response.json();
-      })
-      .then(function(object) {
-        if (object.error_message){
-          handleLoginError(object)
-        }
-        else {
-          let userAttributes = object["data"]["attributes"]
-          currentUser = new User(userAttributes.id, userAttributes.username)
-          // currentUser.updateRecords()
-          addUsernameDiv(currentUser.username)
-          removeErrorMessage()
-          if (currentUser.username !== "guest"){
-            document.getElementById("login-logout-button").innerHTML = "Log out"
-            document.getElementById("login-form-container").style.display = "none"
-          }
-          currentUser.updateRecords()
-        }
-      })
-      .catch(function(error) {
-        console.log(error.message);
-      });
-}
-
-function updateCurrentGame(){
-  if (!currentGame){
-    currentGame = new Game()
-  }
-  currentGame.updateGame()
 }
 
 function time(){
@@ -554,9 +449,36 @@ function stopParty(){
   clearInterval(startParty)
 }
 
-// classes
+
+
+// Games
+function fetchNewGame(){
+  let configObj = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({
+      "user_id": currentUser.id,
+      "puzzle_id": currentPuzzle.id
+    })
+  };
+fetch("http://localhost:3000/games", configObj)
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(object) {
+      currentGame = new Game(object["data"]["attributes"]["id"], currentUser, currentPuzzle)
+    })
+    .catch(function(error) {
+      console.log(error.message);
+    });
+}
+
 class Game {
-  constructor(user, puzzle, time, shadedSquares){
+  constructor(id, user, puzzle, time, shadedSquares){
+    this.id
     this.user = user
     this.puzzle = puzzle
     this.time = time
@@ -595,10 +517,9 @@ class Game {
             return response.json();
         })
         .then(function(object) {
-          console.log("updateGame has run")
+          console.log("Game has updated in the database.")
         })
         .catch(function(error) {
-          console.log("ERRORROROR")
           console.log(error.message);
         }
     );
@@ -606,8 +527,8 @@ class Game {
 
   checkSolution(){
     this.updateGame()
-    if (this.puzzle.shaded){
-      let currentShaded = this.puzzle.shaded
+    if (this.shadedSquares){
+      let currentShaded = this.shadedSquares
       let correctShadedSquares = this.puzzle.solution.filter(e => currentShaded.includes(e))
       let puzzleMessage
       if (document.getElementById("puzzle-message")){
@@ -633,13 +554,52 @@ class Game {
 
   revealMistakes(){
     this.updateGame()
-    if (this.puzzle.shaded){
-      let incorrectShadedSquares = this.puzzle.shaded.filter(e=>!(this.puzzle.solution.includes(e)))
+    if (this.shadedSquares){
+      let incorrectShadedSquares = this.shadedSquares.filter(e=>!(this.puzzle.solution.includes(e)))
       for (let i = 0; i<incorrectShadedSquares.length; i++){
         document.getElementById(incorrectShadedSquares[i]).setAttribute("status", "incorrect")
       }
     }
   }
+}
+
+// Users
+function fetchUser(username, password){
+  let configObj = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+          "username": username,
+          "password": password
+      })
+    };
+  fetch("http://localhost:3000/users", configObj)
+      .then(function(response) {
+          return response.json();
+      })
+      .then(function(object) {
+        if (object.error_message){
+          handleLoginError(object)
+        }
+        else {
+          let userAttributes = object["data"]["attributes"]
+          currentUser = new User(userAttributes.id, userAttributes.username)
+          // currentUser.updateRecords()
+          addUsernameDiv(currentUser.username)
+          removeErrorMessage()
+          if (currentUser.username !== "guest"){
+            document.getElementById("login-logout-button").innerHTML = "Log out"
+            document.getElementById("login-form-container").style.display = "none"
+          }
+          currentUser.updateRecords()
+        }
+      })
+      .catch(function(error) {
+        console.log(error.message);
+      });
 }
 
 class User {
@@ -676,6 +636,39 @@ class User {
     }
     totalGamesRecord.innerHTML = `Total Games: ${this.totalGamesCount}`
   }
+}
+
+// Puzzles
+function fetchSpecifiedPuzzle(puzzleNumber){
+  fetch(`http://localhost:3000/puzzles/${puzzleNumber}`)
+    .then((response) => {
+      return response.json();
+    })
+    .then((object) => {
+      setUpNewPuzzle(object)
+    })
+}
+
+function fetchNewPuzzle(){
+  let configObj = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({
+    })
+  };
+fetch("http://localhost:3000/puzzles", configObj)
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(object) {
+      setUpNewPuzzle(object)
+    })
+    .catch(function(error) {
+      console.log(error.message);
+    });
 }
 
 class Puzzle{
