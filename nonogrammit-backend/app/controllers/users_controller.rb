@@ -42,6 +42,6 @@ class UsersController < ApplicationController
 
     private
     def user_params
-        params.require(:user).permit(:username, :password, current_puzzle: [:id, :shaded])
+        params.require(:user).permit(:username, :password)
     end
 end

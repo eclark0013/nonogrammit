@@ -240,7 +240,7 @@ function addRevealMistakesButton(){
     revealMistakesButton.className = "page-bottom-button"
     revealMistakesButton.innerHTML = "Reveal Mistakes"
     revealMistakesButton.addEventListener("click", () => {
-      currentUser.revealMistakes()
+      currentGame.revealMistakes()
       console.log("awyeah")
     })
     document.getElementById("left-menu").appendChild(revealMistakesButton)
@@ -323,7 +323,12 @@ function addPuzzleSquares(puzzle){
         else {
           squareDiv.setAttribute("status", 0)
         }
-        updateCurrentGame()
+        if (!currentGame){
+          fetchNewGame()
+        }
+        else{
+          currentGame.updateGame()
+        }
       })
       rowDiv.appendChild(squareDiv)
     }
@@ -395,7 +400,7 @@ fetch("http://localhost:3000/puzzles", configObj)
     });
 }
 
-function fetchNewGame(user){
+function fetchNewGame(){
   let configObj = {
     method: "POST",
     headers: {
@@ -403,8 +408,8 @@ function fetchNewGame(user){
       "Accept": "application/json"
     },
     body: JSON.stringify({
-      "user_id": user.id,
-      "puzzle_id": user.currentPuzzle.id
+      "user_id": currentUser.id,
+      "puzzle_id": currentPuzzle.id
     })
   };
 fetch("http://localhost:3000/games", configObj)
@@ -412,7 +417,9 @@ fetch("http://localhost:3000/games", configObj)
         return response.json();
     })
     .then(function(object) {
-      console.log(object)
+      currentGame = new Game()
+      currentGame.user = currentUser
+      currentGame.puzzle = currentPuzzle
     })
     .catch(function(error) {
       console.log(error.message);
@@ -427,15 +434,11 @@ function setUpNewPuzzle(object){
   addRevealSolutionButton()
   addRevealMistakesButton()
   addPuzzleNumberHeader(puzzleNumber)
-  if (currentUser){
-    currentUser.currentPuzzle = {id: puzzleNumber}
-  }
   setCurrentPuzzle(object)
   displayNewPuzzle(currentPuzzle)
   addTimer()
   stopParty()
   clearMessage()
-  // fetchNewGame(currentUser)
 }
 
 function setCurrentPuzzle(object){
@@ -483,17 +486,14 @@ function fetchUser(username, password){
           handleLoginError(object)
         }
         else {
-          console.log(object)
           let userAttributes = object["data"]["attributes"]
           currentUser = new User(userAttributes.id, userAttributes.username)
+          // currentUser.updateRecords()
           addUsernameDiv(currentUser.username)
           removeErrorMessage()
           if (currentUser.username !== "guest"){
             document.getElementById("login-logout-button").innerHTML = "Log out"
             document.getElementById("login-form-container").style.display = "none"
-          }
-          if (puzzleNumber){
-            // currentPuzzle.id = puzzleNumber
           }
           currentUser.updateRecords()
         }
@@ -569,7 +569,6 @@ class Game {
     if (!this.puzzle){
       this.puzzle = currentPuzzle
     }
-    this.puzzle.id = currentPuzzle.id
     let shaded = document.querySelectorAll("[status='1']")
     let shadedArray = Array.from(shaded)
     let shadedSquaresCoordinates
@@ -596,10 +595,11 @@ class Game {
             return response.json();
         })
         .then(function(object) {
-          console.log(object)
+          console.log("updateGame has run")
         })
         .catch(function(error) {
-            console.log(error.message);
+          console.log("ERRORROROR")
+          console.log(error.message);
         }
     );
   }
@@ -618,7 +618,7 @@ class Game {
         puzzleMessage.id = "puzzle-message"
         document.getElementById("puzzle-message-container").appendChild(puzzleMessage)
       }
-      if (currentPuzzle.solution.length === correctShadedSquares.length){
+      if (this.puzzle.solution.length === correctShadedSquares.length){
         puzzleMessage.innerHTML = `PARTY LIKE ITS YOUR BIRTHDAY. YOU DID IT! All ${currentShaded.length} squares!`
         puzzleParty(150, 40)
         setTimeout(stopParty, 5000)
@@ -700,3 +700,4 @@ class Puzzle{
 // user on database end does not know current puzzle
 // strong params?
 
+// currentGame can not update because it does not have an id?
