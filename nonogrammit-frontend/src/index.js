@@ -2,7 +2,6 @@ let currentUser
 let puzzleNumber
 let currentPuzzle
 let currentGame
-let time
 let test
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -385,7 +384,6 @@ fetch("http://localhost:3000/puzzles", configObj)
         return response.json();
     })
     .then(function(object) {
-      console.log(object)
       setUpNewPuzzle(object)
     })
     .catch(function(error) {
@@ -504,9 +502,15 @@ function updateCurrentGame(){
   if (!currentGame || !(currentGame.user || currentGame.puzzle)){
     currentGame = new Game()
   }
-  currentGame.user = currentUser
-  currentGame.puzzle = currentPuzzle
   currentGame.updateGame()
+  // currentGame.user = currentUser
+  // currentGame.puzzle = currentPuzzle
+  // currentGame.time = time()
+  // currentGame.updateGame()
+}
+
+function time(){
+  return parseInt(document.getElementById("time").innerHTML.slice(6))
 }
 
 // display puzzle number
@@ -551,17 +555,19 @@ function stopParty(){
 
 // classes
 class Game {
-  constructor(user, puzzle){
+  constructor(user, puzzle, time, shadedSquares){
     this.user = user
     this.puzzle = puzzle
+    this.time = time
   }
 
-  showYourself(){
-    console.log(`user: ${this.user}, puzzle: ${this.puzzle}`)
-  }
-
-  // formerly postCurrentPuzzleStatus()
   updateGame(){
+    if (!this.user){
+      this.user = currentUser
+    }
+    if (!this.puzzle){
+      this.puzzle = currentPuzzle
+    }
     this.puzzle.id = currentPuzzle.id
     let shaded = document.querySelectorAll("[status='1']")
     let shadedArray = Array.from(shaded)
@@ -569,7 +575,8 @@ class Game {
     for (let i=0; i<shadedArray.length; i++){
       shadedSquaresCoordinates = shadedArray.map(e => e.id)
     }    
-    this.puzzle.shaded = shadedSquaresCoordinates
+    this.shadedSquares = shadedSquaresCoordinates
+    this.time = time()
     let configObj = {
         method: "PATCH",
         headers: {
@@ -578,7 +585,9 @@ class Game {
         },
         body: JSON.stringify({
             "puzzle": this.puzzle,
-            "user": this.user
+            "user": this.user,
+            "time": this.time,
+            "shaded_squares": this.shadedSquares
         })
       };
     fetch(`http://localhost:3000/games/${this.id}`, configObj)

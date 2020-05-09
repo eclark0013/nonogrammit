@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 2020_05_06_202343) do
     t.integer "user_id"
     t.integer "puzzle_id"
     t.integer "time"
+    t.string "shaded_squares", default: [], array: true
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

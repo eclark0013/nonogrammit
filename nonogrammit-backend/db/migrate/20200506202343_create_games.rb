@@ -4,6 +4,7 @@ class CreateGames < ActiveRecord::Migration[6.0]
       t.integer :user_id
       t.integer :puzzle_id
       t.integer :time
+      t.string :shaded_squares, array: true, default: []
 
       t.timestamps
     end
