@@ -10,4 +10,8 @@ class User < ApplicationRecord
     def total_games_count
         self.games.size
     end
+
+    def fastest_game
+        self.games.where(status: "complete").order(:time).first
+    end
 end

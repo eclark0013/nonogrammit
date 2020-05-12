@@ -137,7 +137,7 @@ button {
 }
 
 .column-params-square {
-    display: inline-flex;
+    display: inline-block;
     text-align: center;
     margin: 0 auto;
     border: 1px solid black;
@@ -152,7 +152,7 @@ button {
 }
 
 .bold-left-column-params-square {
-    display: inline-flex;
+    display: inline-block;
     text-align: center;
     margin: 0 auto;
     border: 1px solid black;

@@ -36,7 +36,7 @@ class UsersController < ApplicationController
                 render json: {error_message: "Invalid entry (both username and password required)."}
             end
         else # you found a true username but have the wrong password for it
-            render json: {error_message: "Invalid entry(username already taken/incorrect password)."}
+            render json: {error_message: "Invalid entry (username already taken/incorrect password)."}
         end
     end
 

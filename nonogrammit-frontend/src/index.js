@@ -60,12 +60,12 @@ function createRightMenuContainers(){
   let userInfoContainer = document.createElement("div")
   userInfoContainer.id = "user-info-container"
   document.getElementById("right-menu").appendChild(userInfoContainer)
-  let loginLogoutButtonContainer = document.createElement("div")
-  loginLogoutButtonContainer.id = "login-logout-button-container"
-  document.getElementById("right-menu").appendChild(loginLogoutButtonContainer)
   let userRecordsContainer = document.createElement("div")
   userRecordsContainer.id = "user-records-container"
   document.getElementById("right-menu").appendChild(userRecordsContainer)
+  let loginLogoutButtonContainer = document.createElement("div")
+  loginLogoutButtonContainer.id = "login-logout-button-container"
+  document.getElementById("right-menu").appendChild(loginLogoutButtonContainer)
 }
 
 function addLoginLogoutButton(){
@@ -223,6 +223,7 @@ function addRevealSolutionButton(){
       for (i=0; i<currentPuzzle.solution.length; i++){
         document.getElementById(currentPuzzle.solution[i]).setAttribute("status", "1")
       }
+      fetchNewOrUpdateGame()
     })
     document.getElementById("left-menu").appendChild(revealSolutionButton)
   }
@@ -284,7 +285,7 @@ function createRowParametersDivs(puzzleDiv, puzzle){
       rowParamsDiv.className = "bold-top-row-params"
     }
     rowParamsDiv.id = `row-${i}-params`
-    rowParamsDiv.innerHTML = puzzle.row_params[i].split(", ").join("...")
+    rowParamsDiv.innerHTML = puzzle.row_params[i].split(", ").join("&nbsp;&nbsp;&nbsp;")
     rowDiv.appendChild(rowParamsDiv)
   }
 }
@@ -385,7 +386,8 @@ function handleLoginError(objectWithErrorMessage){
     errorMessageDiv.id = "error-message"
     document.getElementById("login-form-container").appendChild(errorMessageDiv)
   }
-  errorMessageDiv.innerHTML = objectWithErrorMessage.message
+  errorMessageDiv.style.display = "inline-block"
+  errorMessageDiv.innerHTML = objectWithErrorMessage.error_message
 }
 
 function removeErrorMessage(){
@@ -595,7 +597,6 @@ function fetchUser(username, password){
       })
       .then(function(object) {
         if (object.error_message){
-          console.log(object)
           handleLoginError(object)
         }
         else {
@@ -629,6 +630,7 @@ class User {
         .then(function(object) {
           currentUser.totalGamesCount = object["data"]["attributes"]["total_games_count"]
           currentUser.completedGamesCount = object["data"]["attributes"]["completed_games_count"]
+          currentUser.fastestTime = object["data"]["attributes"]["fastest_game"]["time"]
           if (currentUser.username !== "guest"){
             currentUser.displayUpdatedRecords()
           }
@@ -663,6 +665,18 @@ class User {
       completedGamesRecord = document.getElementById("completed-games-record")
     }
     completedGamesRecord.innerHTML = `Completed Games: ${this.completedGamesCount}`
+
+    let fastestTimeRecord
+    if (!document.getElementById("fastest-time-record")){
+      fastestTimeRecord = document.createElement("div")
+      fastestTimeRecord.id = "fastest-time-record"
+      fastestTimeRecord.className = "user-record"
+      document.getElementById("user-records-container").appendChild(fastestTimeRecord)
+    }
+    else{
+      fastestTimeRecord = document.getElementById("completed-games-record")
+    }
+    fastestTimeRecord.innerHTML = `Best time: ${this.fastestTime} seconds`
   }
 }
 
@@ -710,9 +724,6 @@ class Puzzle{
   }
 }
 
-// make sure everything updates correctly- slow down and take inventory of what should update when
-// games class can keep track of users puzzle records and history, best times feature on right menu with a user's best times so far (just time and puzzle #)
-// # of puzzles started, # of puzzles completed, best completion time, last completed puzzle
 // organize functions into classes (html handling, puzzle making, etc.)
 // remove dots in betwen numbers in row paramters
 // center numbers in column parameters
