@@ -291,6 +291,17 @@ function createRowParametersDivs(puzzleDiv, puzzle){
 }
 
 function addPuzzleSquares(puzzle){
+  function changeStatus(square){
+    if (square.getAttribute("status") === "0"){
+      square.setAttribute("status", 1)
+    }
+    else if (square.getAttribute("status") === "1"){
+      square.setAttribute("status", 0)
+    }
+    else {
+      square.setAttribute("status", 0)
+    }
+  }
   for (let i=0; i<25; i++){
     let rowDiv = document.getElementById(`row-${i+1}`)
     for (let k=0; k<25; k++){
@@ -307,18 +318,56 @@ function addPuzzleSquares(puzzle){
       }
       squareDiv.id = `${k+1}-${i+1}`
       squareDiv.setAttribute("status", 0)
-      squareDiv.addEventListener("click", () => {
-        if (squareDiv.getAttribute("status") === "0"){
-          squareDiv.setAttribute("status", 1)
-        }
-        else if (squareDiv.getAttribute("status") === "1"){
-          squareDiv.setAttribute("status", 0)
-        }
-        else {
-          squareDiv.setAttribute("status", 0)
-        }
+      
+      // normal
+      // squareDiv.addEventListener("click", () => {
+      //   if (squareDiv.getAttribute("status") === "0"){
+      //     squareDiv.setAttribute("status", 1)
+      //   }
+      //   else if (squareDiv.getAttribute("status") === "1"){
+      //     squareDiv.setAttribute("status", 0)
+      //   }
+      //   else {
+      //     squareDiv.setAttribute("status", 0)
+      //   }
+      //   fetchNewOrUpdateGame()
+      // })
+      // normal
+
+
+      // dragging solution
+      // squareDiv.draggable = "true"
+      // squareDiv.addEventListener("dragenter", () => {
+      //   if (squareDiv.getAttribute("status") === "0"){
+      //     squareDiv.setAttribute("status", 1)
+      //   }
+      //   else if (squareDiv.getAttribute("status") === "1"){
+      //     squareDiv.setAttribute("status", 0)
+      //   }
+      //   else {
+      //     squareDiv.setAttribute("status", 0)
+      //   }
+      //   fetchNewOrUpdateGame()
+      // })
+
+      // mousedown
+      squareDiv.addEventListener("mousedown", () => {
+        changeStatus(squareDiv)
+        squareDiv.setAttribute("click", "start")
+      })
+      squareDiv.addEventListener("mouseup", () => {
+        let start = document.querySelector('div[click="start"]')
+        let startRow = start.id.split("-")[0]
+        let startColumn = start.id.split("-")[1]
+        let endRow = squareDiv.id.split("-")[0]
+        let endColumn = squareDiv.id.split("-")[1]
+        console.log(`This started on: ${start.id}, which is row ${startRow} and column ${startColumn}. It ended on: ${squareDiv.id}, which is row ${endRow} and column ${endColumn}.`)
+        start.removeAttribute("click")
+        changeStatus(squareDiv)
         fetchNewOrUpdateGame()
       })
+      // testing
+
       rowDiv.appendChild(squareDiv)
     }
   }
@@ -725,10 +774,6 @@ class Puzzle{
 }
 
 // organize functions into classes (html handling, puzzle making, etc.)
-// remove dots in betwen numbers in row paramters
-// center numbers in column parameters
-// make puzzzle scroll below certain px
 // change menu bar to top if screen is too thin, or even to opening three-line menu
 // when to create new puzzles...? and if I don't create on fetchNewPuzzle then I should generate random number (but how to know the bounds?) here and find puzzle
-// user on database end does not know current puzzle
 // strong params?
