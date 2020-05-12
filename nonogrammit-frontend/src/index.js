@@ -595,6 +595,7 @@ function fetchUser(username, password){
       })
       .then(function(object) {
         if (object.error_message){
+          console.log(object)
           handleLoginError(object)
         }
         else {
@@ -643,13 +644,25 @@ class User {
     if (!document.getElementById("total-games-record")){
       totalGamesRecord = document.createElement("div")
       totalGamesRecord.id = "total-games-record"
-      totalGamesRecord.class = "user-record"
+      totalGamesRecord.className = "user-record"
       document.getElementById("user-records-container").appendChild(totalGamesRecord)
     }
     else{
       totalGamesRecord = document.getElementById("total-games-record")
     }
     totalGamesRecord.innerHTML = `Total Games: ${this.totalGamesCount}`
+
+    let completedGamesRecord
+    if (!document.getElementById("completed-games-record")){
+      completedGamesRecord = document.createElement("div")
+      completedGamesRecord.id = "completed-games-record"
+      completedGamesRecord.className = "user-record"
+      document.getElementById("user-records-container").appendChild(completedGamesRecord)
+    }
+    else{
+      completedGamesRecord = document.getElementById("completed-games-record")
+    }
+    completedGamesRecord.innerHTML = `Completed Games: ${this.completedGamesCount}`
   }
 }
 
