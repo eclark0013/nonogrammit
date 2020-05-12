@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   addSelectPuzzleButton()
   fetchUser("guest", "password")
   fetchNewPuzzle()
+  addCredits()
 })
 
 // set up the page start
@@ -55,6 +56,9 @@ function createMainPageContainers(){
   let puzzleContainer = document.createElement("div")
   puzzleContainer.id = "puzzle-container"
   mainPage.appendChild(puzzleContainer)
+  let creditsContainer = document.createElement("div")
+  creditsContainer.id = "credits-container"
+  mainPage.appendChild(creditsContainer)
 }
 
 function createRightMenuContainers(){
@@ -245,6 +249,14 @@ function addRevealMistakesButton(){
 function clearMessage(){
   document.getElementById("puzzle-message-container").innerHTML = ""
 }
+
+function addCredits(){
+  let creditsDiv = document.createElement("div")
+  creditsDiv.id = "credits"
+  document.getElementById("credits-container").appendChild(creditsDiv)
+  creditsDiv.innerHTML = "Made by Eric Clark"
+}
+
 // set up the page end
 
 
@@ -324,23 +336,6 @@ function addPuzzleSquares(puzzle){
       }
       squareDiv.id = `${j+1}-${i+1}`
       squareDiv.setAttribute("status", 0)
-      
-      // squareDiv.addEventListener("click", () => {
-      //   if (squareDiv.getAttribute("status") === "0"){
-      //     squareDiv.setAttribute("status", 1)
-      //   }
-      //   else if (squareDiv.getAttribute("status") === "1"){
-      //     squareDiv.setAttribute("status", 0)
-      //   }
-      //   else {
-      //     squareDiv.setAttribute("status", 0)
-      //   }
-      //   if (squareDiv.getAttribute("highlighted") === true){
-      //     console.log("Yup this is highlighted.")
-      //   }
-      //   fetchNewOrUpdateGame()
-      // })
-      
       squareDiv.addEventListener("mousedown", () => {
         changePotentialStatus(squareDiv)
         squareDiv.setAttribute("click", "start")
@@ -816,5 +811,4 @@ class Puzzle{
 // change menu bar to top if screen is too thin, or even to opening three-line menu
 // when to create new puzzles...? and if I don't create on fetchNewPuzzle then I should generate random number (but how to know the bounds?) here and find puzzle
 // strong params?
-// add some space on bottom
 // figure out a way to treat leaving the puzzle as a mouseup event
