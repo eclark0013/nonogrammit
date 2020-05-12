@@ -4,4 +4,6 @@ Rails.application.routes.draw do
   get '/puzzleInfo', to: 'puzzles#puzzleInfo'
   resources :users #, only: [:create, :index, :show]
   resources :puzzles
+  resources :games
+  
 end

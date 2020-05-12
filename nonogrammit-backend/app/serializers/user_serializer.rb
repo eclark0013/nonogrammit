@@ -1,7 +1,5 @@
 class UserSerializer
-    # accepts_nested_attributes_for :current_puzzle
-    
     include FastJsonapi::ObjectSerializer
-    attributes :username, :id, :current_puzzle
+    attributes :id, :username, :games, :completed_games_count, :total_games_count, :fastest_game
 end
   
