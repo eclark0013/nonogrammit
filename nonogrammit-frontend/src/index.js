@@ -3,6 +3,7 @@ let puzzleNumber
 let currentPuzzle
 let currentGame
 let test
+let highlightedSquares = []
 
 document.addEventListener("DOMContentLoaded", () => {
   addLeftMenu()
@@ -302,24 +303,28 @@ function addPuzzleSquares(puzzle){
       square.setAttribute("status", 0)
     }
   }
+  function changePotentialStatus(square){
+    if (square.getAttribute("status") !== "1"){
+      square.setAttribute("highlighted", true)
+    }
+  }
   for (let i=0; i<25; i++){
     let rowDiv = document.getElementById(`row-${i+1}`)
-    for (let k=0; k<25; k++){
+    for (let j=0; j<25; j++){
       let squareDiv = document.createElement("div")
       squareDiv.className = "puzzle-square"
-      if (i%5 === 0 && k%5 === 0){
+      if (i%5 === 0 && j%5 === 0){
         squareDiv.className = "bold-top-and-left-puzzle-square"
       }
       else if (i%5 === 0){
         squareDiv.className = "bold-top-puzzle-square"
       }
-      else if (k%5 === 0){
+      else if (j%5 === 0){
         squareDiv.className = "bold-left-puzzle-square"
       }
-      squareDiv.id = `${k+1}-${i+1}`
+      squareDiv.id = `${j+1}-${i+1}`
       squareDiv.setAttribute("status", 0)
       
-      // normal
       // squareDiv.addEventListener("click", () => {
       //   if (squareDiv.getAttribute("status") === "0"){
       //     squareDiv.setAttribute("status", 1)
@@ -330,44 +335,78 @@ function addPuzzleSquares(puzzle){
       //   else {
       //     squareDiv.setAttribute("status", 0)
       //   }
-      //   fetchNewOrUpdateGame()
-      // })
-      // normal
-
-
-      // dragging solution
-      // squareDiv.draggable = "true"
-      // squareDiv.addEventListener("dragenter", () => {
-      //   if (squareDiv.getAttribute("status") === "0"){
-      //     squareDiv.setAttribute("status", 1)
-      //   }
-      //   else if (squareDiv.getAttribute("status") === "1"){
-      //     squareDiv.setAttribute("status", 0)
-      //   }
-      //   else {
-      //     squareDiv.setAttribute("status", 0)
+      //   if (squareDiv.getAttribute("highlighted") === true){
+      //     console.log("Yup this is highlighted.")
       //   }
       //   fetchNewOrUpdateGame()
       // })
-
-      // mousedown
+      
       squareDiv.addEventListener("mousedown", () => {
-        changeStatus(squareDiv)
+        changePotentialStatus(squareDiv)
         squareDiv.setAttribute("click", "start")
+        highlightedSquares.push(squareDiv)
+      })
+      squareDiv.addEventListener("mouseover", () => {
+        if(document.querySelector('div[click="start"]')){
+          let start = document.querySelector('div[click="start"]')
+          let squareDivColumn = parseInt(squareDiv.id.split("-")[0])
+          let squareDivRow = parseInt(squareDiv.id.split("-")[1])
+          let startColumn = parseInt(start.id.split("-")[0])
+          let startRow = parseInt(start.id.split("-")[1])
+          if (squareDivRow === startRow){
+            let formerlyHighlightedSqures = highlightedSquares.slice()
+            highlightedSquares = []
+            let leftHighlightedBound = Math.min(startColumn, squareDivColumn)
+            let rightHighlightedBound = Math.max(startColumn, squareDivColumn)
+            for(let k=leftHighlightedBound; k<=rightHighlightedBound; k++){
+              highlightedSquares.push(document.getElementById(`${k}-${startRow}`))
+            }
+            for(let n=0; n<highlightedSquares.length; n++){
+              changePotentialStatus(highlightedSquares[n])
+            }
+            for(let m=0; m<formerlyHighlightedSqures.length; m++){
+              if(!(highlightedSquares.includes(formerlyHighlightedSqures[m]))){
+                formerlyHighlightedSqures[m].removeAttribute("highlighted")
+              }
+            }
+          }
+          if (squareDivColumn === startColumn){
+            let formerlyHighlightedSqures = highlightedSquares.slice()
+            highlightedSquares = []
+            let lowerHighlightedBound = Math.min(startRow, squareDivRow)
+            let upperHighlightedBound = Math.max(startRow, squareDivRow)
+            for(let k=lowerHighlightedBound; k<=upperHighlightedBound; k++){
+              highlightedSquares.push(document.getElementById(`${startColumn}-${k}`))
+            }
+            for(let n=0; n<highlightedSquares.length; n++){
+              changePotentialStatus(highlightedSquares[n])
+            }
+            for(let m=0; m<formerlyHighlightedSqures.length; m++){
+              if(!(highlightedSquares.includes(formerlyHighlightedSqures[m]))){
+                formerlyHighlightedSqures[m].removeAttribute("highlighted")
+              }
+            }
+          }
+        }
       })
       squareDiv.addEventListener("mouseup", () => {
-        let start = document.querySelector('div[click="start"]')
-        let startRow = start.id.split("-")[0]
-        let startColumn = start.id.split("-")[1]
-        let endRow = squareDiv.id.split("-")[0]
-        let endColumn = squareDiv.id.split("-")[1]
-        console.log(`This started on: ${start.id}, which is row ${startRow} and column ${startColumn}. It ended on: ${squareDiv.id}, which is row ${endRow} and column ${endColumn}.`)
-        start.removeAttribute("click")
-        changeStatus(squareDiv)
+        if(document.querySelector('div[click="start"]')){
+          let start = document.querySelector('div[click="start"]')
+          start.removeAttribute("click")
+          for (let a=0; a<highlightedSquares.length; a++){
+            if (highlightedSquares.length>1){
+              highlightedSquares[a].setAttribute("status", "1")
+            }
+            else{
+              changeStatus(highlightedSquares[a])
+            }
+            highlightedSquares[a].removeAttribute("highlighted")
+          }
+          console.log(highlightedSquares)
+          highlightedSquares = []
+        }
         fetchNewOrUpdateGame()
       })
-      // testing
-
       rowDiv.appendChild(squareDiv)
     }
   }
@@ -777,3 +816,5 @@ class Puzzle{
 // change menu bar to top if screen is too thin, or even to opening three-line menu
 // when to create new puzzles...? and if I don't create on fetchNewPuzzle then I should generate random number (but how to know the bounds?) here and find puzzle
 // strong params?
+// add some space on bottom
+// figure out a way to treat leaving the puzzle as a mouseup event

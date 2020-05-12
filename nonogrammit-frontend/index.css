@@ -260,6 +260,10 @@ button {
     background-color: rgb(63, 63, 63);
 }
 
+[highlighted = true] {
+    background-color: rgb(116, 116, 116);
+}
+
 [status = "party"] {
     background-color: rgb(35, 247, 16);
 }
