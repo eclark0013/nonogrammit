@@ -33,7 +33,7 @@ g4 = Game.create(user_id: 2, puzzle_id: 4, time: 3271)
 g5 = Game.create(user_id: 2, puzzle_id: 5, time: 2414, status: "complete")
 
 
-g6 = Game.create(user_id: 3, puzzle_id: 1, time: 1632)
+g6 = Game.create(user_id: 3, puzzle_id: 1, time: 1632, status: "complete")
 g7 = Game.create(user_id: 3, puzzle_id: 3, time: 937)
 g8 = Game.create(user_id: 3, puzzle_id: 5, time: 2194)
 

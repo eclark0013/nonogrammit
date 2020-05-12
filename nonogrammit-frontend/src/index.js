@@ -54,9 +54,6 @@ function createMainPageContainers(){
   let puzzleContainer = document.createElement("div")
   puzzleContainer.id = "puzzle-container"
   mainPage.appendChild(puzzleContainer)
-  let pageBottomButtonsContainer = document.createElement("div")
-  pageBottomButtonsContainer.id = "page-bottom-buttons-container"
-  mainPage.appendChild(pageBottomButtonsContainer)
 }
 
 function createRightMenuContainers(){
@@ -184,7 +181,6 @@ function addRestartPuzzleButton(puzzleContainer){
   if (!document.getElementById("restart-puzzle-button")){
     let restartPuzzleButton = document.createElement("button")
     restartPuzzleButton.id = "restart-puzzle-button"
-    restartPuzzleButton.className = "page-bottom-button"
     restartPuzzleButton.innerHTML = "Restart"
     restartPuzzleButton.addEventListener("click", () => {
       resetAllSquares()
@@ -208,7 +204,6 @@ function addCheckSolutionPuzzleButton(){
   if (!document.getElementById("check-solution-button")){
     let checkSolutionButton = document.createElement("button")
     checkSolutionButton.id = "check-solution-button"
-    checkSolutionButton.className = "page-bottom-button"
     checkSolutionButton.innerHTML = "Check Solution"
     checkSolutionButton.addEventListener("click", () => {
       fetchNewOrUpdateGame()
@@ -222,7 +217,6 @@ function addRevealSolutionButton(){
   if (!document.getElementById("reveal-solution-button")){
     let revealSolutionButton = document.createElement("button")
     revealSolutionButton.id = "reveal-solution-button"
-    revealSolutionButton.className = "page-bottom-button"
     revealSolutionButton.innerHTML = "Reveal Solution"
     revealSolutionButton.addEventListener("click", () => {
       resetAllSquares()
@@ -238,7 +232,6 @@ function addRevealMistakesButton(){
   if (!document.getElementById("reveal-mistakes-button")){
     let revealMistakesButton = document.createElement("button")
     revealMistakesButton.id = "reveal-mistakes-button"
-    revealMistakesButton.className = "page-bottom-button"
     revealMistakesButton.innerHTML = "Reveal Mistakes"
     revealMistakesButton.addEventListener("click", () => {
       currentGame.revealMistakes()
@@ -379,7 +372,6 @@ function setUpNewPuzzle(object){
 function updateCurrentPuzzle(object){
   let attributes = object["data"]["attributes"]
   currentPuzzle = new Puzzle(object.data.id, attributes["column_params"], attributes["row_params"], attributes["column_max"], attributes["row_max"], attributes["solution"])
-  fetchNewOrUpdateGame()
 }
 // puzzle set up end
 
@@ -536,7 +528,6 @@ class Game {
   }
 
   checkSolution(){
-    this.updateGame()
     if (this.shadedSquares){
       let currentShaded = this.shadedSquares
       let correctShadedSquares = this.puzzle.solution.filter(e => currentShaded.includes(e))
@@ -556,10 +547,21 @@ class Game {
         setTimeout(stopParty, 5000)
       }
       else{
-        let statusMessage = `You have ${currentShaded.length-correctShadedSquares.length} mistakes and ${this.puzzle.solution.length-correctShadedSquares.length} to go.`
+        let mistakeCount = currentShaded.length-correctShadedSquares.length
+        let statusMessage
+        if (mistakeCount === 0){
+          statusMessage = `No mistakes so far. ${this.puzzle.solution.length-correctShadedSquares.length} to go.` 
+        }
+        else if(mistakeCount === 1){
+          statusMessage = `You have ${currentShaded.length-correctShadedSquares.length} mistake.`
+        }
+        else{
+          statusMessage = `You have ${currentShaded.length-correctShadedSquares.length} mistakes.`
+        }
         puzzleMessage.innerHTML = statusMessage
         console.log(statusMessage)
       }
+      currentUser.updateRecords()
     }
   }
 
@@ -598,7 +600,6 @@ function fetchUser(username, password){
         else {
           let userAttributes = object["data"]["attributes"]
           currentUser = new User(userAttributes.id, userAttributes.username)
-          // currentUser.updateRecords()
           addUsernameDiv(currentUser.username)
           removeErrorMessage()
           if (currentUser.username !== "guest"){
@@ -627,7 +628,9 @@ class User {
         .then(function(object) {
           currentUser.totalGamesCount = object["data"]["attributes"]["total_games_count"]
           currentUser.completedGamesCount = object["data"]["attributes"]["completed_games_count"]
-          currentUser.displayUpdatedRecords()
+          if (currentUser.username !== "guest"){
+            currentUser.displayUpdatedRecords()
+          }
         })
         .catch(function(error) {
           console.log(error.message);
@@ -640,6 +643,7 @@ class User {
     if (!document.getElementById("total-games-record")){
       totalGamesRecord = document.createElement("div")
       totalGamesRecord.id = "total-games-record"
+      totalGamesRecord.class = "user-record"
       document.getElementById("user-records-container").appendChild(totalGamesRecord)
     }
     else{
@@ -693,6 +697,7 @@ class Puzzle{
   }
 }
 
+// make sure everything updates correctly- slow down and take inventory of what should update when
 // games class can keep track of users puzzle records and history, best times feature on right menu with a user's best times so far (just time and puzzle #)
 // # of puzzles started, # of puzzles completed, best completion time, last completed puzzle
 // organize functions into classes (html handling, puzzle making, etc.)
@@ -703,5 +708,3 @@ class Puzzle{
 // when to create new puzzles...? and if I don't create on fetchNewPuzzle then I should generate random number (but how to know the bounds?) here and find puzzle
 // user on database end does not know current puzzle
 // strong params?
-
-// currentGame can not update because it does not have an id?

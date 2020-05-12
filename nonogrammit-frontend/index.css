@@ -98,22 +98,6 @@ button {
     background-color: #8b203b 
 }
 
-.page-bottom-button{
-    display: inline-block;
-    margin: 0px 50px auto;
-}
-
-#page-bottom-buttons-container{
-    width: 100%;
-    text-align: center;
-    padding: 8px;
-}
-
-#new-puzzle-button-container{
-    display: inline-block;
-    width: 100%;
-}
-
 .puzzle {
     min-width: 750px;
     border: 4px black solid;
