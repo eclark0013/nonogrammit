@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   addSelectPuzzleButton()
   fetchUser("guest", "password")
   setUpPuzzleContainers()
-  // fetchNewPuzzle()
+  fetchNewPuzzle()
   addCredits()
 })
 
@@ -46,33 +46,24 @@ function addAlleys(){
 
 function createMainPageContainers(){
   let body = document.querySelector("body")
-  let mainPage = document.createElement("div")
-  mainPage.id = "main-page"
-  body.appendChild(mainPage)
   let pageHeader = document.createElement("div")
   pageHeader.id = "page-header"
-  mainPage.appendChild(pageHeader)
+  body.appendChild(pageHeader)
   let pageTitleContainer = document.createElement("div")
   pageTitleContainer.id = "page-title-container"
   pageHeader.appendChild(pageTitleContainer)
   let logInFormContainer = document.createElement("div")
   logInFormContainer.id = "login-form-container"
   pageHeader.appendChild(logInFormContainer)
-  let puzzleNumberHeaderContatiner = document.createElement("div")
-  puzzleNumberHeaderContatiner.id = "puzzle-number-header-container"
-  pageHeader.appendChild(puzzleNumberHeaderContatiner)
+  let puzzleNumberHeaderContainer = document.createElement("div")
+  puzzleNumberHeaderContainer.id = "puzzle-number-header-container"
+  pageHeader.appendChild(puzzleNumberHeaderContainer)
   let puzzleTimerContainer = document.createElement("div")
   puzzleTimerContainer.id = "puzzle-timer-container"
   pageHeader.appendChild(puzzleTimerContainer)
   let puzzleMessageContainter = document.createElement("div")
   puzzleMessageContainter.id = "puzzle-message-container"
   pageHeader.appendChild(puzzleMessageContainter)
-  let puzzleContainer = document.createElement("div")
-  puzzleContainer.id = "puzzle-container"
-  mainPage.appendChild(puzzleContainer)
-  let creditsContainer = document.createElement("div")
-  creditsContainer.id = "credits-container"
-  mainPage.appendChild(creditsContainer)
 }
 
 function createRightMenuContainers(){
@@ -289,7 +280,7 @@ function clearMessage(){
 function addCredits(){
   let creditsDiv = document.createElement("div")
   creditsDiv.id = "credits"
-  document.getElementById("credits-container").appendChild(creditsDiv)
+  document.querySelector("body").appendChild(creditsDiv)
   creditsDiv.innerHTML = "Made by Eric Clark"
 }
 
@@ -315,16 +306,47 @@ function displayNewPuzzle(puzzle){
 }
 
 function createColumnParametersDivs(puzzle){
+  console.log(puzzle)
   setUpColumnParams(puzzle.column_max)
   enterColumnParamsData(puzzle)
 }
 
-function createRowParametersDivs(puzzleDiv, puzzle){
+function setUpColumnParams(column_max){
+  let topColumnParams = document.getElementById("top-column-params")
+  for (let i=0; i<column_max; i++){
+    let columnParamsDiv = document.createElement("div")
+    columnParamsDiv.id = `column-parameters-row-${i+1}`
+    columnParamsDiv.className = "column-parameters"
+    topColumnParams.appendChild(columnParamsDiv)
+    for (let j=0; j<25; j++){
+      let columnParamDiv = document.createElement("div")
+      columnParamDiv.className = "column-params-square"
+      if (j%5 === 0){
+        columnParamDiv.className = "bold-left-column-params-square"
+      }
+      columnParamDiv.id = `column-param-${j+1}-${i+1}`
+      columnParamsDiv.appendChild(columnParamDiv)
+    }
+  }
+}
+
+function enterColumnParamsData(puzzle){
+  for (let k=1; k<26; k++){
+    let parameter = puzzle.column_params[k].split(", ")
+    for (let e=0; e<parameter.length; e++){
+      let targetSquare = document.getElementById(`column-param-${k}-${e+1+(puzzle.column_max-parameter.length)}`)
+      targetSquare.innerHTML= parameter[e]
+    }
+  }
+}
+
+function createRowParametersDivs(puzzle){
+  let leftRowParams = document.getElementById("left-row-params")
   for (let i=1; i<=25; i++){
     let rowDiv = document.createElement("div")
     rowDiv.className = "row"
     rowDiv.id = `row-${i}`
-    puzzleDiv.appendChild(rowDiv)
+    leftRowParams.appendChild(rowDiv)
     let rowParamsDiv = document.createElement("div")
     rowParamsDiv.className = "row-params"
     if (i%5 === 1){
@@ -440,33 +462,7 @@ function addPuzzleSquares(puzzle){
   }
 }
 
-function setUpColumnParams(column_max){
-  for (let i=0; i<column_max; i++){
-    let columnParamsDiv = document.createElement("div")
-    columnParamsDiv.id = `column-parameters-row-${i+1}`
-    columnParamsDiv.className = "column-parameters"
-    topColumnParams.appendChild(columnParamsDiv)
-    for (let j=0; j<25; j++){
-      let columnParamDiv = document.createElement("div")
-      columnParamDiv.className = "column-params-square"
-      if (j%5 === 0){
-        columnParamDiv.className = "bold-left-column-params-square"
-      }
-      columnParamDiv.id = `column-param-${j+1}-${i+1}`
-      columnParamsDiv.appendChild(columnParamDiv)
-    }
-  }
-}
 
-function enterColumnParamsData(puzzle){
-  for (let k=1; k<26; k++){
-    let parameter = puzzle.column_params[k].split(", ")
-    for (let e=0; e<parameter.length; e++){
-      let targetSquare = document.getElementById(`column-param-${k}-${e+1+(puzzle.column_max-parameter.length)}`)
-      targetSquare.innerHTML= parameter[e]
-    }
-  }
-}
 
 function setUpNewPuzzle(object){
   let puzzleContainer = makePuzzleDiv()

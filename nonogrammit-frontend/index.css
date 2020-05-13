@@ -1,9 +1,10 @@
 html body{
     height: 100%;
     display: grid;
-    grid-template-columns: 10% auto auto auto auto auto 10%;
-    grid-template-rows: 200px auto auto auto 70px ;  
-    margin: 0px;    
+    grid-template-columns: 10% auto minmax(100px, auto) minmax(300px, auto) minmax(100px, auto) auto 10%;
+    grid-template-rows: 200px minmax(80px, auto) minmax(300px, auto) minmax(80px, auto) 70px ;  
+    margin: 0px; 
+    text-align: center;   
 }
 
 .menu button {
@@ -61,6 +62,26 @@ html body{
     grid-column-start: 7;
 }
 
+#user-info-container{
+    text-align: center;
+}
+
+#username-display{
+    color: white;
+    font-size: 20px;
+    font-family: sans-serif;
+    padding: 7px 12px;
+    font-weight: bold;
+
+}
+
+.user-record {
+    color: white;
+    font-size: 20px;
+    font-family: sans-serif;
+    padding: 7px 12px;
+}
+
 .alley {
     grid-row-start: 1;
     grid-row-end: 6; 
@@ -75,6 +96,13 @@ html body{
 #right-alley {
     grid-column-start: 6;
     grid-column-end: 7;
+}
+
+#page-header{
+    grid-column-start: 3;
+    grid-column-end: 6;
+    grid-row-start: 1;
+    grid-row-end: 2;
 }
 
 .params {
@@ -109,26 +137,6 @@ html body{
     grid-row-end: 4;
 }
 
-#user-info-container{
-    text-align: center;
-}
-
-#username-display{
-    color: white;
-    font-size: 20px;
-    font-family: sans-serif;
-    padding: 7px 12px;
-    font-weight: bold;
-
-}
-
-.user-record {
-    color: white;
-    font-size: 20px;
-    font-family: sans-serif;
-    padding: 7px 12px;
-}
-
 #error-message{
     color: red;
     font-weight: bold;
@@ -142,7 +150,10 @@ h1 {
 }
 
 #credits {
-    padding: 20px;
+    grid-row-start: 5;
+    grid-row-end: 6;
+    grid-column-start: 3;
+    grid-column-end: 6;
 }
 
 button {
