@@ -1,8 +1,8 @@
 html body{
     height: 100%;
     display: grid;
-    grid-template-columns: 10% minmax(15px, auto) minmax(100px, auto) minmax(600px, auto) minmax(100px, auto) minmax(15px, auto) 10%;
-    grid-template-rows: 200px minmax(80px, auto) minmax(300px, auto) minmax(80px, auto) 70px ;  
+    grid-template-columns: 10% minmax(15px, auto) minmax(50px, 150px) auto minmax(10px, auto) minmax(15px, auto) 10%;
+    grid-template-rows: 200px minmax(80px, auto) minmax(300px, auto) minmax(10px, auto) 70px ;  
     margin: 0px; 
     text-align: center;   
     background-color: wheat;
@@ -107,7 +107,7 @@ html body{
 }
 
 .params {
-    background-color: turquoise;
+    background-color: white;
 }
 
 #top-column-params{
@@ -175,27 +175,6 @@ button {
     background-color: #8b203b 
 }
 
-.puzzle {
-    min-width: 750px;
-    border: 4px black solid;
-    display: inline-block;
-    background-color: white;
-}
-
-#puzzle-container {
-    text-align: center;
-    display: inline-block;
-    min-width: 780px;
-    grid-row-start: 2;
-    grid-row-end: 5;
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none; /* Konqueror HTML */
-    -moz-user-select: none; /* Old versions of Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
-}
-
 .column-parameters {
     margin: 0px;
 }
@@ -247,11 +226,8 @@ button {
     display: inline-block;
     margin: 0 auto;
     border: 1px solid black;
-    border-left: 2px solid black;
     padding-left: 1px;
-    padding-right: 6px;
     height: 22px;
-    width: 145px;
     line-height: 22px;
     text-align: right;
 }
@@ -260,14 +236,25 @@ button {
     display: inline-block;
     margin: 0 auto;
     border: 1px solid black;
-    border-left: 2px solid black;
     border-top: 3px solid black;
     padding-left: 1px;
-    padding-right: 6px;
     height: 22px;
-    width: 145px;
     line-height: 22px;
     text-align: right;
+}
+
+.individual-row-param, .bold-top-row-param {
+    width: 100%;
+    border-left: 0px;
+    border-right: 0px;
+}
+
+#puzzle-board{
+    display: block;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    grid-column-start: 4;
+    grid-column-end: 5;
 }
 
 .puzzle-square {

@@ -354,7 +354,7 @@ function createRowParametersDivs(puzzle){
     else{
       individualRowParams.className = "individual-row-param"
     }
-    individualRowParams.innerHTML = puzzle.row_params[i].split(", ").join("&nbsp;&nbsp;&nbsp;")
+    individualRowParams.innerHTML = puzzle.row_params[i].split(", ").join("&nbsp;&nbsp;&nbsp;") + "&nbsp;&nbsp;"
   }
 }
 
@@ -376,7 +376,10 @@ function addPuzzleSquares(puzzle){
     }
   }
   for (let i=0; i<25; i++){
-    let rowDiv = document.getElementById(`row-${i+1}`)
+    let rowDiv = document.createElement("div")
+    document.getElementById("puzzle-board").appendChild(rowDiv)
+    rowDiv.id = `row-${i+1}`
+    rowDiv.className = "puzzle-board-row"
     for (let j=0; j<25; j++){
       let squareDiv = document.createElement("div")
       squareDiv.className = "puzzle-square"
