@@ -49,21 +49,24 @@ function createMainPageContainers(){
   let mainPage = document.createElement("div")
   mainPage.id = "main-page"
   body.appendChild(mainPage)
+  let pageHeader = document.createElement("div")
+  pageHeader.id = "page-header"
+  mainPage.appendChild(pageHeader)
   let pageTitleContainer = document.createElement("div")
   pageTitleContainer.id = "page-title-container"
-  mainPage.appendChild(pageTitleContainer)
+  pageHeader.appendChild(pageTitleContainer)
   let logInFormContainer = document.createElement("div")
   logInFormContainer.id = "login-form-container"
-  mainPage.appendChild(logInFormContainer)
+  pageHeader.appendChild(logInFormContainer)
   let puzzleNumberHeaderContatiner = document.createElement("div")
   puzzleNumberHeaderContatiner.id = "puzzle-number-header-container"
-  mainPage.appendChild(puzzleNumberHeaderContatiner)
+  pageHeader.appendChild(puzzleNumberHeaderContatiner)
   let puzzleTimerContainer = document.createElement("div")
   puzzleTimerContainer.id = "puzzle-timer-container"
-  mainPage.appendChild(puzzleTimerContainer)
+  pageHeader.appendChild(puzzleTimerContainer)
   let puzzleMessageContainter = document.createElement("div")
   puzzleMessageContainter.id = "puzzle-message-container"
-  mainPage.appendChild(puzzleMessageContainter)
+  pageHeader.appendChild(puzzleMessageContainter)
   let puzzleContainer = document.createElement("div")
   puzzleContainer.id = "puzzle-container"
   mainPage.appendChild(puzzleContainer)

@@ -2,7 +2,7 @@ html body{
     height: 100%;
     display: grid;
     grid-template-columns: 10% auto auto auto auto auto 10%;
-    grid-template-rows: auto;  
+    grid-template-rows: 200px auto auto auto 70px ;  
     margin: 0px;    
 }
 
@@ -41,21 +41,24 @@ html body{
     background-color: rgb(255, 246, 233);
     grid-column-start: 2;
     grid-row-start: 1;
+    grid-row-end: 6;
     padding-left: 10px;
     overflow-x: scroll;
     text-align: center;
 }
 
-#left-menu {
+.menu {
     background-color: #b9284c;
-    grid-column-start: 1;
     grid-row-start: 1;
+    grid-row-end: 6;
+}
+
+#left-menu {
+    grid-column-start: 1;
 }
 
 #right-menu {
-    background-color: #b9284c;
-    grid-column-start: 3;
-    grid-row-start: 1;
+    grid-column-start: 7;
 }
 
 #user-info-container{
