@@ -1,10 +1,11 @@
 html body{
     height: 100%;
     display: grid;
-    grid-template-columns: 10% auto minmax(100px, auto) minmax(300px, auto) minmax(100px, auto) auto 10%;
+    grid-template-columns: 10% minmax(15px, auto) minmax(100px, auto) minmax(600px, auto) minmax(100px, auto) minmax(15px, auto) 10%;
     grid-template-rows: 200px minmax(80px, auto) minmax(300px, auto) minmax(80px, auto) 70px ;  
     margin: 0px; 
     text-align: center;   
+    background-color: wheat;
 }
 
 .menu button {
@@ -242,7 +243,7 @@ button {
     vertical-align: top;
 }
 
-.row-params {
+.individual-row-param {
     display: inline-block;
     margin: 0 auto;
     border: 1px solid black;
@@ -255,7 +256,7 @@ button {
     text-align: right;
 }
 
-.bold-top-row-params {
+.bold-top-row-param {
     display: inline-block;
     margin: 0 auto;
     border: 1px solid black;

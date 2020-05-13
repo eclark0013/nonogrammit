@@ -300,6 +300,7 @@ function makePuzzleDiv(){
 }
 
 function displayNewPuzzle(puzzle){
+  console.log(puzzle)
   createColumnParametersDivs(puzzle)
   createRowParametersDivs(puzzle)
   addPuzzleSquares(puzzle)
@@ -343,18 +344,17 @@ function enterColumnParamsData(puzzle){
 function createRowParametersDivs(puzzle){
   let leftRowParams = document.getElementById("left-row-params")
   for (let i=1; i<=25; i++){
-    let rowDiv = document.createElement("div")
-    rowDiv.className = "row"
-    rowDiv.id = `row-${i}`
-    leftRowParams.appendChild(rowDiv)
-    let rowParamsDiv = document.createElement("div")
-    rowParamsDiv.className = "row-params"
+    let individualRowParams = document.createElement("div")
+    individualRowParams.className = "row"
+    individualRowParams.id = `row-${i}-params`
+    leftRowParams.appendChild(individualRowParams)
     if (i%5 === 1){
-      rowParamsDiv.className = "bold-top-row-params"
+      individualRowParams.className = "bold-top-row-param"
     }
-    rowParamsDiv.id = `row-${i}-params`
-    rowParamsDiv.innerHTML = puzzle.row_params[i].split(", ").join("&nbsp;&nbsp;&nbsp;")
-    rowDiv.appendChild(rowParamsDiv)
+    else{
+      individualRowParams.className = "individual-row-param"
+    }
+    individualRowParams.innerHTML = puzzle.row_params[i].split(", ").join("&nbsp;&nbsp;&nbsp;")
   }
 }
 
@@ -465,7 +465,6 @@ function addPuzzleSquares(puzzle){
 
 
 function setUpNewPuzzle(object){
-  let puzzleContainer = makePuzzleDiv()
   let puzzleNumber = object["data"]["id"]
   addCheckSolutionPuzzleButton()
   addRestartPuzzleButton()
