@@ -16,7 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
   addNewPuzzleButton()
   addSelectPuzzleButton()
   fetchUser("guest", "password")
-  fetchNewPuzzle()
+  setUpPuzzleContainers()
+  // fetchNewPuzzle()
   addCredits()
 })
 
@@ -31,7 +32,6 @@ function addMenus(){
   rightMenu.className = "menu"
   document.querySelector("body").appendChild(rightMenu)
 }
-
 
 function addAlleys(){
   let leftAlley = document.createElement("div")
@@ -85,6 +85,28 @@ function createRightMenuContainers(){
   let loginLogoutButtonContainer = document.createElement("div")
   loginLogoutButtonContainer.id = "login-logout-button-container"
   document.getElementById("right-menu").appendChild(loginLogoutButtonContainer)
+}
+
+function setUpPuzzleContainers(){
+  let topColumnParams = document.createElement("div")
+  topColumnParams.id = "top-column-params"
+  topColumnParams.className = "params"
+  document.querySelector("body").appendChild(topColumnParams)
+  let bottomColumnParams = document.createElement("div")
+  bottomColumnParams.id = "bottom-column-params"
+  bottomColumnParams.className = "params"
+  document.querySelector("body").appendChild(bottomColumnParams)
+  let leftRowParams = document.createElement("div")
+  leftRowParams.id = "left-row-params"
+  leftRowParams.className = "params"
+  document.querySelector("body").appendChild(leftRowParams)
+  let rightRowParams = document.createElement("div")
+  rightRowParams.id = "right-row-params"
+  rightRowParams.className = "params"
+  document.querySelector("body").appendChild(rightRowParams)
+  let puzzleBoard = document.createElement("div")
+  puzzleBoard.id = "puzzle-board"
+  document.querySelector("body").appendChild(puzzleBoard)
 }
 
 function addLoginLogoutButton(){
@@ -287,16 +309,13 @@ function makePuzzleDiv(){
 }
 
 function displayNewPuzzle(puzzle){
-  let puzzleDiv = document.querySelector("#puzzle")
-  puzzleDiv.innerHTML = ""
-  puzzleDiv.className = "puzzle"
-  createColumnParametersDivs(puzzleDiv, puzzle)
-  createRowParametersDivs(puzzleDiv, puzzle)
+  createColumnParametersDivs(puzzle)
+  createRowParametersDivs(puzzle)
   addPuzzleSquares(puzzle)
 }
 
-function createColumnParametersDivs(puzzleDiv, puzzle){
-  setUpColumnParams(puzzleDiv, puzzle.column_max)
+function createColumnParametersDivs(puzzle){
+  setUpColumnParams(puzzle.column_max)
   enterColumnParamsData(puzzle)
 }
 
@@ -421,15 +440,12 @@ function addPuzzleSquares(puzzle){
   }
 }
 
-function setUpColumnParams(puzzleDiv, column_max){
+function setUpColumnParams(column_max){
   for (let i=0; i<column_max; i++){
-    let columnParametersDiv = document.createElement("div")
-    columnParametersDiv.id = `column-parameters-row-${i+1}`
-    columnParametersDiv.className = "column-parameters"
-    puzzleDiv.appendChild(columnParametersDiv)
-    let blankSquareDiv = document.createElement("div")
-    blankSquareDiv.className = "blank-square"
-    columnParametersDiv.appendChild(blankSquareDiv)
+    let columnParamsDiv = document.createElement("div")
+    columnParamsDiv.id = `column-parameters-row-${i+1}`
+    columnParamsDiv.className = "column-parameters"
+    topColumnParams.appendChild(columnParamsDiv)
     for (let j=0; j<25; j++){
       let columnParamDiv = document.createElement("div")
       columnParamDiv.className = "column-params-square"
@@ -437,7 +453,7 @@ function setUpColumnParams(puzzleDiv, column_max){
         columnParamDiv.className = "bold-left-column-params-square"
       }
       columnParamDiv.id = `column-param-${j+1}-${i+1}`
-      columnParametersDiv.appendChild(columnParamDiv)
+      columnParamsDiv.appendChild(columnParamDiv)
     }
   }
 }
