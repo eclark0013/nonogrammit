@@ -316,14 +316,17 @@ function setUpColumnParams(column_max){
   let topColumnParams = document.getElementById("top-column-params")
   for (let i=0; i<column_max; i++){
     let columnParamsDiv = document.createElement("div")
-    columnParamsDiv.id = `column-parameters-row-${i+1}`
-    columnParamsDiv.className = "column-parameters"
+    columnParamsDiv.id = `column-params-row-${i+1}`
+    columnParamsDiv.className = "column-params"
     topColumnParams.appendChild(columnParamsDiv)
     for (let j=0; j<25; j++){
       let columnParamDiv = document.createElement("div")
       columnParamDiv.className = "column-params-square"
       if (j%5 === 0){
         columnParamDiv.className = "bold-left-column-params-square"
+      }
+      if (j === 24){
+        columnParamDiv.className = "bold-right-column-params-square"
       }
       columnParamDiv.id = `column-param-${j+1}-${i+1}`
       columnParamsDiv.appendChild(columnParamDiv)

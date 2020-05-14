@@ -1,7 +1,7 @@
 html body{
     height: 100%;
     display: grid;
-    grid-template-columns: 10% minmax(15px, auto) minmax(50px, 150px) auto minmax(10px, auto) minmax(15px, auto) 10%;
+    grid-template-columns: 10% minmax(15px, auto) min-content max-content min-content minmax(15px, auto) 10%;
     grid-template-rows: 200px minmax(80px, auto) minmax(300px, auto) minmax(10px, auto) 70px ;  
     margin: 0px; 
     text-align: center;   
@@ -115,6 +115,7 @@ html body{
     grid-column-end: 5;
     grid-row-start: 2;
     grid-row-end: 3;
+    text-align: left;
 }
 
 #bottom-column-params{
@@ -175,78 +176,53 @@ button {
     background-color: #8b203b 
 }
 
-.column-parameters {
-    margin: 0px;
+#column-params-row-1 {
+    border-top: 3px solid black;
 }
 
-.blank-square {
-    display: inline-flex;
-    border-right: 1px solid black;
-    border-left: 2px solid black;
-    vertical-align: top;
-    padding-left: 1px;
-    padding-right: 1px;
-    height: 22px;
-    width: 150px;
-    line-height: 22px;
-}
-
-.column-params-square {
+.column-params-square, .bold-left-column-params-square, .bold-right-column-params-square {
     display: inline-block;
     text-align: center;
     margin: 0 auto;
-    border: 1px solid black;
+    border-right: 1px solid black;
     border-top: 0px;
     border-bottom: 0px;
-    padding-left: 1px;
-    padding-right: 1px;
     height: 22px;
-    width: 20px;
+    width: 22px;
     line-height: 22px;
     vertical-align: top;
 }
 
 .bold-left-column-params-square {
-    display: inline-block;
-    text-align: center;
-    margin: 0 auto;
-    border: 1px solid black;
-    border-top: 0px;
-    border-bottom: 0px;
     border-left: 3px solid black;
-    padding-left: 1px;
-    padding-right: 1px;
-    height: 22px;
-    width: 20px;
-    line-height: 22px;
-    vertical-align: top;
 }
 
-.individual-row-param {
-    display: inline-block;
-    margin: 0 auto;
-    border: 1px solid black;
-    padding-left: 1px;
-    height: 22px;
-    line-height: 22px;
-    text-align: right;
-}
-
-.bold-top-row-param {
-    display: inline-block;
-    margin: 0 auto;
-    border: 1px solid black;
-    border-top: 3px solid black;
-    padding-left: 1px;
-    height: 22px;
-    line-height: 22px;
-    text-align: right;
+.bold-right-column-params-square {
+    border-right: 4px solid black;
 }
 
 .individual-row-param, .bold-top-row-param {
+    display: inline-block;
+    margin: 0 auto;
+    border-bottom: 1px solid black;
     width: 100%;
-    border-left: 0px;
+    border-left: 3px black solid;
     border-right: 0px;
+    height: 22px;
+    line-height: 22px;
+    text-align: right; 
+}
+
+.bold-top-row-param {   
+    border-top: 3px solid black; 
+}
+
+#row-1-params{
+    border-top: 3px solid black;
+}
+
+#row-25-params{
+    border-bottom: 3px solid black;
 }
 
 #puzzle-board{
@@ -255,58 +231,40 @@ button {
     grid-row-end: 4;
     grid-column-start: 4;
     grid-column-end: 5;
+    border-right: 1px solid black;
 }
 
-.puzzle-square {
+.puzzle-board-row{
+    border-right: 1px solid black;
+}
+
+#row-25{
+    border-bottom: 2px solid black;
+}
+
+.puzzle-square, .bold-top-puzzle-square, .bold-left-puzzle-square, .bold-top-and-left-puzzle-square{
     text-align: center;
-    border: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
     display: inline-block;
-    padding-left: 1px;
-    padding-right: 1px;
     height: 22px;
-    width: 20px;
+    width: 22px;
     line-height: 22px;
     vertical-align: top;
 }
+
 
 .bold-top-puzzle-square {
-    text-align: center;
-    border: 1px solid black;
     border-top: 3px solid black;;
-    display: inline-block;
-    padding-left: 1px;
-    padding-right: 1px;
-    height: 22px;
-    width: 20px;
-    line-height: 22px;
-    vertical-align: top;
 }
 
 .bold-left-puzzle-square {
-    text-align: center;
-    border: 1px solid black;
     border-left: 3px solid black;;
-    display: inline-block;
-    padding-left: 1px;
-    padding-right: 1px;
-    height: 22px;
-    width: 20px;
-    line-height: 22px;
-    vertical-align: top;
 }
 
 .bold-top-and-left-puzzle-square {
-    text-align: center;
-    border: 1px solid black;
     border-left: 3px solid black;
     border-top: 3px solid black;
-    display: inline-block;
-    padding-left: 1px;
-    padding-right: 1px;
-    height: 22px;
-    width: 20px;
-    line-height: 22px;
-    vertical-align: top;
 }
 
 [status = "0"] {
