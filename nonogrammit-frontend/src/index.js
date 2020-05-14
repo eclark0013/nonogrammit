@@ -314,6 +314,7 @@ function createColumnParametersDivs(puzzle){
 
 function setUpColumnParams(column_max){
   let topColumnParams = document.getElementById("top-column-params")
+  topColumnParams.innerHTML = ""
   for (let i=0; i<column_max; i++){
     let columnParamsDiv = document.createElement("div")
     columnParamsDiv.id = `column-params-row-${i+1}`
@@ -346,6 +347,7 @@ function enterColumnParamsData(puzzle){
 
 function createRowParametersDivs(puzzle){
   let leftRowParams = document.getElementById("left-row-params")
+  leftRowParams.innerHTML = ""
   for (let i=1; i<=25; i++){
     let individualRowParams = document.createElement("div")
     individualRowParams.className = "row"
