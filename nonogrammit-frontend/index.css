@@ -2,7 +2,7 @@ html body{
     height: 100%;
     display: grid;
     grid-template-columns: 10% minmax(15px, auto) min-content max-content min-content minmax(15px, auto) 10%;
-    grid-template-rows: 200px minmax(80px, auto) minmax(300px, auto) minmax(10px, auto) 70px ;  
+    grid-template-rows: auto minmax(80px, auto) minmax(300px, auto) min-content 70px ;  
     margin: 0px; 
     text-align: center;   
     background-color: wheat;
@@ -40,7 +40,6 @@ html body{
 }
 
 #main-page {
-    background-color: rgb(255, 246, 233);
     grid-column-start: 3;
     grid-column-end: 6;
     grid-row-start: 1;
@@ -86,7 +85,6 @@ html body{
 .alley {
     grid-row-start: 1;
     grid-row-end: 6; 
-    background-color: teal;
 }
 
 #left-alley {
@@ -104,6 +102,11 @@ html body{
     grid-column-end: 6;
     grid-row-start: 1;
     grid-row-end: 2;
+    padding: 5px;
+}
+
+#puzzle-message {
+    padding: 5px;
 }
 
 .params {
@@ -178,7 +181,7 @@ button {
 }
 
 #column-params-row-1 {
-    border-top: 3px solid black;
+    border-top: 4px solid black;
 }
 
 .column-params-square, .bold-left-column-params-square, .bold-right-column-params-square {

@@ -380,9 +380,11 @@ function addPuzzleSquares(puzzle){
       square.setAttribute("highlighted", true)
     }
   }
+  let puzzleBoard = document.getElementById("puzzle-board")
+  puzzleBoard.innerHTML = ""
   for (let i=0; i<25; i++){
     let rowDiv = document.createElement("div")
-    document.getElementById("puzzle-board").appendChild(rowDiv)
+    puzzleBoard.appendChild(rowDiv)
     rowDiv.id = `row-${i+1}`
     rowDiv.className = "puzzle-board-row"
     for (let j=0; j<25; j++){
@@ -481,7 +483,6 @@ function addPuzzleSquares(puzzle){
           console.log(highlightedSquares)
           highlightedSquares = []
         }
-        // fetchNewOrUpdateGame()
       })
       rowDiv.appendChild(squareDiv)
     }
@@ -860,5 +861,3 @@ class Puzzle{
 // change menu bar to top if screen is too thin, or even to opening three-line menu
 // when to create new puzzles...? and if I don't create on fetchNewPuzzle then I should generate random number (but how to know the bounds?) here and find puzzle
 // strong params?
-// figure out a way to treat leaving the puzzle as a mouseup event
-// why does it update once for every single square on mouseleave...?
