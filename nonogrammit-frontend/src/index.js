@@ -465,12 +465,28 @@ function addPuzzleSquares(puzzle){
         }
         fetchNewOrUpdateGame()
       })
+      document.getElementById("puzzle-board").addEventListener("mouseleave", () => {
+        if(document.querySelector('div[click="start"]')){
+          let start = document.querySelector('div[click="start"]')
+          start.removeAttribute("click")
+          for (let a=0; a<highlightedSquares.length; a++){
+            if (highlightedSquares.length>1){
+              highlightedSquares[a].setAttribute("status", "1")
+            }
+            else{
+              changeStatus(highlightedSquares[a])
+            }
+            highlightedSquares[a].removeAttribute("highlighted")
+          }
+          console.log(highlightedSquares)
+          highlightedSquares = []
+        }
+        // fetchNewOrUpdateGame()
+      })
       rowDiv.appendChild(squareDiv)
     }
   }
 }
-
-
 
 function setUpNewPuzzle(object){
   let puzzleNumber = object["data"]["id"]
@@ -845,3 +861,4 @@ class Puzzle{
 // when to create new puzzles...? and if I don't create on fetchNewPuzzle then I should generate random number (but how to know the bounds?) here and find puzzle
 // strong params?
 // figure out a way to treat leaving the puzzle as a mouseup event
+// why does it update once for every single square on mouseleave...?
