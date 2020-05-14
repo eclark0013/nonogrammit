@@ -116,6 +116,7 @@ html body{
     grid-row-start: 2;
     grid-row-end: 3;
     text-align: left;
+    border-left: 2px solid black;
 }
 
 #bottom-column-params{
@@ -222,7 +223,7 @@ button {
 }
 
 #row-25-params{
-    border-bottom: 3px solid black;
+    border-bottom: 4px solid black;
 }
 
 #puzzle-board{
@@ -231,7 +232,8 @@ button {
     grid-row-end: 4;
     grid-column-start: 4;
     grid-column-end: 5;
-    border-right: 1px solid black;
+    border-right: 1.5px solid black;
+    border-left: 1.5px solid black;
 }
 
 .puzzle-board-row{
@@ -239,7 +241,7 @@ button {
 }
 
 #row-25{
-    border-bottom: 2px solid black;
+    border-bottom: 3px solid black;
 }
 
 .puzzle-square, .bold-top-puzzle-square, .bold-left-puzzle-square, .bold-top-and-left-puzzle-square{
