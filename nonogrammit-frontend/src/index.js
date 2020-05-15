@@ -662,7 +662,7 @@ class Game {
     );
   }
 
-  checkSolution(){
+  checkProgress(){
     if (this.shadedSquares){
       let currentShaded = this.shadedSquares
       let correctShadedSquares = this.puzzle.solution.filter(e => currentShaded.includes(e))

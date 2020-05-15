@@ -163,7 +163,7 @@ class Puzzle < ApplicationRecord
     end
     
     def solution_hasher
-        solution_html_ids = solution_div_indices_to_html_ids(sample_of_625(290))
+        solution_html_ids = solution_div_indices_to_html_ids(sample_of_625(285))
         solution_coordinates = solution_html_ids_to_coordinates(solution_html_ids)
         # solution_coordinates_sanitized = solution_coordinates_sanitizer(solution_coordinates)
         solution_coordinates_sanitized = super_sanitizer(solution_coordinates)
