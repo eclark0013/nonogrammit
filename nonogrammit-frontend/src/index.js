@@ -108,6 +108,7 @@ function addLoginLogoutButton(){
   loginLogoutButton.addEventListener("click", () => {
     if (loginLogoutButton.innerHTML === "Log out"){
       fetchUser("guest", "password")
+      document.getElementById("user-records-container").innerHTML = ""
       loginLogoutButton.innerHTML = "Log in"
     }
     else {
@@ -132,7 +133,7 @@ function addPageTitleHeader(){
 function addLogInFormAndSubmitButton(){
   let userInfoForm = document.createElement("form")
   document.getElementById("login-form-container").style.display = "none"
-  userInfoForm.innerHTML = "<div>Sign in or Sign up below:</div><label>Username: </label><input type='text' name='username' id='username'> <label>Password: </label><input type='text' name='password' id='password'> <input type='submit' id='submit' value='Submit'><br><br>"
+  userInfoForm.innerHTML = "<div>Sign in or Sign up below:</div><label>Username: </label><input type='text' name='username' id='username'> <label>Password: </label><input type='password' name='password' id='password'> <input type='submit' id='submit' value='Submit'><br><br>"
   document.getElementById("login-form-container").appendChild(userInfoForm)
   let userInfoSubmitButton = document.querySelector("#submit")
     userInfoSubmitButton.addEventListener("click", function(event) {
@@ -238,7 +239,7 @@ function addCheckProgressPuzzleButton(){
     checkProgressButton.id = "check-progress-button"
     checkProgressButton.innerHTML = "Check Progress"
     checkProgressButton.addEventListener("click", () => {
-      fetchNewOrUpdateGame()
+      fetchNewOrUpdateGame("incomplete")
       currentGame.checkProgress()
     })
     document.getElementById("left-menu").appendChild(checkProgressButton)
@@ -255,7 +256,7 @@ function addRevealSolutionButton(){
       for (i=0; i<currentPuzzle.solution.length; i++){
         document.getElementById(currentPuzzle.solution[i]).setAttribute("status", "1")
       }
-      fetchNewOrUpdateGame()
+      fetchNewOrUpdateGame("incomplete")
     })
     document.getElementById("left-menu").appendChild(revealSolutionButton)
   }
@@ -465,7 +466,7 @@ function addPuzzleSquares(puzzle){
           console.log(highlightedSquares)
           highlightedSquares = []
         }
-        fetchNewOrUpdateGame()
+        fetchNewOrUpdateGame("incomplete")
       })
       document.getElementById("puzzle-board").addEventListener("mouseleave", () => {
         if(document.querySelector('div[click="start"]')){
@@ -576,12 +577,12 @@ function stopParty(){
 
 
 // Games
-function fetchNewOrUpdateGame(){
+function fetchNewOrUpdateGame(status){
   if (!currentGame){
     fetchNewGame()
   }
   else{
-    currentGame.updateGame()
+    currentGame.updateGame(status)
   }
 }
 
@@ -676,7 +677,7 @@ class Game {
         document.getElementById("puzzle-message-container").appendChild(puzzleMessage)
       }
       if (this.puzzle.solution.length === correctShadedSquares.length){
-        puzzleMessage.innerHTML = `PARTY LIKE ITS YOUR BIRTHDAY. YOU DID IT! All ${currentShaded.length} squares!`
+        puzzleMessage.innerHTML = `PARTY LIKE ITS YOUR BIRTHDAY. YOU DID IT! All ${currentShaded.length} squares in just ${time()} seconds!`
         this.updateGame("complete")
         puzzleParty(150, 40)
         setTimeout(stopParty, 5000)
@@ -807,7 +808,7 @@ class User {
       document.getElementById("user-records-container").appendChild(fastestTimeRecord)
     }
     else{
-      fastestTimeRecord = document.getElementById("completed-games-record")
+      fastestTimeRecord = document.getElementById("fastest-time-record")
     }
     fastestTimeRecord.innerHTML = `Best time: ${this.fastestTime} seconds`
   }
