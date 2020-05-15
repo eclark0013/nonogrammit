@@ -10,10 +10,6 @@ class UsersController < ApplicationController
         render json: UserSerializer.new(user)
     end
 
-    def edit
-        # raise "edit".inspect
-    end
-
     def update
         user = User.find(params[:id])
         # user.current_puzzle = params[:current_puzzle]

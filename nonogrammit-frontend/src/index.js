@@ -232,16 +232,16 @@ function resetAllSquares(){
   }
 }
 
-function addCheckSolutionPuzzleButton(){
-  if (!document.getElementById("check-solution-button")){
-    let checkSolutionButton = document.createElement("button")
-    checkSolutionButton.id = "check-solution-button"
-    checkSolutionButton.innerHTML = "Check Solution"
-    checkSolutionButton.addEventListener("click", () => {
+function addCheckProgressPuzzleButton(){
+  if (!document.getElementById("check-progress-button")){
+    let checkProgressButton = document.createElement("button")
+    checkProgressButton.id = "check-progress-button"
+    checkProgressButton.innerHTML = "Check Progress"
+    checkProgressButton.addEventListener("click", () => {
       fetchNewOrUpdateGame()
-      currentGame.checkSolution()
+      currentGame.checkProgress()
     })
-    document.getElementById("left-menu").appendChild(checkSolutionButton)
+    document.getElementById("left-menu").appendChild(checkProgressButton)
   }
 }
 
@@ -281,7 +281,7 @@ function addCredits(){
   let creditsDiv = document.createElement("div")
   creditsDiv.id = "credits"
   document.querySelector("body").appendChild(creditsDiv)
-  creditsDiv.innerHTML = "Made by Eric Clark"
+  creditsDiv.innerHTML = `Created by ${"<a href='https://github.com/eclark0013' target='_blank'>Eric Clark</a>"}`
 }
 
 // set up the page end
@@ -491,7 +491,7 @@ function addPuzzleSquares(puzzle){
 
 function setUpNewPuzzle(object){
   let puzzleNumber = object["data"]["id"]
-  addCheckSolutionPuzzleButton()
+  addCheckProgressPuzzleButton()
   addRestartPuzzleButton()
   addRevealSolutionButton()
   addRevealMistakesButton()
@@ -858,6 +858,14 @@ class Puzzle{
 }
 
 // organize functions into classes (html handling, puzzle making, etc.)
-// change menu bar to top if screen is too thin, or even to opening three-line menu
 // when to create new puzzles...? and if I don't create on fetchNewPuzzle then I should generate random number (but how to know the bounds?) here and find puzzle
-// strong params?
+
+// features to add: 
+// - change menu bar to top if screen is too thin, or even to opening three-line menu
+// - add an x on boxes when right click to mark as certainly unshaded
+// - allow option for right side row params and bottom side column params
+// - highlight params on hover over a square
+// - users can save progress on puzzle
+// - users access their specific old puzzle after they have worked on it if they choose find puzzle option
+// - users will not receive an already worked on puzzle if they choose new puzzle
+ 
