@@ -1,7 +1,8 @@
 html body{
     height: 100%;
     display: grid;
-    grid-template-columns: 10% minmax(15px, auto) min-content max-content min-content minmax(15px, auto) 10%;
+    min-width: 780px;
+    grid-template-columns: minmax(100px, 10%) minmax(15px, auto) min-content max-content min-content minmax(15px, auto) minmax(100px, 10%);
     grid-template-rows: auto minmax(80px, auto) minmax(300px, auto) min-content 70px ;  
     margin: 0px; 
     text-align: center;   
