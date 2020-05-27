@@ -268,12 +268,11 @@ button {
     border-top: 3px solid black;
 }
 
-[status = "0"] {
+[status = "unshaded"] {
     background-color: white;
-    /* background-color: rgb(233, 233, 233); */
 }
 
-[status = "1"] {
+[status = "shaded"] {
     background-color: rgb(63, 63, 63);
 }
 
