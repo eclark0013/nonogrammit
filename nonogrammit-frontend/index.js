@@ -360,24 +360,7 @@ function addPuzzleNumberHeader(puzzleNumber){
     document.getElementById("puzzle-number-header-container").appendChild(puzzleNumberHeader)
   }
 }
-
-function setUpNewPuzzle(object){
-  let puzzleNumber = object["data"]["id"]
-  addCheckProgressPuzzleButton()
-  addRestartPuzzleButton()
-  addRevealSolutionButton()
-  addRevealMistakesButton()
-  addPuzzleNumberHeader(puzzleNumber)
-  updateCurrentPuzzle(object)
-  displayNewPuzzle(currentPuzzle)
-  addTimer()
-  stopParty()
-  document.getElementById("puzzle-message-container").innerHTML = ""
-}
 // additional functionality set up - end
-
-// puzzle set up start
-// puzzle set up end
 
 function handleLoginError(objectWithErrorMessage){
   let errorMessageDiv
@@ -687,7 +670,6 @@ class User {
 }
 
 // Puzzles
-
 function setUpNewPuzzle(object){
   let puzzleNumber = object["data"]["id"]
   addCheckProgressPuzzleButton()
@@ -695,16 +677,12 @@ function setUpNewPuzzle(object){
   addRevealSolutionButton()
   addRevealMistakesButton()
   addPuzzleNumberHeader(puzzleNumber)
-  updateCurrentPuzzle(object)
+  let attributes = object["data"]["attributes"]
+  currentPuzzle = new Puzzle(object.data.id, attributes["column_params"], attributes["row_params"], attributes["column_max"], attributes["row_max"], attributes["solution"])
   currentPuzzle.displayNewPuzzle()
   addTimer()
   stopParty()
   document.getElementById("puzzle-message-container").innerHTML = ""
-}
-
-function updateCurrentPuzzle(object){
-  let attributes = object["data"]["attributes"]
-  currentPuzzle = new Puzzle(object.data.id, attributes["column_params"], attributes["row_params"], attributes["column_max"], attributes["row_max"], attributes["solution"])
 }
 
 function fetchSpecifiedPuzzle(puzzleNumber){
