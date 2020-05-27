@@ -263,13 +263,34 @@ function addRevealMistakesButton(){
   }
 }
 
-function clearMessage(){
-  document.getElementById("puzzle-message-container").innerHTML = ""
+function addPuzzleNumberHeader(puzzleNumber){
+  if (document.querySelector("#puzzle-number-header")){
+    document.querySelector("#puzzle-number-header").innerHTML = `Puzzle #${puzzleNumber}`
+  }
+  else{
+    let puzzleNumberHeader = document.createElement("h3")
+    puzzleNumberHeader.id = "puzzle-number-header"
+    puzzleNumberHeader.innerHTML = `Puzzle #${puzzleNumber}`
+    document.getElementById("puzzle-number-header-container").appendChild(puzzleNumberHeader)
+  }
 }
 
 // additional functionality set up - end
 
 // puzzle set up start
+function setUpNewPuzzle(object){
+  let puzzleNumber = object["data"]["id"]
+  addCheckProgressPuzzleButton()
+  addRestartPuzzleButton()
+  addRevealSolutionButton()
+  addRevealMistakesButton()
+  addPuzzleNumberHeader(puzzleNumber)
+  updateCurrentPuzzle(object)
+  displayNewPuzzle(currentPuzzle)
+  addTimer()
+  stopParty()
+  document.getElementById("puzzle-message-container").innerHTML = ""
+}
 
 function displayNewPuzzle(puzzle){
   console.log(puzzle)
@@ -461,20 +482,6 @@ function addPuzzleSquares(puzzle){
   }
 }
 
-function setUpNewPuzzle(object){
-  let puzzleNumber = object["data"]["id"]
-  addCheckProgressPuzzleButton()
-  addRestartPuzzleButton()
-  addRevealSolutionButton()
-  addRevealMistakesButton()
-  addPuzzleNumberHeader(puzzleNumber)
-  updateCurrentPuzzle(object)
-  displayNewPuzzle(currentPuzzle)
-  addTimer()
-  stopParty()
-  clearMessage()
-}
-
 function updateCurrentPuzzle(object){
   let attributes = object["data"]["attributes"]
   currentPuzzle = new Puzzle(object.data.id, attributes["column_params"], attributes["row_params"], attributes["column_max"], attributes["row_max"], attributes["solution"])
@@ -503,19 +510,6 @@ function removeErrorMessage(){
 
 function time(){
   return parseInt(document.getElementById("time").innerHTML.slice(6))
-}
-
-// display puzzle number
-function addPuzzleNumberHeader(puzzleNumber){
-  if (document.querySelector("#puzzle-number-header")){
-    document.querySelector("#puzzle-number-header").innerHTML = `Puzzle #${puzzleNumber}`
-  }
-  else{
-    let puzzleNumberHeader = document.createElement("h3")
-    puzzleNumberHeader.id = "puzzle-number-header"
-    puzzleNumberHeader.innerHTML = `Puzzle #${puzzleNumber}`
-    document.getElementById("puzzle-number-header-container").appendChild(puzzleNumberHeader)
-  }
 }
 
 let startParty
