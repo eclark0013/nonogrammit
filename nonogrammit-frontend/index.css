@@ -3,7 +3,7 @@ html body{
     display: grid;
     min-width: 780px;
     grid-template-columns: minmax(100px, 10%) minmax(15px, auto) min-content max-content min-content minmax(15px, auto) minmax(100px, 10%);
-    grid-template-rows: auto minmax(80px, auto) minmax(300px, auto) min-content 70px ;  
+    grid-template-rows: auto minmax(80px, auto) minmax(300px, auto) min-content minmax(70px, auto) ;  
     margin: 0px; 
     text-align: center;   
     background-color: floralwhite;
@@ -165,6 +165,13 @@ h1 {
     grid-column-start: 3;
     grid-column-end: 6;
     padding: 10px;
+    max-width: 700px;
+}
+
+#game-rules {
+    display: block;
+    text-align: center;
+    margin: 8px;
 }
 
 button {

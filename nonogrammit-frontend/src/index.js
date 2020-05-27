@@ -282,7 +282,14 @@ function addCredits(){
   let creditsDiv = document.createElement("div")
   creditsDiv.id = "credits"
   document.querySelector("body").appendChild(creditsDiv)
-  creditsDiv.innerHTML = `Created by ${"<a href='https://github.com/eclark0013' target='_blank'>Eric Clark</a>"}`
+  let createdByDiv = document.createElement("div")
+  createdByDiv.id = "created-by-div"
+  createdByDiv.innerHTML = `Created by ${"<a href='https://github.com/eclark0013' target='_blank'>Eric Clark</a>"}`
+  creditsDiv.appendChild(createdByDiv)
+  let gameRules = document.createElement("div")
+  gameRules.id = "game-rules"
+  gameRules.innerHTML = "Nonograms are logical puzzles in which each row and column has consecutive sets of shaded squares that correspond to the numbers at the end of that column or row. For example 3, 5, 1 would mean a consecutive set of 3, then 5, then 1 shaded square with some amount of unshaded squares between each set."
+  creditsDiv.appendChild(gameRules)
 }
 
 // set up the page end
@@ -659,8 +666,7 @@ class Game {
         })
         .catch(function(error) {
           console.log(error.message);
-        }
-    );
+        });
   }
 
   checkProgress(){
@@ -764,7 +770,13 @@ class User {
         .then(function(object) {
           currentUser.totalGamesCount = object["data"]["attributes"]["total_games_count"]
           currentUser.completedGamesCount = object["data"]["attributes"]["completed_games_count"]
-          currentUser.fastestTime = object["data"]["attributes"]["fastest_game"]["time"]
+          if (object["data"]["attributes"]["fastest_game"]){
+            currentUser.fastestTime = object["data"]["attributes"]["fastest_game"]["time"]
+          }
+          else {
+            currentUser.fastestTime = "N/A"
+          }
+          
           if (currentUser.username !== "guest"){
             currentUser.displayUpdatedRecords()
           }
