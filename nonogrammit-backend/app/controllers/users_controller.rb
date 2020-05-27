@@ -12,7 +12,6 @@ class UsersController < ApplicationController
 
     def update
         user = User.find(params[:id])
-        # user.current_puzzle = params[:current_puzzle]
         user.save
         render json: UserSerializer.new(user)
     end

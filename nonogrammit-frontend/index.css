@@ -142,7 +142,7 @@ html body{
     text-align: center;
 }
 
-#credits {
+#info {
     grid-row-start: 5;
     grid-row-end: 6;
     grid-column-start: 3;

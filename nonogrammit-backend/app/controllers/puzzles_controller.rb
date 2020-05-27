@@ -11,11 +11,9 @@ class PuzzlesController < ApplicationController
     end
 
     def create
-        new_puzzle = Puzzle.create
-        new_puzzle.add_info
-        new_puzzle.save
-        # fetched_puzzle = Puzzle.find(rand(1..Puzzle.all.size))
-        # render json: PuzzleSerializer.new(fetched_puzzle)
-        render json: PuzzleSerializer.new(new_puzzle)
+        puzzle = Puzzle.create
+        puzzle.add_info
+        puzzle.save
+        render json: PuzzleSerializer.new(puzzle)
     end
 end
