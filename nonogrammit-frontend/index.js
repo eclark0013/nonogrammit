@@ -264,102 +264,7 @@ function addRevealMistakesButton(){
 }
 // butoons and additional functionality set up - end
 
-// puzzle set up start
 
-function displayNewPuzzle(puzzle){
-  console.log(puzzle)
-  createColumnParametersDivs(puzzle)
-  createRowParametersDivs(puzzle)
-  addPuzzleSquares(puzzle)
-}
-
-function createColumnParametersDivs(puzzle){
-  console.log(puzzle)
-  setUpColumnParams(puzzle.column_max)
-  enterColumnParamsData(puzzle)
-}
-
-function setUpColumnParams(column_max){
-  let topColumnParams = document.getElementById("top-column-params")
-  topColumnParams.innerHTML = ""
-  for (let i=0; i<column_max; i++){
-    let columnParamsDiv = document.createElement("div")
-    columnParamsDiv.id = `column-params-row-${i+1}`
-    columnParamsDiv.className = "column-params"
-    topColumnParams.appendChild(columnParamsDiv)
-    for (let j=0; j<25; j++){
-      let columnParamDiv = document.createElement("div")
-      columnParamDiv.className = "column-params-square"
-      if (j%5 === 0){
-        columnParamDiv.className = "bold-left-column-params-square"
-      }
-      if (j === 24){
-        columnParamDiv.className = "bold-right-column-params-square"
-      }
-      columnParamDiv.id = `column-param-${j+1}-${i+1}`
-      columnParamsDiv.appendChild(columnParamDiv)
-    }
-  }
-}
-
-function enterColumnParamsData(puzzle){
-  for (let k=1; k<26; k++){
-    let parameter = puzzle.column_params[k].split(", ")
-    for (let e=0; e<parameter.length; e++){
-      let targetSquare = document.getElementById(`column-param-${k}-${e+1+(puzzle.column_max-parameter.length)}`)
-      targetSquare.innerHTML= parameter[e]
-    }
-  }
-}
-
-function createRowParametersDivs(puzzle){
-  let leftRowParams = document.getElementById("left-row-params")
-  leftRowParams.innerHTML = ""
-  for (let i=1; i<=25; i++){
-    let individualRowParams = document.createElement("div")
-    individualRowParams.className = "row"
-    individualRowParams.id = `row-${i}-params`
-    leftRowParams.appendChild(individualRowParams)
-    if (i%5 === 1){
-      individualRowParams.className = "bold-top-row-param"
-    }
-    else{
-      individualRowParams.className = "individual-row-param"
-    }
-    individualRowParams.innerHTML = puzzle.row_params[i].split(", ").join("&nbsp;&nbsp;&nbsp;") + "&nbsp;&nbsp;"
-  }
-}
-
-function addPuzzleSquares(puzzle){
-  function changeStatus(square){
-    if (square.getAttribute("status") === "unshaded"){
-      square.setAttribute("status", "shaded")
-    }
-    else if (square.getAttribute("status") === "shaded"){
-      square.setAttribute("status", "unshaded")
-    }
-    else {
-      square.setAttribute("status", "unshaded")
-    }
-  }
-  function changePotentialStatus(square){
-    if (square.getAttribute("status") !== "shaded"){
-      square.setAttribute("highlighted", true)
-    }
-  }
-}
-
-function addPuzzleNumberHeader(puzzleNumber){
-  if (document.querySelector("#puzzle-number-header")){
-    document.querySelector("#puzzle-number-header").innerHTML = `Puzzle #${puzzleNumber}`
-  }
-  else{
-    let puzzleNumberHeader = document.createElement("h3")
-    puzzleNumberHeader.id = "puzzle-number-header"
-    puzzleNumberHeader.innerHTML = `Puzzle #${puzzleNumber}`
-    document.getElementById("puzzle-number-header-container").appendChild(puzzleNumberHeader)
-  }
-}
 // additional functionality set up - end
 
 function handleLoginError(objectWithErrorMessage){
@@ -445,7 +350,7 @@ fetch("http://localhost:3000/games", configObj)
         return response.json();
     })
     .then(function(object) {
-      currentGame = new Game(object["data"]["attributes"]["id"], currentUser, currentPuzzle, undefined, undefined, "incomplete")
+      currentGame = new Game(object["data"]["attributes"]["id"], currentUser, currentPuzzle, undefined, "incomplete")
     })
     .catch(function(error) {
       console.log(error.message);
@@ -453,8 +358,8 @@ fetch("http://localhost:3000/games", configObj)
 }
 
 class Game {
-  constructor(id, user, puzzle, time, shadedSquares, status){
-    this.id
+  constructor(id, user, puzzle, time, status){
+    this.id = id
     this.user = user
     this.puzzle = puzzle
     this.time = time
@@ -464,6 +369,10 @@ class Game {
   updateGame(status){
     this.user = currentUser
     this.puzzle = currentPuzzle
+    this.time = time()
+    if (status){
+      this.status = status
+    }
     let shaded = document.querySelectorAll("[status='shaded']")
     let shadedArray = Array.from(shaded)
     let shadedSquaresCoordinates
@@ -471,10 +380,6 @@ class Game {
       shadedSquaresCoordinates = shadedArray.map(e => e.id)
     }    
     this.shadedSquares = shadedSquaresCoordinates
-    this.time = time()
-    if (status){
-      this.status = status
-    }
     let configObj = {
         method: "PATCH",
         headers: {
@@ -503,8 +408,8 @@ class Game {
 
   checkProgress(){
     if (this.shadedSquares){
-      let currentShaded = this.shadedSquares
-      let correctShadedSquares = this.puzzle.solution.filter(e => currentShaded.includes(e))
+      let currentlyShadedSquares = this.shadedSquares
+      let correctShadedSquares = this.puzzle.solution.filter(e => currentlyShadedSquares.includes(e))
       let puzzleMessage
       if (document.getElementById("puzzle-message")){
         puzzleMessage = document.getElementById("puzzle-message")
@@ -515,22 +420,22 @@ class Game {
         document.getElementById("puzzle-message-container").appendChild(puzzleMessage)
       }
       if (this.puzzle.solution.length === correctShadedSquares.length){
-        puzzleMessage.innerHTML = `PARTY LIKE ITS YOUR BIRTHDAY. YOU DID IT! All ${currentShaded.length} squares in just ${time()} seconds!`
+        puzzleMessage.innerHTML = `PARTY LIKE IT'S YOUR BIRTHDAY. YOU DID IT! All ${currentlyShadedSquares.length} squares in just ${time()} seconds!`
         this.updateGame("complete")
         puzzleParty(150, 40)
         setTimeout(stopParty, 5000)
       }
       else{
-        let mistakeCount = currentShaded.length-correctShadedSquares.length
+        let mistakeCount = currentlyShadedSquares.length-correctShadedSquares.length
         let statusMessage
         if (mistakeCount === 0){
           statusMessage = `No mistakes so far. ${this.puzzle.solution.length-correctShadedSquares.length} to go.` 
         }
         else if(mistakeCount === 1){
-          statusMessage = `You have ${currentShaded.length-correctShadedSquares.length} mistake.`
+          statusMessage = `You have ${currentlyShadedSquares.length-correctShadedSquares.length} mistake.`
         }
         else{
-          statusMessage = `You have ${currentShaded.length-correctShadedSquares.length} mistakes.`
+          statusMessage = `You have ${currentlyShadedSquares.length-correctShadedSquares.length} mistakes.`
         }
         puzzleMessage.innerHTML = statusMessage
         console.log(statusMessage)
@@ -670,6 +575,18 @@ class User {
 }
 
 // Puzzles
+function addPuzzleNumberHeader(puzzleNumber){
+  if (document.querySelector("#puzzle-number-header")){
+    document.querySelector("#puzzle-number-header").innerHTML = `Puzzle #${puzzleNumber}`
+  }
+  else{
+    let puzzleNumberHeader = document.createElement("h3")
+    puzzleNumberHeader.id = "puzzle-number-header"
+    puzzleNumberHeader.innerHTML = `Puzzle #${puzzleNumber}`
+    document.getElementById("puzzle-number-header-container").appendChild(puzzleNumberHeader)
+  }
+}
+
 function setUpNewPuzzle(object){
   let puzzleNumber = object["data"]["id"]
   addCheckProgressPuzzleButton()
@@ -736,7 +653,6 @@ class Puzzle{
   }
 
   createColumnParametersDivs(){
-    console.log(this)
     this.setUpColumnParams(this.column_max)
     this.enterColumnParamsData()
   }
@@ -920,6 +836,7 @@ class Puzzle{
 }
 
 // organize functions into classes (html handling, puzzle making, etc.)
+// make data update when puzzle is completed successfully or when new puzzle is clicked
 
 // features to add: 
 // - change menu bar to top if screen is too thin, or even to opening three-line menu
