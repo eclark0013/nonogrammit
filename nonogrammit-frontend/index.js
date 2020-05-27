@@ -181,7 +181,7 @@ function addInfoDiv(){
 }
 // initial set up - end
 
-// butoons and additional functionality set up - start
+// buttons and additional functionality set up - start
 function addTimer(){
   let timerDiv
   if (document.getElementById("time")){
@@ -262,11 +262,10 @@ function addRevealMistakesButton(){
     document.getElementById("left-menu").appendChild(revealMistakesButton)
   }
 }
-// butoons and additional functionality set up - end
+// buttons and additional functionality set up - end
 
 
-// additional functionality set up - end
-
+// timekeeping, login, and puzzle party functions - start
 function handleLoginError(objectWithErrorMessage){
   let errorMessageDiv
   if (document.getElementById("error-message")){
@@ -317,8 +316,7 @@ function puzzleParty(speed, quantity){
 function stopParty(){
   clearInterval(startParty)
 }
-
-
+// timekeeping, login, and puzzle party functions - end
 
 // Games
 function fetchNewOrUpdateGame(status){
