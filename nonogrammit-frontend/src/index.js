@@ -1,8 +1,6 @@
 let currentUser
-let puzzleNumber
 let currentPuzzle
 let currentGame
-let test
 let highlightedSquares = []
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -282,14 +280,14 @@ function addCredits(){
   let creditsDiv = document.createElement("div")
   creditsDiv.id = "credits"
   document.querySelector("body").appendChild(creditsDiv)
-  let createdByDiv = document.createElement("div")
-  createdByDiv.id = "created-by-div"
-  createdByDiv.innerHTML = `Created by ${"<a href='https://github.com/eclark0013' target='_blank'>Eric Clark</a>"}`
-  creditsDiv.appendChild(createdByDiv)
   let gameRules = document.createElement("div")
   gameRules.id = "game-rules"
   gameRules.innerHTML = "Nonograms are logical puzzles in which each row and column has consecutive sets of shaded squares that correspond to the numbers at the end of that column or row. For example 3, 5, 1 would mean a consecutive set of 3, then 5, then 1 shaded square with some amount of unshaded squares between each set."
   creditsDiv.appendChild(gameRules)
+  let createdByDiv = document.createElement("div")
+  createdByDiv.id = "created-by-div"
+  createdByDiv.innerHTML = `Created by ${"<a href='https://github.com/eclark0013' target='_blank'>Eric Clark</a>"}`
+  creditsDiv.appendChild(createdByDiv)
 }
 
 // set up the page end
