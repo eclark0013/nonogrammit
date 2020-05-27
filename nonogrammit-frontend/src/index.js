@@ -5,7 +5,6 @@ let highlightedSquares = []
 
 document.addEventListener("DOMContentLoaded", () => {
   addMenus()
-  addAlleys()
   createMainPageContainers()
   createRightMenuContainers()
   addPageTitleHeader()
@@ -29,17 +28,6 @@ function addMenus(){
   rightMenu.id = "right-menu"
   rightMenu.className = "menu"
   document.querySelector("body").appendChild(rightMenu)
-}
-
-function addAlleys(){
-  let leftAlley = document.createElement("div")
-  leftAlley.id = "left-alley"
-  leftAlley.className = "alley"
-  document.querySelector("body").appendChild(leftAlley)
-  let rightAlley = document.createElement("div")
-  rightAlley.id = "right-alley"
-  rightAlley.className = "alley"
-  document.querySelector("body").appendChild(rightAlley)
 }
 
 function createMainPageContainers(){

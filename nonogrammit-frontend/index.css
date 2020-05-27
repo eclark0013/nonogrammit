@@ -83,21 +83,6 @@ html body{
     padding: 7px 12px;
 }
 
-.alley {
-    grid-row-start: 1;
-    grid-row-end: 6; 
-}
-
-#left-alley {
-    grid-column-start: 2;
-    grid-column-end: 3;
-}
-
-#right-alley {
-    grid-column-start: 6;
-    grid-column-end: 7;
-}
-
 #page-header{
     grid-column-start: 3;
     grid-column-end: 6;
