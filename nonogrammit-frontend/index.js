@@ -181,7 +181,7 @@ function addInfoDiv(){
 }
 // initial set up - end
 
-// additional functionality set up - start
+// butoons and additional functionality set up - start
 function addTimer(){
   let timerDiv
   if (document.getElementById("time")){
@@ -199,6 +199,17 @@ function addTimer(){
   timerDiv.innerHTML = "Time: 0"
 }
 
+function resetAllSquares(){
+  let shadedSquares = document.querySelectorAll('div[status="shaded"]')
+  for (let i=0; i<shadedSquares.length; i++){
+    shadedSquares[i].setAttribute("status", "unshaded")
+  }
+  let wrongSquares = document.querySelectorAll('div[status="incorrect"]')
+  for (let i=0; i<wrongSquares.length; i++){
+    wrongSquares[i].setAttribute("status", "unshaded")
+  }
+}
+
 function addRestartPuzzleButton(){
   if (!document.getElementById("restart-puzzle-button")){
     let restartPuzzleButton = document.createElement("button")
@@ -208,17 +219,6 @@ function addRestartPuzzleButton(){
       resetAllSquares()
     })
     document.getElementById("left-menu").appendChild(restartPuzzleButton)
-  }
-}
-
-function resetAllSquares(){
-  let shadedSquares = document.querySelectorAll('div[status="shaded"]')
-  for (let i=0; i<shadedSquares.length; i++){
-    shadedSquares[i].setAttribute("status", "unshaded")
-  }
-  let wrongSquares = document.querySelectorAll('div[status="incorrect"]')
-  for (let i=0; i<wrongSquares.length; i++){
-    wrongSquares[i].setAttribute("status", "unshaded")
   }
 }
 
@@ -262,12 +262,7 @@ function addRevealMistakesButton(){
     document.getElementById("left-menu").appendChild(revealMistakesButton)
   }
 }
-
-function clearMessage(){
-  document.getElementById("puzzle-message-container").innerHTML = ""
-}
-
-// additional functionality set up - end
+// butoons and additional functionality set up - end
 
 // puzzle set up start
 
@@ -472,7 +467,7 @@ function setUpNewPuzzle(object){
   displayNewPuzzle(currentPuzzle)
   addTimer()
   stopParty()
-  clearMessage()
+  document.getElementById("puzzle-message-container").innerHTML = ""
 }
 
 function updateCurrentPuzzle(object){
