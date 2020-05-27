@@ -347,112 +347,17 @@ function addPuzzleSquares(puzzle){
       square.setAttribute("highlighted", true)
     }
   }
-  let puzzleBoard = document.getElementById("puzzle-board")
-  puzzleBoard.innerHTML = ""
-  for (let i=0; i<25; i++){
-    let rowDiv = document.createElement("div")
-    puzzleBoard.appendChild(rowDiv)
-    rowDiv.id = `row-${i+1}`
-    rowDiv.className = "puzzle-board-row"
-    for (let j=0; j<25; j++){
-      let squareDiv = document.createElement("div")
-      squareDiv.className = "puzzle-square"
-      if (i%5 === 0 && j%5 === 0){
-        squareDiv.className = "bold-top-and-left-puzzle-square"
-      }
-      else if (i%5 === 0){
-        squareDiv.className = "bold-top-puzzle-square"
-      }
-      else if (j%5 === 0){
-        squareDiv.className = "bold-left-puzzle-square"
-      }
-      squareDiv.id = `${j+1}-${i+1}`
-      squareDiv.setAttribute("status", "unshaded")
-      squareDiv.addEventListener("mousedown", () => {
-        changePotentialStatus(squareDiv)
-        squareDiv.setAttribute("click", "start")
-        highlightedSquares.push(squareDiv)
-      })
-      squareDiv.addEventListener("mouseover", () => {
-        if(document.querySelector('div[click="start"]')){
-          let start = document.querySelector('div[click="start"]')
-          let squareDivColumn = parseInt(squareDiv.id.split("-")[0])
-          let squareDivRow = parseInt(squareDiv.id.split("-")[1])
-          let startColumn = parseInt(start.id.split("-")[0])
-          let startRow = parseInt(start.id.split("-")[1])
-          if (squareDivRow === startRow){
-            let formerlyHighlightedSqures = highlightedSquares.slice()
-            highlightedSquares = []
-            let leftHighlightedBound = Math.min(startColumn, squareDivColumn)
-            let rightHighlightedBound = Math.max(startColumn, squareDivColumn)
-            for(let k=leftHighlightedBound; k<=rightHighlightedBound; k++){
-              highlightedSquares.push(document.getElementById(`${k}-${startRow}`))
-            }
-            for(let n=0; n<highlightedSquares.length; n++){
-              changePotentialStatus(highlightedSquares[n])
-            }
-            for(let m=0; m<formerlyHighlightedSqures.length; m++){
-              if(!(highlightedSquares.includes(formerlyHighlightedSqures[m]))){
-                formerlyHighlightedSqures[m].removeAttribute("highlighted")
-              }
-            }
-          }
-          if (squareDivColumn === startColumn){
-            let formerlyHighlightedSqures = highlightedSquares.slice()
-            highlightedSquares = []
-            let lowerHighlightedBound = Math.min(startRow, squareDivRow)
-            let upperHighlightedBound = Math.max(startRow, squareDivRow)
-            for(let k=lowerHighlightedBound; k<=upperHighlightedBound; k++){
-              highlightedSquares.push(document.getElementById(`${startColumn}-${k}`))
-            }
-            for(let n=0; n<highlightedSquares.length; n++){
-              changePotentialStatus(highlightedSquares[n])
-            }
-            for(let m=0; m<formerlyHighlightedSqures.length; m++){
-              if(!(highlightedSquares.includes(formerlyHighlightedSqures[m]))){
-                formerlyHighlightedSqures[m].removeAttribute("highlighted")
-              }
-            }
-          }
-        }
-      })
-      squareDiv.addEventListener("mouseup", () => {
-        if(document.querySelector('div[click="start"]')){
-          let start = document.querySelector('div[click="start"]')
-          start.removeAttribute("click")
-          for (let a=0; a<highlightedSquares.length; a++){
-            if (highlightedSquares.length>1){
-              highlightedSquares[a].setAttribute("status", "shaded")
-            }
-            else{
-              changeStatus(highlightedSquares[a])
-            }
-            highlightedSquares[a].removeAttribute("highlighted")
-          }
-          console.log(highlightedSquares)
-          highlightedSquares = []
-        }
-        fetchNewOrUpdateGame("incomplete")
-      })
-      document.getElementById("puzzle-board").addEventListener("mouseleave", () => {
-        if(document.querySelector('div[click="start"]')){
-          let start = document.querySelector('div[click="start"]')
-          start.removeAttribute("click")
-          for (let a=0; a<highlightedSquares.length; a++){
-            if (highlightedSquares.length>1){
-              highlightedSquares[a].setAttribute("status", "shaded")
-            }
-            else{
-              changeStatus(highlightedSquares[a])
-            }
-            highlightedSquares[a].removeAttribute("highlighted")
-          }
-          console.log(highlightedSquares)
-          highlightedSquares = []
-        }
-      })
-      rowDiv.appendChild(squareDiv)
-    }
+}
+
+function addPuzzleNumberHeader(puzzleNumber){
+  if (document.querySelector("#puzzle-number-header")){
+    document.querySelector("#puzzle-number-header").innerHTML = `Puzzle #${puzzleNumber}`
+  }
+  else{
+    let puzzleNumberHeader = document.createElement("h3")
+    puzzleNumberHeader.id = "puzzle-number-header"
+    puzzleNumberHeader.innerHTML = `Puzzle #${puzzleNumber}`
+    document.getElementById("puzzle-number-header-container").appendChild(puzzleNumberHeader)
   }
 }
 
@@ -469,11 +374,9 @@ function setUpNewPuzzle(object){
   stopParty()
   document.getElementById("puzzle-message-container").innerHTML = ""
 }
+// additional functionality set up - end
 
-function updateCurrentPuzzle(object){
-  let attributes = object["data"]["attributes"]
-  currentPuzzle = new Puzzle(object.data.id, attributes["column_params"], attributes["row_params"], attributes["column_max"], attributes["row_max"], attributes["solution"])
-}
+// puzzle set up start
 // puzzle set up end
 
 function handleLoginError(objectWithErrorMessage){
@@ -498,19 +401,6 @@ function removeErrorMessage(){
 
 function time(){
   return parseInt(document.getElementById("time").innerHTML.slice(6))
-}
-
-// display puzzle number
-function addPuzzleNumberHeader(puzzleNumber){
-  if (document.querySelector("#puzzle-number-header")){
-    document.querySelector("#puzzle-number-header").innerHTML = `Puzzle #${puzzleNumber}`
-  }
-  else{
-    let puzzleNumberHeader = document.createElement("h3")
-    puzzleNumberHeader.id = "puzzle-number-header"
-    puzzleNumberHeader.innerHTML = `Puzzle #${puzzleNumber}`
-    document.getElementById("puzzle-number-header-container").appendChild(puzzleNumberHeader)
-  }
 }
 
 let startParty
@@ -797,6 +687,26 @@ class User {
 }
 
 // Puzzles
+
+function setUpNewPuzzle(object){
+  let puzzleNumber = object["data"]["id"]
+  addCheckProgressPuzzleButton()
+  addRestartPuzzleButton()
+  addRevealSolutionButton()
+  addRevealMistakesButton()
+  addPuzzleNumberHeader(puzzleNumber)
+  updateCurrentPuzzle(object)
+  currentPuzzle.displayNewPuzzle()
+  addTimer()
+  stopParty()
+  document.getElementById("puzzle-message-container").innerHTML = ""
+}
+
+function updateCurrentPuzzle(object){
+  let attributes = object["data"]["attributes"]
+  currentPuzzle = new Puzzle(object.data.id, attributes["column_params"], attributes["row_params"], attributes["column_max"], attributes["row_max"], attributes["solution"])
+}
+
 function fetchSpecifiedPuzzle(puzzleNumber){
   fetch(`http://localhost:3000/puzzles/${puzzleNumber}`)
     .then((response) => {
@@ -838,6 +748,197 @@ class Puzzle{
     this.row_max = row_max
     this.solution = solution
   }
+
+
+  displayNewPuzzle(){
+    console.log(this)
+    this.createColumnParametersDivs()
+    this.createRowParametersDivs()
+    this.addPuzzleSquares()
+  }
+
+  createColumnParametersDivs(){
+    console.log(this)
+    this.setUpColumnParams(this.column_max)
+    this.enterColumnParamsData()
+  }
+
+  setUpColumnParams(){
+    let topColumnParams = document.getElementById("top-column-params")
+    topColumnParams.innerHTML = ""
+    for (let i=0; i<this.column_max; i++){
+      let columnParamsDiv = document.createElement("div")
+      columnParamsDiv.id = `column-params-row-${i+1}`
+      columnParamsDiv.className = "column-params"
+      topColumnParams.appendChild(columnParamsDiv)
+      for (let j=0; j<25; j++){
+        let columnParamDiv = document.createElement("div")
+        columnParamDiv.className = "column-params-square"
+        if (j%5 === 0){
+          columnParamDiv.className = "bold-left-column-params-square"
+        }
+        if (j === 24){
+          columnParamDiv.className = "bold-right-column-params-square"
+        }
+        columnParamDiv.id = `column-param-${j+1}-${i+1}`
+        columnParamsDiv.appendChild(columnParamDiv)
+      }
+    }
+  }
+
+  enterColumnParamsData(){
+    for (let k=1; k<26; k++){
+      let parameter = this.column_params[k].split(", ")
+      for (let e=0; e<parameter.length; e++){
+        let targetSquare = document.getElementById(`column-param-${k}-${e+1+(this.column_max-parameter.length)}`)
+        targetSquare.innerHTML= parameter[e]
+      }
+    }
+  }
+
+  createRowParametersDivs(puzzle){
+    let leftRowParams = document.getElementById("left-row-params")
+    leftRowParams.innerHTML = ""
+    for (let i=1; i<=25; i++){
+      let individualRowParams = document.createElement("div")
+      individualRowParams.className = "row"
+      individualRowParams.id = `row-${i}-params`
+      leftRowParams.appendChild(individualRowParams)
+      if (i%5 === 1){
+        individualRowParams.className = "bold-top-row-param"
+      }
+      else{
+        individualRowParams.className = "individual-row-param"
+      }
+      individualRowParams.innerHTML = this.row_params[i].split(", ").join("&nbsp;&nbsp;&nbsp;") + "&nbsp;&nbsp;"
+    }
+  }
+
+  addPuzzleSquares(){
+    function changeStatus(square){
+      if (square.getAttribute("status") === "unshaded"){
+        square.setAttribute("status", "shaded")
+      }
+      else if (square.getAttribute("status") === "shaded"){
+        square.setAttribute("status", "unshaded")
+      }
+      else {
+        square.setAttribute("status", "unshaded")
+      }
+    }
+    function changePotentialStatus(square){
+      if (square.getAttribute("status") !== "shaded"){
+        square.setAttribute("highlighted", true)
+      }
+    }
+    let puzzleBoard = document.getElementById("puzzle-board")
+    puzzleBoard.innerHTML = ""
+    for (let i=0; i<25; i++){
+      let rowDiv = document.createElement("div")
+      puzzleBoard.appendChild(rowDiv)
+      rowDiv.id = `row-${i+1}`
+      rowDiv.className = "puzzle-board-row"
+      for (let j=0; j<25; j++){
+        let squareDiv = document.createElement("div")
+        squareDiv.className = "puzzle-square"
+        if (i%5 === 0 && j%5 === 0){
+          squareDiv.className = "bold-top-and-left-puzzle-square"
+        }
+        else if (i%5 === 0){
+          squareDiv.className = "bold-top-puzzle-square"
+        }
+        else if (j%5 === 0){
+          squareDiv.className = "bold-left-puzzle-square"
+        }
+        squareDiv.id = `${j+1}-${i+1}`
+        squareDiv.setAttribute("status", "unshaded")
+        squareDiv.addEventListener("mousedown", () => {
+          changePotentialStatus(squareDiv)
+          squareDiv.setAttribute("click", "start")
+          highlightedSquares.push(squareDiv)
+        })
+        squareDiv.addEventListener("mouseover", () => {
+          if(document.querySelector('div[click="start"]')){
+            let start = document.querySelector('div[click="start"]')
+            let squareDivColumn = parseInt(squareDiv.id.split("-")[0])
+            let squareDivRow = parseInt(squareDiv.id.split("-")[1])
+            let startColumn = parseInt(start.id.split("-")[0])
+            let startRow = parseInt(start.id.split("-")[1])
+            if (squareDivRow === startRow){
+              let formerlyHighlightedSqures = highlightedSquares.slice()
+              highlightedSquares = []
+              let leftHighlightedBound = Math.min(startColumn, squareDivColumn)
+              let rightHighlightedBound = Math.max(startColumn, squareDivColumn)
+              for(let k=leftHighlightedBound; k<=rightHighlightedBound; k++){
+                highlightedSquares.push(document.getElementById(`${k}-${startRow}`))
+              }
+              for(let n=0; n<highlightedSquares.length; n++){
+                changePotentialStatus(highlightedSquares[n])
+              }
+              for(let m=0; m<formerlyHighlightedSqures.length; m++){
+                if(!(highlightedSquares.includes(formerlyHighlightedSqures[m]))){
+                  formerlyHighlightedSqures[m].removeAttribute("highlighted")
+                }
+              }
+            }
+            if (squareDivColumn === startColumn){
+              let formerlyHighlightedSqures = highlightedSquares.slice()
+              highlightedSquares = []
+              let lowerHighlightedBound = Math.min(startRow, squareDivRow)
+              let upperHighlightedBound = Math.max(startRow, squareDivRow)
+              for(let k=lowerHighlightedBound; k<=upperHighlightedBound; k++){
+                highlightedSquares.push(document.getElementById(`${startColumn}-${k}`))
+              }
+              for(let n=0; n<highlightedSquares.length; n++){
+                changePotentialStatus(highlightedSquares[n])
+              }
+              for(let m=0; m<formerlyHighlightedSqures.length; m++){
+                if(!(highlightedSquares.includes(formerlyHighlightedSqures[m]))){
+                  formerlyHighlightedSqures[m].removeAttribute("highlighted")
+                }
+              }
+            }
+          }
+        })
+        squareDiv.addEventListener("mouseup", () => {
+          if(document.querySelector('div[click="start"]')){
+            let start = document.querySelector('div[click="start"]')
+            start.removeAttribute("click")
+            for (let a=0; a<highlightedSquares.length; a++){
+              if (highlightedSquares.length>1){
+                highlightedSquares[a].setAttribute("status", "shaded")
+              }
+              else{
+                changeStatus(highlightedSquares[a])
+              }
+              highlightedSquares[a].removeAttribute("highlighted")
+            }
+            console.log(highlightedSquares)
+            highlightedSquares = []
+          }
+          fetchNewOrUpdateGame("incomplete")
+        })
+        document.getElementById("puzzle-board").addEventListener("mouseleave", () => {
+          if(document.querySelector('div[click="start"]')){
+            let start = document.querySelector('div[click="start"]')
+            start.removeAttribute("click")
+            for (let a=0; a<highlightedSquares.length; a++){
+              if (highlightedSquares.length>1){
+                highlightedSquares[a].setAttribute("status", "shaded")
+              }
+              else{
+                changeStatus(highlightedSquares[a])
+              }
+              highlightedSquares[a].removeAttribute("highlighted")
+            }
+            console.log(highlightedSquares)
+            highlightedSquares = []
+          }
+        })
+        rowDiv.appendChild(squareDiv)
+      }
+    }
+  }
 }
 
 // organize functions into classes (html handling, puzzle making, etc.)
@@ -850,4 +951,3 @@ class Puzzle{
 // - users can save progress on puzzle
 // - users access their specific old puzzle after they have worked on it if they choose find puzzle option
 // - users will not receive an already worked on puzzle if they choose new puzzle
- 
